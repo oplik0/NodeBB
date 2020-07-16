@@ -108,10 +108,14 @@
 		}
 
 		if (category.backgroundImage) {
-			style.push('background-image: url(' + category.backgroundImage + ')');
+			/* style.push('background-image: url(' + category.backgroundImage + ')');
+			if (category.imageClass) {
+				style.push('background-size: ' + category.imageClass);
+			} */
 			if (category.imageClass) {
 				style.push('background-size: ' + category.imageClass);
 			}
+			style.push('background-image: url(/assets/uploads/category-min/category-' + category.cid + '.jpg);" data-background-image="' + category.backgroundImage + '" ');
 		}
 
 		return style.join('; ') + ';';
@@ -126,7 +130,7 @@
 			if (child && !child.isSection) {
 				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
 				html += '<span class="category-children-item pull-left">' +
-					'<div role="presentation" class="icon pull-left" style="' + generateCategoryBackground(child) + '">' +
+					'<div role="presentation" class="icon pull-left lozad" style="' + generateCategoryBackground(child) + '">' +
 					'<i class="fa fa-fw ' + child.icon + '"></i>' +
 					'</div>' +
 					'<a href="' + link + '"><small>' + child.name + '</small></a></span>';
@@ -301,7 +305,8 @@
 		} else {
 			classNames += ' avatar-sm';
 		}
-		attributes.unshift('class="avatar ' + classNames + (rounded ? ' avatar-rounded' : '') + '"');
+		attributes.unshift('class="avatar lozad ' + classNames + (rounded ? ' avatar-rounded' : '') + '"');
+		attributes.unshift('loading="lazy"');
 
 		// Component override
 		if (component) {
@@ -311,7 +316,8 @@
 		}
 
 		if (userObj.picture) {
-			return '<img ' + attributes.join(' ') + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" />';
+			attributes.push(`data-src="${userObj.picture.includes('/assets/uploads/profile/') ? userObj.picture : userObj.picture.replace(/size=\d+/, 'size=200') + (userObj.picture.includes('?') ? '&size=200' : '?size=200')}"`);
+			return `<img ${attributes.join(' ')} src="${userObj.picture.includes('/assets/uploads/profile/') ? userObj.picture.replace(/\.jpg|\.jpeg|\.png|\.gif/, '.webp') : userObj.picture.replace(/size=\d+/, 'size=42') + (userObj.picture.includes('?') ? '&size=64' : '?size=64')}" style="${styles.join(' ')}" />`;
 		}
 
 		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');

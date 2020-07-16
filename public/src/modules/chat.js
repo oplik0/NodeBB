@@ -89,7 +89,7 @@ define('chat', [
 				ChatsMessages.appendChatMessage(modal.find('.chat-content'), data.message);
 			}
 
-			if (modal.is(':visible')) {
+			if (modal.is(':visible') && modal.find('.chat-content').scrollTop() < modal.find('.chat-content').height() + 200) {
 				taskbar.updateActive(modal.attr('data-uuid'));
 				if (ChatsMessages.isAtBottom(modal.find('.chat-content'))) {
 					ChatsMessages.scrollToBottom(modal.find('.chat-content'));
@@ -314,7 +314,7 @@ define('chat', [
 			chatModal.removeClass('hide');
 			taskbar.updateActive(uuid);
 			ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
-			module.focusInput(chatModal);
+			//module.focusInput(chatModal);
 			socket.emit('modules.chats.markRead', chatModal.attr('data-roomid'));
 
 			var env = utils.findBootstrapEnvironment();

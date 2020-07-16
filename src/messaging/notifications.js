@@ -11,7 +11,12 @@ module.exports = function (Messaging) {
 	Messaging.notificationSendDelay = 1000 * 60;
 
 	Messaging.notifyUsersInRoom = async (fromUid, roomId, messageObj) => {
-		let uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		let uids;
+		if (roomId === 1) {
+			uids = await user.getUidsFromSet('users:online', 0, -1);
+		} else {
+			uids = await Messaging.getUidsInRoom(roomId, 0, -1);
+		}
 		uids = await user.blocks.filterUids(fromUid, uids);
 
 		let data = {

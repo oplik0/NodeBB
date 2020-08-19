@@ -704,17 +704,60 @@ paths:
                                 type: string
                               parent:
                                 $ref: components/schemas/CategoryObject.yaml#/CategoryObject
-                      allCategories:
+                      categories:
                         type: array
                         items:
                           type: object
                           properties:
-                            text:
-                              type: string
-                            value:
+                            cid:
                               type: number
+                              description: A category identifier
+                            name:
+                              type: string
+                            icon:
+                              type: string
                             selected:
                               type: boolean
+                            level:
+                              type: string
+                            parentCid:
+                              type: number
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
+                            color:
+                              type: string
+                            bgColor:
+                              type: string
+                            imageClass:
+                              type: string
+                          required:
+                            - cid
+                            - name
+                            - icon
+                      selectedCategory:
+                        type: object
+                        properties:
+                          cid:
+                            type: number
+                            description: A category identifier
+                          name:
+                            type: string
+                          level:
+                            type: string
+                          icon:
+                            type: string
+                          parentCid:
+                            type: number
+                            description: The category identifier for the category that is the immediate
+                              ancestor of the current category
+                          color:
+                            type: string
+                          bgColor:
+                            type: string
+                          imageClass:
+                            type: string
+                          selected:
+                            type: boolean
                       customClasses:
                         type: array
                         items:
@@ -804,6 +847,17 @@ paths:
                                   properties:
                                     name:
                                       type: string
+                          keys:
+                            type: object
+                            properties:
+                              users:
+                                type: array
+                                items:
+                                  type: string
+                              groups:
+                                type: array
+                                items:
+                                  type: string
                           users:
                             type: array
                             items:
@@ -900,6 +954,8 @@ paths:
                       cid:
                         type: number
                         description: A category identifier
+                      group:
+                        type: string
                   - $ref: components/schemas/CommonProps.yaml#/CommonProps
   /api/admin/manage/tags:
     get:
@@ -1314,6 +1370,36 @@ paths:
                             - textColor
                             - createtimeISO
                             - cover:thumb:url
+                      categories:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            cid:
+                              type: number
+                              description: A category identifier
+                            name:
+                              type: string
+                            icon:
+                              type: string
+                            selected:
+                              type: boolean
+                            level:
+                              type: string
+                            parentCid:
+                              type: number
+                              description: The category identifier for the category that is the immediate
+                                ancestor of the current category
+                            color:
+                              type: string
+                            bgColor:
+                              type: string
+                            imageClass:
+                              type: string
+                          required:
+                            - cid
+                            - name
+                            - icon
                       yourid:
                         type: number
                   - $ref: components/schemas/Pagination.yaml#/Pagination
@@ -2717,7 +2803,7 @@ paths:
                     type: string
                   upload_url:
                     type: string
-                  requireBaseUrl:
+                  assetBaseUrl:
                     type: string
                   siteTitle:
                     type: string
@@ -2923,8 +3009,6 @@ paths:
                               type: number
                             banned_until_readable:
                               type: string
-                            administrator:
-                              type: boolean
                       userCount:
                         type: number
                       title:
@@ -4870,6 +4954,8 @@ paths:
                             type: number
                           perPage:
                             type: number
+                      sort:
+                        type: string
                       title:
                         type: string
                   - $ref: components/schemas/Pagination.yaml#/Pagination

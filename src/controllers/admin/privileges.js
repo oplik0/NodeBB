@@ -17,7 +17,7 @@ privilegesController.get = async function (req, res) {
 	}
 
 	const [privilegesData, categoriesData] = await Promise.all([
-		method(),
+		method(isAdminPriv ? req.uid : undefined),
 		categories.buildForSelectAll(),
 	]);
 
@@ -41,11 +41,12 @@ privilegesController.get = async function (req, res) {
 			}
 		}
 	});
-
+	const group = req.query.group ? req.query.group : '';
 	res.render('admin/manage/privileges', {
 		privileges: privilegesData,
 		categories: categoriesData,
 		selectedCategory: selectedCategory,
 		cid: cid,
+		group: group,
 	});
 };

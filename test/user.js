@@ -824,6 +824,55 @@ describe('User', function () {
 			});
 		});
 
+		it('should not let user change another user\'s password', async function () {
+			const regularUserUid = await User.create({ username: 'regularuserpwdchange', password: 'regularuser1234' });
+			const uid = await User.create({ username: 'changeadminpwd1', password: '123456' });
+			let err;
+			try {
+				await socketUser.changePassword({ uid: uid }, { uid: regularUserUid, newPassword: '654321', currentPassword: '123456' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[user:change_password_error_privileges]]');
+		});
+
+		it('should not let user change admin\'s password', async function () {
+			const adminUid = await User.create({ username: 'adminpwdchange', password: 'admin1234' });
+			await groups.join('administrators', adminUid);
+			const uid = await User.create({ username: 'changeadminpwd2', password: '123456' });
+
+			let err;
+			try {
+				await socketUser.changePassword({ uid: uid }, { uid: adminUid, newPassword: '654321', currentPassword: '123456' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[user:change_password_error_privileges]]');
+		});
+
+		it('should let admin change another users password', async function () {
+			const adminUid = await User.create({ username: 'adminpwdchange2', password: 'admin1234' });
+			await groups.join('administrators', adminUid);
+			const uid = await User.create({ username: 'forgotmypassword', password: '123456' });
+
+			await socketUser.changePassword({ uid: adminUid }, { uid: uid, newPassword: '654321' });
+			const correct = await User.isPasswordCorrect(uid, '654321', '127.0.0.1');
+			assert(correct);
+		});
+
+		it('should not let admin change their password if current password is incorrect', async function () {
+			const adminUid = await User.create({ username: 'adminforgotpwd', password: 'admin1234' });
+			await groups.join('administrators', adminUid);
+
+			let err;
+			try {
+				await socketUser.changePassword({ uid: adminUid }, { uid: adminUid, newPassword: '654321', currentPassword: 'wrongpwd' });
+			} catch (_err) {
+				err = _err;
+			}
+			assert.equal(err.message, '[[user:change_password_error_wrong_current]]');
+		});
+
 		it('should change username', function (done) {
 			socketUser.changeUsernameEmail({ uid: uid }, { uid: uid, username: 'updatedAgain', password: '123456' }, function (err) {
 				assert.ifError(err);

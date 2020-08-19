@@ -144,7 +144,10 @@ describe('Flags', function () {
 
 	describe('.list()', function () {
 		it('should show a list of flags (with one item)', function (done) {
-			Flags.list({}, 1, function (err, payload) {
+			Flags.list({
+				filters: {},
+				uid: 1,
+			}, function (err, payload) {
 				assert.ifError(err);
 				assert.ok(payload.hasOwnProperty('flags'));
 				assert.ok(payload.hasOwnProperty('page'));
@@ -164,8 +167,11 @@ describe('Flags', function () {
 		describe('(with filters)', function () {
 			it('should return a filtered list of flags if said filters are passed in', function (done) {
 				Flags.list({
-					state: 'open',
-				}, 1, function (err, payload) {
+					filters: {
+						state: 'open',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -178,8 +184,11 @@ describe('Flags', function () {
 
 			it('should return no flags if a filter with no matching flags is used', function (done) {
 				Flags.list({
-					state: 'rejected',
-				}, 1, function (err, payload) {
+					filters: {
+						state: 'rejected',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -192,8 +201,11 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by cid 1', function (done) {
 				Flags.list({
-					cid: 1,
-				}, 1, function (err, payload) {
+					filters: {
+						cid: 1,
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -206,8 +218,11 @@ describe('Flags', function () {
 
 			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
 				Flags.list({
-					cid: 2,
-				}, 1, function (err, payload) {
+					filters: {
+						cid: 2,
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -220,8 +235,11 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by both cid 1 and 2', function (done) {
 				Flags.list({
-					cid: [1, 2],
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -234,9 +252,12 @@ describe('Flags', function () {
 
 			it('should return one flag if filtered by both cid 1 and 2 and open state', function (done) {
 				Flags.list({
-					cid: [1, 2],
-					state: 'open',
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+						state: 'open',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -249,9 +270,12 @@ describe('Flags', function () {
 
 			it('should return no flag if filtered by both cid 1 and 2 and non-open state', function (done) {
 				Flags.list({
-					cid: [1, 2],
-					state: 'resolved',
-				}, 1, function (err, payload) {
+					filters: {
+						cid: [1, 2],
+						state: 'resolved',
+					},
+					uid: 1,
+				}, function (err, payload) {
 					assert.ifError(err);
 					assert.ok(payload.hasOwnProperty('flags'));
 					assert.ok(payload.hasOwnProperty('page'));
@@ -260,6 +284,66 @@ describe('Flags', function () {
 					assert.strictEqual(0, payload.flags.length);
 					done();
 				});
+			});
+		});
+
+		describe('(with sort)', () => {
+			before(async () => {
+				// Create a second flag to test sorting
+				const post = await Topics.reply({
+					tid: 1,
+					uid: uid1,
+					content: 'this is a reply -- flag me',
+				});
+				await Flags.create('post', post.pid, adminUid, 'another flag');
+				await Flags.create('post', 1, uid3, 'additional flag report');
+			});
+
+			it('should return sorted flags latest first if no sort is passed in', async () => {
+				const payload = await Flags.list({
+					uid: adminUid,
+				});
+
+				assert(payload.flags.every((cur, idx) => {
+					if (idx === payload.flags.length - 1) {
+						return true;
+					}
+
+					const next = payload.flags[idx + 1];
+					return parseInt(cur.datetime, 10) > parseInt(next.datetime, 10);
+				}));
+			});
+
+			it('should return sorted flags oldest first if "oldest" sort is passed in', async () => {
+				const payload = await Flags.list({
+					uid: adminUid,
+					sort: 'oldest',
+				});
+
+				assert(payload.flags.every((cur, idx) => {
+					if (idx === payload.flags.length - 1) {
+						return true;
+					}
+
+					const next = payload.flags[idx + 1];
+					return parseInt(cur.datetime, 10) < parseInt(next.datetime, 10);
+				}));
+			});
+
+			it('should return flags with more reports first if "reports" sort is passed in', async () => {
+				const payload = await Flags.list({
+					uid: adminUid,
+					sort: 'reports',
+				});
+
+				assert(payload.flags.every((cur, idx) => {
+					if (idx === payload.flags.length - 1) {
+						return true;
+					}
+
+					const next = payload.flags[idx + 1];
+					return parseInt(cur.heat, 10) >= parseInt(next.heat, 10);
+				}));
 			});
 		});
 	});

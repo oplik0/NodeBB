@@ -18,18 +18,23 @@ const modsController = module.exports;
 modsController.flags = {};
 
 modsController.flags.list = async function (req, res, next) {
-	let validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
+	const validFilters = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick', 'page', 'perPage'];
+	const validSorts = ['newest', 'oldest', 'reports'];
 
 	// Reset filters if explicitly requested
 	if (parseInt(req.query.reset, 10) === 1) {
 		delete req.session.flags_filters;
+		delete req.session.flags_sort;
 	}
 
-	const [isAdminOrGlobalMod, moderatedCids, data] = await Promise.all([
+	const results = await Promise.all([
 		user.isAdminOrGlobalMod(req.uid),
 		user.getModeratedCids(req.uid),
 		plugins.fireHook('filter:flags.validateFilters', { filters: validFilters }),
+		plugins.fireHook('filter:flags.validateSort', { sorts: validSorts }),
 	]);
+	const [isAdminOrGlobalMod, moderatedCids,, { sorts }] = results;
+	let [,, { filters }] = results;
 
 	if (!(isAdminOrGlobalMod || !!moderatedCids.length)) {
 		return next(new Error('[[error:no-privileges]]'));
@@ -39,10 +44,8 @@ modsController.flags.list = async function (req, res, next) {
 		res.locals.cids = moderatedCids;
 	}
 
-	validFilters = data.filters;
-
-	// Parse query string params for filters
-	let filters = validFilters.reduce(function (memo, cur) {
+	// Parse query string params for filters, eliminate non-valid filters
+	filters = filters.reduce(function (memo, cur) {
 		if (req.query.hasOwnProperty(cur)) {
 			memo[cur] = req.query[cur];
 		}
@@ -78,11 +81,28 @@ modsController.flags.list = async function (req, res, next) {
 		hasFilter = false;
 	}
 
-	// Save filters into session unless removed
+	// Parse sort from query string
+	let sort;
+	if (!req.query.sort && req.session.hasOwnProperty('flags_sort')) {
+		sort = req.session.flags_sort;
+	} else {
+		sort = sorts.includes(req.query.sort) ? req.query.sort : null;
+	}
+	if (sort === 'newest') {
+		sort = undefined;
+	}
+	hasFilter = hasFilter || !!sort;
+
+	// Save filters and sorting into session unless removed
 	req.session.flags_filters = filters;
+	req.session.flags_sort = sort;
 
 	const [flagsData, analyticsData, categoriesData] = await Promise.all([
-		flags.list(filters, req.uid),
+		flags.list({
+			filters: filters,
+			sort: sort,
+			uid: req.uid,
+		}),
 		analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30),
 		categories.buildForSelect(req.uid, 'read'),
 	]);
@@ -93,6 +113,7 @@ modsController.flags.list = async function (req, res, next) {
 		categories: filterCategories(res.locals.cids, categoriesData),
 		hasFilter: hasFilter,
 		filters: filters,
+		sort: sort || 'newest',
 		title: '[[pages:flags]]',
 		pagination: pagination.create(flagsData.page, flagsData.pageCount, req.query),
 		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[pages:flags]]' }]),
@@ -141,7 +162,7 @@ modsController.flags.detail = async function (req, res, next) {
 		}, {}),
 		title: '[[pages:flag-details, ' + req.params.flagId + ']]',
 		categories: results.categories,
-		filters: req.session.flags_filters || [],
+		filters: req.session.flags_filters || {},
 		privileges: results.privileges,
 		breadcrumbs: helpers.buildBreadcrumbs([
 			{ text: '[[pages:flags]]', url: '/flags' },

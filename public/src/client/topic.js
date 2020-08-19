@@ -21,13 +21,12 @@ define('forum/topic', [
 			clearTimeout(Topic.replaceURLTimeout);
 			Topic.replaceURLTimeout = 0;
 		}
+		events.removeListeners();
 
 		if (!String(data.url).startsWith('topic/')) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
-
-			events.removeListeners();
 
 			require(['search'], function (search) {
 				if (search.topicDOM.active) {
@@ -136,7 +135,7 @@ define('forum/topic', [
 				timeout: 0,
 				type: 'info',
 				clickfn: function () {
-					navigator.scrollToIndex(parseInt(bookmark - 1, 10), true);
+					navigator.scrollToIndex(parseInt(bookmark, 10), true);
 				},
 				closefn: function () {
 					storage.removeItem('topic:' + tid + ':bookmark');
@@ -259,7 +258,7 @@ define('forum/topic', [
 					if (err) {
 						return app.alertError(err.message);
 					}
-					ajaxify.data.bookmark = index;
+					ajaxify.data.bookmark = index + 1;
 				});
 			} else {
 				storage.setItem(bookmarkKey, index);

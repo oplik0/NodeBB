@@ -1,3 +1,68 @@
+#### v1.15.0-beta.3 (2020-08-22)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.3 (39178c2d)
+*  update changelog for v1.15.0-beta.2 (d8a9f1c3)
+
+##### New Features
+
+*  banning a user will resolve their post flags (354e6ccc)
+
+##### Bug Fixes
+
+*  openapi spec (4f7cfd53)
+*  api spec (c4ad14cb)
+*  username, email history disappering if content was deleted (91d9333a)
+*  up composer (9fd37753)
+*  package-install clobbering scoped nodebb plugins (840cb510)
+
+#### v1.15.0-beta.2 (2020-08-21)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.2 (59b50d0a)
+*  update changelog for v1.15.0-beta.1 (aeca19d5)
+
+##### Bug Fixes
+
+*  empty "manage" menu showing in ACP (4b0cb26b)
+*  hide nodebb version in ACP for non-superadmins (cc268605)
+*  change how admin middlewares are exported (f00595b3)
+*  one less return, to appease codeclimate (ae68a254)
+*  inability to access /admin if not superadmin (03bd76de)
+*  #8560, fix old upgrade script (29e3ab24)
+*  use promises in privilege save (9cbe9389)
+*  overzealous click handler on flag list row (7a5daff4)
+*  +comment, -debug log (9608b44f)
+
+##### Refactors
+
+*  changed way middleware was exported (cf2f1e95)
+
+#### v1.15.0-beta.1 (2020-08-20)
+
+##### Chores
+
+*  incrementing version number - v1.15.0-beta.1 (4fa57fbb)
+
+##### New Features
+
+*  theme changes for #8571 (5415c01c)
+*  logic for bulk actions in flags list, #8571 (a3a22793)
+*  expose global/admin privileges to all routes (4737f937)
+
+##### Bug Fixes
+
+*  multiple alerts in the same millisecond overwrite each other (589216e7)
+*  reintroduce 20s delay for api tests (56393795)
+*  client-side error in flags/detail (b2271eb6)
+*  #8570 (7daba7dd)
+
+##### Tests
+
+* **openapi:**  missing commonprops addition (0dc55bbc)
+
 #### 1.14.3 (2020-07-08)
 
 ##### Bug Fixes

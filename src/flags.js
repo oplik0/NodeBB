@@ -16,6 +16,7 @@ const posts = require('./posts');
 const privileges = require('./privileges');
 const plugins = require('./plugins');
 const utils = require('../public/src/utils');
+const batch = require('./batch');
 
 const Flags = module.exports;
 
@@ -348,6 +349,7 @@ Flags.create = async function (type, id, uid, reason, timestamp) {
 			flagId: flagId,
 			type: type,
 			targetId: id,
+			targetUid: targetUid,
 			datetime: timestamp,
 		}),
 		Flags.addReport(flagId, type, id, uid, reason, timestamp),
@@ -570,11 +572,25 @@ Flags.resolveFlag = async function (type, id, uid) {
 	}
 };
 
+Flags.resolveUserPostFlags = async function (uid, callerUid) {
+	await batch.processSortedSet('uid:' + uid + ':posts', async function (pids) {
+		let postData = await posts.getPostsFields(pids, ['pid', 'flagId']);
+		postData = postData.filter(p => p && p.flagId);
+		for (const postObj of postData) {
+			if (parseInt(postObj.flagId, 10)) {
+				// eslint-disable-next-line no-await-in-loop
+				await Flags.update(postObj.flagId, callerUid, { state: 'resolved' });
+			}
+		}
+	}, {
+		batch: 500,
+	});
+};
+
 Flags.getHistory = async function (flagId) {
 	const uids = [];
 	let history = await db.getSortedSetRevRangeWithScores('flag:' + flagId + ':history', 0, -1);
-	const flagData = await db.getObjectFields('flag:' + flagId, ['type', 'targetId']);
-	const targetUid = await Flags.getTargetUid(flagData.type, flagData.targetId);
+	const targetUid = await db.getObjectField('flag:' + flagId, 'targetUid');
 
 	history = history.map(function (entry) {
 		entry.value = JSON.parse(entry.value);

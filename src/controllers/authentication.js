@@ -23,8 +23,13 @@ const sockets = require('../socket.io');
 const authenticationController = module.exports;
 
 async function registerAndLoginUser(req, res, userData) {
+	if (!userData.hasOwnProperty('email')) {
+		userData.updateEmail = true;
+	}
+
 	const data = await plugins.hooks.fire('filter:register.interstitial', {
-		userData: userData,
+		req,
+		userData,
 		interstitials: [],
 	});
 
@@ -55,17 +60,18 @@ async function registerAndLoginUser(req, res, userData) {
 
 	// Distinguish registrations through invites from direct ones
 	if (userData.token) {
-		await user.joinGroupsFromInvitation(uid, userData.email);
+		// Token has to be verified at this point
+		await Promise.all([
+			user.confirmIfInviteEmailIsUsed(userData.token, userData.email, uid),
+			user.joinGroupsFromInvitation(uid, userData.token),
+		]);
 	}
-	await user.deleteInvitationKey(userData.email);
+	await user.deleteInvitationKey(userData.email, userData.token);
 	const next = req.session.returnTo || `${nconf.get('relative_path')}/`;
 	const complete = await plugins.hooks.fire('filter:register.complete', { uid: uid, next: next });
 	req.session.returnTo = complete.next;
 	return complete;
 }
-
-const registerAndLoginUserCallback = util.callbackify(registerAndLoginUser);
-
 
 authenticationController.register = async function (req, res) {
 	const registrationType = meta.config.registrationType || 'normal';
@@ -78,10 +84,6 @@ authenticationController.register = async function (req, res) {
 	try {
 		if (userData.token || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 			await user.verifyInvitation(userData);
-		}
-
-		if (!userData.email) {
-			throw new Error('[[error:invalid-email]]');
 		}
 
 		if (
@@ -140,6 +142,7 @@ async function addToApprovalQueue(req, userData) {
 authenticationController.registerComplete = function (req, res, next) {
 	// For the interstitials that respond, execute the callback with the form body
 	plugins.hooks.fire('filter:register.interstitial', {
+		req,
 		userData: req.session.registration,
 		interstitials: [],
 	}, async (err, data) => {
@@ -191,7 +194,14 @@ authenticationController.registerComplete = function (req, res, next) {
 
 		if (req.session.registration.register === true) {
 			res.locals.processLogin = true;
-			registerAndLoginUserCallback(req, res, req.session.registration, done);
+			req.body.noscript = 'true';	// trigger full page load on error
+
+			const data = await registerAndLoginUser(req, res, req.session.registration);
+			if (!data) {
+				return winston.warn('[register] Interstitial callbacks processed with no errors, but one or more interstitials remain. This is likely an issue with one of the interstitials not properly handling a null case or invalid value.');
+			}
+
+			done();
 		} else {
 			// Update user hash, clear registration data in session
 			const payload = req.session.registration;
@@ -212,11 +222,17 @@ authenticationController.registerComplete = function (req, res, next) {
 };
 
 authenticationController.registerAbort = function (req, res) {
-	// End the session and redirect to home
-	req.session.destroy(() => {
-		res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
-		res.redirect(`${nconf.get('relative_path')}/`);
-	});
+	if (req.uid) {
+		// Clear interstitial data and continue on...
+		delete req.session.registration;
+		res.redirect(nconf.get('relative_path') + req.session.returnTo);
+	} else {
+		// End the session and redirect to home
+		req.session.destroy(() => {
+			res.clearCookie(nconf.get('sessionKey'), meta.configs.cookie.get());
+			res.redirect(`${nconf.get('relative_path')}/`);
+		});
+	}
 };
 
 authenticationController.login = async (req, res, next) => {

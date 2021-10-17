@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - mongodb-transactions-test
   pull_request:
     branches:
       - master
@@ -68,12 +69,6 @@ jobs:
           # Maps port 6379 on service container to the host
           - 6379:6379
 
-      mongo:
-        image: 'mongo:3.2'
-        ports:
-          # Maps port 27017 on service container to the host
-          - 27017:27017
-
     steps:
       - uses: actions/checkout@v2
 
@@ -88,7 +83,12 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
-
+      - name: Start MongoDB
+        if: startsWith(matrix.database, 'mongo')
+        uses: supercharge/mongodb-github-action@1.6.0
+        with:
+          mongodb-version: "4.4"
+          mongodb-replica-set: test-rs
       - name: Setup on MongoDB
         if: startsWith(matrix.database, 'mongo')
         env:
@@ -115,6 +115,7 @@ jobs:
               "database": "ci_test"
             }
         run: |
+          mongo --eval "rs.initiate()";
           node app --setup="${SETUP}" --ci="${CI}"
 
       - name: Setup on PostgreSQL

@@ -1,7 +1,7 @@
 FROM node:lts
 
 RUN groupadd --gid 1001 nodebb && \
-    useradd --uid 1001 --gid node --shell /bin/bash --create-home nodebb && \
+    useradd --uid 1001 --gid nodebb --shell /bin/bash --create-home nodebb && \
     mkdir -p /usr/src/app && \
     chown -R nodebb:nodebb /usr/src/app
 WORKDIR /usr/src/app

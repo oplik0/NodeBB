@@ -1,20 +1,22 @@
 FROM node:lts
 
-RUN mkdir -p /usr/src/app && \
-    chown -R node:node /usr/src/app
+RUN groupadd --gid 1001 nodebb && \
+    useradd --uid 1001 --gid node --shell /bin/bash --create-home nodebb && \
+    mkdir -p /usr/src/app && \
+    chown -R nodebb:nodebb /usr/src/app
 WORKDIR /usr/src/app
 
 ARG NODE_ENV
 ENV NODE_ENV $NODE_ENV
 
-COPY --chown=node:node install/package.json /usr/src/app/package.json
+COPY --chown=nodebb:nodebb install/package.json /usr/src/app/package.json
 
-USER node
+USER nodebb
 
 RUN npm install --only=prod && \
     npm cache clean --force
 
-COPY --chown=node:node . /usr/src/app
+COPY --chown=nodebb:nodebb . /usr/src/app
 
 ENV NODE_ENV=production \
     daemon=false \

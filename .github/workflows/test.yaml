@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - socketio-mongo-tests
   pull_request:
     branches:
       - master
@@ -69,10 +70,13 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'mongo:3.2'
+        image: 'bitnami/mongo:3.6'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+        env:
+          MONGODB_REPLICA_SET_MODE: primary
+
 
     steps:
       - uses: actions/checkout@v2

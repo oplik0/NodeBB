@@ -23,7 +23,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         node: [12, 14]
-        database: [mongo-dev, mongo, redis, postgres]
+        database: [mongo-dev, mongo]
         include:
           # only run coverage once
           - os: ubuntu-latest

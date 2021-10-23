@@ -70,17 +70,14 @@ jobs:
           - 6379:6379
 
       mongo:
-        image: 'bitnami/mongodb:4.0'
+        image: 'bitnami/mongodb:3.6'
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
         env:
-          MONGODB_ADVERTISED_HOSTNAME: nodebb-mongodb
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
-          MONGODB_ROOT_PASSWORD: nodebb
-          MONGODB_USERNAME: nodebb
-          MONGODB_PASSWORD: nodebb
+          MONGODB_ALLOW_EMPTY_PASSWORD: yes 
 
 
     steps:
@@ -113,17 +110,15 @@ jobs:
               "database": "mongo",
               "mongo:host": "127.0.0.1",
               "mongo:port": 27017,
-              "mongo:username": "nodebb",
-              "mongo:password": "nodebb",
+              "mongo:username": "",
+              "mongo:password": "",
               "mongo:database": "nodebb"
             }
           CI: >-
             {
               "host": "127.0.0.1",
               "port": 27017,
-              "database": "ci_test",
-              "username": "nodebb",
-              "password": "nodebb"
+              "database": "ci_test"
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"

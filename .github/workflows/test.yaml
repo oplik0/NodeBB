@@ -110,7 +110,7 @@ jobs:
               "database": "mongo",
               "mongo:host": "127.0.0.1",
               "mongo:port": 27017,
-              "mongo:username": "",
+              "mongo:username": "root",
               "mongo:password": "",
               "mongo:database": "nodebb"
             }
@@ -118,7 +118,8 @@ jobs:
             {
               "host": "127.0.0.1",
               "port": 27017,
-              "database": "ci_test"
+              "database": "ci_test",
+              "username": "root"
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"

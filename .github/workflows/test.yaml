@@ -79,7 +79,8 @@ jobs:
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
           MONGODB_ROOT_PASSWORD: nodebb
-          MONGODB_ROOT_USER: nodebb
+          MONGODB_USERNAME: nodebb
+          MONGODB_PASSWORD: nodebb
 
 
     steps:

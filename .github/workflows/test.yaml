@@ -75,8 +75,11 @@ jobs:
           # Maps port 27017 on service container to the host
           - 27017:27017
         env:
+          MONGODB_ADVERTISED_HOSTNAME: nodebb-mongodb
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
+          MONGODB_ROOT_PASSWORD: nodebb
+          MONGODB_ROOT_USER: nodebb
 
 
     steps:
@@ -109,15 +112,17 @@ jobs:
               "database": "mongo",
               "mongo:host": "127.0.0.1",
               "mongo:port": 27017,
-              "mongo:username": "root",
-              "mongo:password": "",
-              "mongo:database": ""
+              "mongo:username": "nodebb",
+              "mongo:password": "nodebb",
+              "mongo:database": "nodebb"
             }
           CI: >-
             {
               "host": "127.0.0.1",
               "port": 27017,
-              "database": "ci_test"
+              "database": "ci_test",
+              "username": "nodebb",
+              "password": "nodebb"
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"

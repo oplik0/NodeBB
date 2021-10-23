@@ -76,6 +76,7 @@ jobs:
           - 27017:27017
         env:
           MONGODB_REPLICA_SET_MODE: primary
+          MONGODB_REPLICA_SET_KEY: nodebb
 
 
     steps:

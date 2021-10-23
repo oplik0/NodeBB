@@ -43,7 +43,6 @@ jobs:
 
     services:
       postgres:
-        if: 
         image: 'postgres:10-alpine'
         env:
           POSTGRES_USER: postgres

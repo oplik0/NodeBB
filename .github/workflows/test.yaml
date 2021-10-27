@@ -77,7 +77,8 @@ jobs:
         env:
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
-          MONGODB_ALLOW_EMPTY_PASSWORD: yes 
+          MONGODB_ALLOW_EMPTY_PASSWORD: "yes"
+          MONGODB_ROOT_PASSWORD: nodebb
 
 
     steps:
@@ -111,7 +112,7 @@ jobs:
               "mongo:host": "127.0.0.1",
               "mongo:port": 27017,
               "mongo:username": "root",
-              "mongo:password": "",
+              "mongo:password": "nodebb",
               "mongo:database": "nodebb"
             }
           CI: >-
@@ -119,7 +120,8 @@ jobs:
               "host": "127.0.0.1",
               "port": 27017,
               "database": "ci_test",
-              "username": "root"
+              "username": "root",
+              "password": "nodebb"
             }
         run: |
           node app --setup="${SETUP}" --ci="${CI}"

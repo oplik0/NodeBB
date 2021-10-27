@@ -74,10 +74,14 @@ jobs:
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
+        options: >-
+          --health-cmd "mongo --quiet '$host/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         env:
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
-          MONGODB_ALLOW_EMPTY_PASSWORD: "yes"
           MONGODB_ROOT_PASSWORD: nodebb
 
 

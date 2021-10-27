@@ -75,7 +75,7 @@ jobs:
           # Maps port 27017 on service container to the host
           - 27017:27017
         options: >-
-          --health-cmd "mongo --quiet '$host/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+          --health-cmd "mongo -u healthcheck -p healthcheck --quiet 'localhost/test' --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
@@ -83,6 +83,9 @@ jobs:
           MONGODB_REPLICA_SET_MODE: primary
           MONGODB_REPLICA_SET_KEY: nodebb
           MONGODB_ROOT_PASSWORD: nodebb
+          MONGODB_EXTRA_USERNAMES: nodebb,ci_test,healthcheck
+          MONGODB_EXTRA_PASSWORDS: nodebb,nodebb,healthcheck
+          MONGODB_EXTRA_DATABASES: nodebb,ci_test,test
 
 
     steps:
@@ -115,7 +118,7 @@ jobs:
               "database": "mongo",
               "mongo:host": "127.0.0.1",
               "mongo:port": 27017,
-              "mongo:username": "root",
+              "mongo:username": "nodebb",
               "mongo:password": "nodebb",
               "mongo:database": "nodebb"
             }
@@ -124,7 +127,7 @@ jobs:
               "host": "127.0.0.1",
               "port": 27017,
               "database": "ci_test",
-              "username": "root",
+              "username": "ci_test",
               "password": "nodebb"
             }
         run: |

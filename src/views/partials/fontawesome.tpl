@@ -448,7 +448,6 @@
 		<i class="fa fa-mars-stroke-h"></i>
 		<i class="fa fa-mars-stroke-v"></i>
 		<i class="fa fa-maxcdn"></i>
-		<i class="fa fa-meanpath"></i>
 		<i class="fa fa-medium"></i>
 		<i class="fa fa-medkit"></i>
 		<i class="fa fa-meetup"></i>
@@ -706,7 +705,6 @@
 		<i class="fa fa-trash-o"></i>
 		<i class="fa fa-tree"></i>
 		<i class="fa fa-trello"></i>
-		<i class="fa fa-tripadvisor"></i>
 		<i class="fa fa-trophy"></i>
 		<i class="fa fa-truck"></i>
 		<i class="fa fa-try"></i>

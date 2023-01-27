@@ -76,13 +76,15 @@ _mounts.tags = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}`, [middleware.privateTagListing], controllers.tags.getTags);
 };
 
-_mounts.category = (app, name, middleware, controllers) => {
-	setupPageRoute(app, '/categories', [], controllers.categories.list);
+_mounts.categories = (app, name, middleware, controllers) => {
+	setupPageRoute(app, `/${name}`, [], controllers.categories.list);
 	setupPageRoute(app, '/popular', [], controllers.popular.get);
 	setupPageRoute(app, '/recent', [], controllers.recent.get);
 	setupPageRoute(app, '/top', [], controllers.top.get);
 	setupPageRoute(app, '/unread', [middleware.ensureLoggedIn], controllers.unread.get);
+};
 
+_mounts.category = (app, name, middleware, controllers) => {
 	setupPageRoute(app, `/${name}/:category_id/:slug/:topic_index`, [], controllers.category.get);
 	setupPageRoute(app, `/${name}/:category_id/:slug?`, [], controllers.category.get);
 };
@@ -108,7 +110,7 @@ module.exports = async function (app, middleware) {
 	};
 
 	// Allow plugins/themes to mount some routes elsewhere
-	const remountable = ['admin', 'category', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
+	const remountable = ['admin', 'category', 'categories', 'topic', 'post', 'users', 'user', 'groups', 'tags'];
 	const { mounts } = await plugins.hooks.fire('filter:router.add', {
 		mounts: remountable.reduce((memo, mount) => {
 			memo[mount] = mount;

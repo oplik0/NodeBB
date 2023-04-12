@@ -1,3 +1,437 @@
+#### v2.8.10 (2023-03-27)
+
+##### Chores
+
+*  up composer-default (e9a8e195)
+*  incrementing version number - v2.8.9 (57f14e41)
+*  update changelog for v2.8.9 (18b2150e)
+*  incrementing version number - v2.8.8 (b331b942)
+*  incrementing version number - v2.8.7 (3f8248d6)
+*  incrementing version number - v2.8.6 (af6ce447)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  #11403, remove loader.js crash counter logic (830f142b)
+*  don't crash if event name is not a string (37b48b82)
+*  closes #11173, move cache clear code (c2961ad4)
+
+##### Other Changes
+
+*  fix arrow (1aff9cad)
+*  whitespace (894f392b)
+
+#### v2.8.9 (2023-03-19)
+
+##### Chores
+
+*  up cron (73a50d17)
+*  incrementing version number - v2.8.8 (b331b942)
+*  update changelog for v2.8.8 (c03d5db7)
+*  incrementing version number - v2.8.7 (3f8248d6)
+*  incrementing version number - v2.8.6 (af6ce447)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  thumb remove on windows, closes #11357 (767c1d1f)
+*  #11357 clear cache on thumb remove (a3a38e4b)
+*  closes #11352, try/catch rss feeds (cfd50272)
+*  closes #11343, don't crash if tags array is empty (56427e4f)
+
+##### Code Style Changes
+
+*  more fixes (93aa43f7)
+
+##### Tests
+
+*  openapi for thumbs (9e685e65)
+
+#### v2.8.8 (2023-03-09)
+
+##### Chores
+
+*  incrementing version number - v2.8.7 (3f8248d6)
+*  update changelog for v2.8.7 (2ca38e7b)
+*  incrementing version number - v2.8.6 (af6ce447)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  stop topic navigation hotkeys from firing if in a mousetrap-enabled form element (22fc8fe3)
+*  stop topic navigation hotkeys from firing if in a mousetrap-enabled form element (17d0b40e)
+*  tag filtering when changing filter to watched topics (1545223e)
+*  get cid from pid instead of passing in (f054a4f4)
+*  closes #11331, allow 0 length content if set to 0 in acp (8c762d32)
+
+#### v2.8.7 (2023-03-01)
+
+##### Chores
+
+*  incrementing version number - v2.8.6 (af6ce447)
+*  update changelog for v2.8.6 (f3306d03)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Documentation Changes
+
+*  update openapi spec to include info about passing in timestamps for topic creation, removing timestamp as valid request param for topic replying (40e7b86d)
+
+##### Bug Fixes
+
+*  display 25 topics on category feed (79155109)
+*  object destructuring overwriting type parameter (ec58700f)
+*  alert on page load (8cf4a6f6)
+*  show error alert if password change fails (3bd9a871)
+*  update main post timestamp when rescheduling (edd2fc38)
+*  show admins/globalmods if content is purged (326b9268)
+*  email expiry timestamps (e335d0f6)
+*  #11259, clean old emails when updating via admin (#11260) (845c8013)
+*  #11257, onSuccessfulLogin called with improper uid (7a5bcc21)
+
+##### Tests
+
+*  add dummy emailer hook in authentication test (1b29dbb6)
+
+#### v2.8.6 (2023-02-03)
+
+##### Chores
+
+* **i18n:**  fallback strings for new resources: nodebb.error (8335f90a)
+*  incrementing version number - v2.8.5 (bff5ce2d)
+*  update changelog for v2.8.5 (24e58c28)
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### New Features
+
+*  add sitemap filter hooks for categories/topic pages (bf92ee0e)
+*  closes #11241, add missing error lang keys (c241baf6)
+*  #11240, only show relevant users in flags assignee list (0713482b)
+
+##### Bug Fixes
+
+*  #11254, return check for reroll property (202378b9)
+*  closes #11249, notification uses displayname (705cd13a)
+*  wrong link to topics in acp dashboard (b5598a6e)
+*  https://github.com/NodeBB/NodeBB/issues/11239 (1d3c0e5a)
+*  notif filter selecte field (6d819b05)
+
+##### Other Changes
+
+*  remove unused (d68352cc)
+
+#### v2.8.5 (2023-01-27)
+
+##### Chores
+
+*  incrementing version number - v2.8.4 (a46b2bbc)
+*  update changelog for v2.8.4 (c13f0e21)
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  import resolution within plugin modules (#11219) (f6c96948)
+
+#### v2.8.4 (2023-01-26)
+
+##### Chores
+
+*  incrementing version number - v2.8.3 (c20b20a7)
+*  update changelog for v2.8.3 (eb2841ee)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+#### v2.8.3 (2023-01-25)
+
+##### Chores
+
+*  remove extraneous lines from changelog (48c9f447)
+*  incrementing version number - v2.8.2 (050e43f8)
+*  update changelog for v2.8.2 (66aa3169)
+*  incrementing version number - v2.8.1 (727f879e)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  incrementing version number - v2.6.1 (7e52a7a5)
+*  incrementing version number - v2.6.0 (e7fcf482)
+*  incrementing version number - v2.5.8 (dec0e7de)
+*  incrementing version number - v2.5.7 (5836bf4a)
+*  incrementing version number - v2.5.6 (c7bd7dbf)
+*  incrementing version number - v2.5.5 (3509ed94)
+*  incrementing version number - v2.5.4 (e83260ca)
+*  incrementing version number - v2.5.3 (7e922936)
+*  incrementing version number - v2.5.2 (babcd17e)
+*  incrementing version number - v2.5.1 (ce3aa950)
+*  incrementing version number - v2.5.0 (01d276cb)
+*  incrementing version number - v2.4.5 (dd3e1a28)
+*  incrementing version number - v2.4.4 (d5525c87)
+*  incrementing version number - v2.4.3 (9c647c6c)
+*  incrementing version number - v2.4.2 (3aa7b855)
+*  incrementing version number - v2.4.1 (60cbd148)
+*  incrementing version number - v2.4.0 (4834cde3)
+*  incrementing version number - v2.3.1 (d2425942)
+*  incrementing version number - v2.3.0 (046ea120)
+
+##### Bug Fixes
+
+*  import resolution within plugin modules (#11200) (89e059a0)
+*  #11195, allow users with admin:users privilege to delete users in acp (0bffd3d9)
+*  #11194, allow access to sub dashboard pages (7d04e952)
+*  #11136, tests, and returning the proper number of arrays (459bc523)
+*  #11136, only show mods of active categories when getModeratorUids is called (39e009c0)
+*  closes #11173, clear require cache if wrong dependency is installed (747cb1f0)
+* **deps:**
+  *  downgrade swagger-parser to v9 (00e48803)
+  *  pinning sub dependency json-schema-ref-parser to 9.0.9 (9c250b78)
+
+##### Reverts
+
+*  a788bd1344825ad4759e39d6e98d8bf3695bd639 (fecd84d1)
+*  9c250b78b05ca2abf31a79971ed0c60ca07664ec, fix: comment out broken test for now (a788bd13)
+
+##### Tests
+
+*  fix broken test (f295174e)
+
+#### v2.8.2 (2023-01-13)
+
+##### Chores
+
+*  incrementing version number - v2.8.1 (727f879e)
+*  update changelog for v2.8.1 (d17d4ec0)
+
+##### Bug Fixes
+
+*  move call to `filter:middleware.buildHeader` out of parallel so that req can be overridden by plugins prior to loading config (25ae58e8)
+
+#### v2.8.1 (2022-12-30)
+
+##### Chores
+
+*  fallbacks for new language string (8a69e740)
+*  remove extraneous lines from changelog (bbaf26ce)
+*  incrementing version number - v2.8.0 (8e77673d)
+*  update changelog for v2.8.0 (a5c2edb9)
+
+##### Bug Fixes
+
+*  vulnerability in socket.io nested namespaces (#11117) (586eed14)
+*  lock post/reply similar to user.create (1ea9481a)
+
+#### v2.8.0 (2022-12-21)
+
+##### Chores
+
+* **deps:**
+  *  update dependency jquery to v3.6.3 (#11107) (13a3faa0)
+  *  update dependency eslint to v8.30.0 (#11102) (485ee130)
+  *  update dependency mocha to v10.2.0 (#11094) (c4cc1e61)
+*  up jquery (3e8f5378)
+*  remove extraneous lines from changelog (e213dbc3)
+*  incrementing version number - v2.7.0 (96cc0617)
+*  update changelog for v2.7.0 (4701c96d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (717b3612)
+  *  fallback strings for new resources: nodebb.admin-settings-email (4f4b4800)
+
+##### New Features
+
+*  add force flag to plugin install in cli (#11089) (de31cb1a)
+*  integrating basic client-side form validity checking in settings v1 and v2 (33af2d9c)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency sharp to v0.31.3 (#11110) (ef500af8)
+  *  update dependency sanitize-html to v2.8.1 (#11109) (7ab46b78)
+  *  update dependency esbuild to v0.16.10 (#11104) (eb6a9c47)
+  *  update dependency mongodb to v4.13.0 (#11105) (05443dbe)
+  *  update dependency esbuild to v0.16.8 (#11101) (18ff6caa)
+  *  update dependency sanitize-html to v2.8.0 (#11098) (faaf09f7)
+  *  update dependency ace-builds to v1.14.0 (#11095) (cde44587)
+  *  update dependency nodebb-plugin-2factor to v5.1.2 (#11096) (5dda9a5b)
+  *  update dependency postcss to v8.4.20 (#11097) (0a5adb41)
+  *  update dependency compare-versions to v5.0.3 (#11092) (8b209f16)
+  *  update dependency html-to-text to v9.0.3 (#11093) (7bcfe38e)
+  *  update dependency @socket.io/redis-adapter to v8 (#11084) (7b9bbef5)
+  *  update dependency nodebb-widget-essentials to v6.0.1 (#11085) (7b48156c)
+  *  update dependency esbuild to v0.16.7 (#11086) (65ef722e)
+  *  update dependency esbuild to v0.16.3 (#11083) (4f67fc1a)
+  *  update dependency esbuild to v0.15.16 (#11069) (22493ffb)
+*  change hsts-maxage back to numeric input type, change API token uid input to numeric text type (896493db)
+*  replace input type number with text/pattern (2bc23a95)
+
+##### Refactors
+
+*  flag states so that they are not hardcoded, allow plugins to add additional states, deprecated filter:flags.getFilters hook, closes #11065 (9f531f95)
+*  remove debug log closes #11090 (06f4801e)
+
 #### v2.7.0 (2022-12-14)
 
 ##### Chores

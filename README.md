@@ -1,3 +1,5 @@
+## WARNING: NodeBB is moving from Docker Hub to GitHub Container Registry. This means that this image will no longer be maintained. In order to continue receiving updates pleace change the image tag from `nodebb/docker` to `ghcr.io/nodebb/nodebb`. You can learn more about the migration in our FAQ here: https://community.nodebb.org/topic/17112/now-publishing-images-to-github-container-registry-registry-migration-faq
+
 # ![NodeBB](public/images/sm-card.png)
 
 [![Workflow](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml/badge.svg)](https://github.com/NodeBB/NodeBB/actions/workflows/test.yaml)

@@ -7,6 +7,7 @@ const db = require('./mocks/databasemock');
 
 const active = nconf.get('test_plugins') || [];
 console.log(active);
+console.log(fs.readdirSync(path.join(__dirname, '../node_modules')).filter(p => p.startsWith('nodebb-')))
 const toTest = fs.readdirSync(path.join(__dirname, '../node_modules'))
 	.filter(p => p.startsWith('nodebb-') && active.includes(p));
 console.log(toTest);

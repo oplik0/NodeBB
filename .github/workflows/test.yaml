@@ -6,6 +6,7 @@ on:
       - master
       - develop
       - bootstrap5
+      - no-unnecessary-services-test
   pull_request:
     branches:
       - master

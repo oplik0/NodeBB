@@ -11,7 +11,7 @@ module.exports = function (User) {
 	User.startJobs = function () {
 		winston.verbose('[user/jobs] (Re-)starting jobs...');
 
-		let { digestHour } = meta.config;
+		let { digestHour, verifyUserLinks } = meta.config;
 
 		// Fix digest hour if invalid
 		if (isNaN(digestHour)) {
@@ -28,6 +28,10 @@ module.exports = function (User) {
 
 		jobs['reset.clean'] = new cronJob('0 0 * * *', User.reset.clean, null, true);
 		winston.verbose('[user/jobs] Starting job (reset.clean)');
+
+		if (verifyUserLinks) {
+			jobs['verify.links'] = new cronJob('0 * * * *', User.verifyLinks, null, true);
+		}
 
 		winston.verbose(`[user/jobs] jobs started`);
 	};

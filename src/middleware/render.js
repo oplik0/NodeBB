@@ -47,6 +47,7 @@ module.exports = function (middleware) {
 				options.template = { name: template, [template]: true };
 				options.url = (req.baseUrl + req.path.replace(/^\/api/, ''));
 				options.bodyClass = helpers.buildBodyClass(req, res, options);
+				options.cspNonce = res.locals.nonce;
 
 				if (req.loggedIn) {
 					res.set('cache-control', 'private');
@@ -94,7 +95,7 @@ module.exports = function (middleware) {
 				const str = `${results.header +
 					(res.locals.postHeader || '') +
 					results.content
-				}<script id="ajaxify-data" type="application/json">${
+				}<script id="ajaxify-data" type="application/json" nonce="${res.locals.nonce}">${
 					optionsString
 				}</script>${
 					res.locals.preFooter || ''
@@ -159,6 +160,7 @@ module.exports = function (middleware) {
 			relative_path,
 			bodyClass: options.bodyClass,
 			widgets: options.widgets,
+			cspNonce: options.cspNonce,
 		};
 
 		templateValues.configJSON = jsesc(JSON.stringify(res.locals.config), { isScriptContext: true });
@@ -299,6 +301,7 @@ module.exports = function (middleware) {
 			defaultLang: meta.config.defaultLang || 'en-GB',
 			acpLang: res.locals.config.acpLang,
 			languageDirection: results.languageDirection,
+			cspNonce: options.cspNonce,
 		};
 
 		templateValues.template = { name: res.locals.template };

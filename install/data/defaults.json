@@ -184,5 +184,8 @@
     "composer:allowPluginHelp": 1,
     "maxReconnectionAttempts": 5,
     "reconnectionDelay": 1500,
-    "disableCustomUserSkins": 0
+    "disableCustomUserSkins": 0,
+    "csp-default-src": "'self'",
+    "csp-script-src": "'self', 'unsafe-inline', 'unsafe-eval'",
+    "csp-style-src": "'self', 'unsafe-inline'"
 }

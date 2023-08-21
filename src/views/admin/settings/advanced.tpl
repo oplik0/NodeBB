@@ -37,6 +37,34 @@
 				<h5 class="fw-bold tracking-tight settings-header">[[admin/settings/advanced:headers]]</h5>
 
 				<div class="mb-3">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="checkbox" id="csp-enabled" data-field="csp-enabled">
+						<label for="csp-enabled" class="form-check-label">[[admin/settings/advanced:headers.csp.enable]]</label>
+					</div>
+					<p class="form-text">
+						[[admin/settings/advanced:headers.csp-enabled-help]]
+					</p>
+				</div>
+				<div class="mb-3">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="text" id="csp-default-src" data-field="csp-default-src" data-field-type="tagsinput">
+						<label for="csp-default-src" class="form-check-label">[[admin/settings/advanced:headers.csp.default-src]]</label>
+					</div>
+				</div>
+				<div class="mb-3">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="text" id="csp-script-src" data-field="csp-script-src" data-field-type="tagsinput">
+						<label for="csp-script-src" class="form-check-label">[[admin/settings/advanced:headers.csp.script-src]]</label>
+					</div>
+				</div>
+				<div class="mb-3">
+					<div class="form-check form-switch">
+						<input class="form-check-input" type="text" id="csp-style-src" data-field="csp-style-src" data-field-type="tagsinput">
+						<label for="csp-style-src" class="form-check-label">[[admin/settings/advanced:headers.csp.style-src]]</label>
+					</div>
+				</div>
+
+				<div class="mb-3">
 					<label class="form-label" for="csp-frame-ancestors">[[admin/settings/advanced:headers.csp-frame-ancestors]]</label>
 					<input class="form-control" id="csp-frame-ancestors" type="text" placeholder="https://a.example.com https://b.example.com" data-field="csp-frame-ancestors" />
 					<p class="form-text">

@@ -3,6 +3,8 @@
 const os = require('os');
 const winston = require('winston');
 const _ = require('lodash');
+const helmet = require('helmet');
+const util = require('util');
 
 const meta = require('../meta');
 const languages = require('../languages');
@@ -10,22 +12,12 @@ const helpers = require('./helpers');
 const plugins = require('../plugins');
 
 module.exports = function (middleware) {
-	middleware.addHeaders = helpers.try((req, res, next) => {
+	middleware.addHeaders = helpers.try(async (req, res, next) => {
 		const headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
 			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods'] || ''),
 			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'] || ''),
 		};
-
-		if (meta.config['csp-frame-ancestors']) {
-			headers['Content-Security-Policy'] = `frame-ancestors ${meta.config['csp-frame-ancestors']}`;
-			if (meta.config['csp-frame-ancestors'] === '\'none\'') {
-				headers['X-Frame-Options'] = 'DENY';
-			}
-		} else {
-			headers['Content-Security-Policy'] = 'frame-ancestors \'self\'';
-			headers['X-Frame-Options'] = 'SAMEORIGIN';
-		}
 
 		if (meta.config['access-control-allow-origin']) {
 			let origins = meta.config['access-control-allow-origin'].split(',');
@@ -67,6 +59,29 @@ module.exports = function (middleware) {
 
 		if (process.env.NODE_ENV === 'development') {
 			headers['X-Upstream-Hostname'] = os.hostname();
+		}
+
+		if (meta.config['csp-frame-ancestors'] === '\'none\'') {
+			headers['X-Frame-Options'] = 'DENY';
+		}
+
+		if (meta.config['csp-enabled']) {
+			let cspOptions = {
+				directives: {
+					'default-src': [...meta.config['csp-default-src'].trim().split(/[\s,]+/g).filter(Boolean), ].filter(Boolean),
+					'script-src': [...meta.config['csp-script-src'].trim().split(/[\s,]+/g).filter(Boolean), `'nonce-${res.locals.nonce}'`].filter(Boolean),
+					'style-src': [...meta.config['csp-style-src'].trim().split(/[\s,]+/g).filter(Boolean), ].filter(Boolean),
+					'frame-ancestors': [...meta.config['csp-frame-ancestors'].trim().split(/[\s,]+/g).filter(Boolean),],
+				},
+				reportOnly: meta.config['csp-report-only'],
+			}
+			cspOptions = await plugins.hooks.fire('filter:middleware.csp', cspOptions);
+			await util.promisify(helmet.contentSecurityPolicy(cspOptions))(req, res);
+		} else if (meta.config['csp-frame-ancestors']) {
+			headers['Content-Security-Policy'] = `frame-ancestors ${meta.config['csp-frame-ancestors']}`;
+		} else {
+			headers['Content-Security-Policy'] = 'frame-ancestors \'self\'';
+			headers['X-Frame-Options'] = 'SAMEORIGIN';
 		}
 
 		for (const [key, value] of Object.entries(headers)) {

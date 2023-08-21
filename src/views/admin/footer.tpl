@@ -12,7 +12,7 @@
 		</div>
 	</div>
 	{{{ end }}}
-	<script>
+	<script nonce="{cspNonce}">
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', prepareFooter);
 		} else {

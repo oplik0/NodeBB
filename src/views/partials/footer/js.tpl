@@ -4,7 +4,7 @@
 <script defer type="text/javascript" src="{scripts.src}"></script>
 {{{end}}}
 
-<script>
+<script nonce="{cspNonce}">
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', prepareFooter);
     } else {

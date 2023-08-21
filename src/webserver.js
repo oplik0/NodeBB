@@ -8,6 +8,7 @@ const os = require('os');
 const nconf = require('nconf');
 const express = require('express');
 const chalk = require('chalk');
+const crypto = require('node:crypto');
 
 const app = express();
 app.renderAsync = util.promisify((tpl, data, callback) => app.render(tpl, data, callback));
@@ -170,6 +171,11 @@ function setupExpressApp(app) {
 		saveUninitialized: nconf.get('sessionSaveUninitialized') || false,
 	}));
 
+	app.use((req, res, next) => {
+		res.locals.nonce = crypto.randomBytes(32).toString("base64");
+		next();
+	})
+
 	setupHelmet(app);
 
 	app.use(middleware.addHeaders);
@@ -191,7 +197,7 @@ function setupExpressApp(app) {
 }
 
 function setupHelmet(app) {
-	const options = {
+	let options = {
 		contentSecurityPolicy: false, // defaults are too restrive and break plugins that load external assets... 🔜
 		crossOriginOpenerPolicy: { policy: meta.config['cross-origin-opener-policy'] },
 		crossOriginResourcePolicy: { policy: meta.config['cross-origin-resource-policy'] },
@@ -206,6 +212,13 @@ function setupHelmet(app) {
 			preload: !!meta.config['hsts-preload'],
 		};
 	}
+	if (meta.config['csp-enabled']) {
+		options.contentSecurityPolicy = {
+
+		}
+	}
+
+	options = plugins.hooks.fire('filter:headers.security', options);
 
 	try {
 		app.use(helmet(options));

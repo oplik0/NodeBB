@@ -7,7 +7,7 @@
 		{{{each linkTags}}}{function.buildLinkTag}{{{end}}}
 		<link rel="stylesheet" type="text/css" href="{relative_path}/assets/admin{{{ if (languageDirection=="rtl") }}}-rtl{{{ end }}}.css?{cache-buster}" />
 
-		<script>
+		<script nonce="{cspNonce}">
 			var config = JSON.parse('{{configJSON}}');
 			var app = {
 				user: JSON.parse('{{userJSON}}'),

@@ -19,7 +19,7 @@ FROM node:lts-alpine3.18
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
-RUN apk add --no-cache git bash vips-dev make g++
+RUN apk add --no-cache git bash make g++
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \

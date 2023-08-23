@@ -34,8 +34,9 @@ USER node
 
 WORKDIR /usr/src/app
 
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then npm rebuild && \
-    npm cache clean --force; fi
+RUN [ "$BUILDPLATFORM" != "$TARGETPLATFORM" ] && \
+    npm rebuild && \
+    npm cache clean --force
 
 COPY --chown=node:node . /usr/src/app
 

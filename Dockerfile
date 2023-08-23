@@ -19,7 +19,7 @@ FROM node:lts-alpine3.18
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
-RUN apk add --no-cache git bash vips-dev
+RUN apk add --no-cache git bash vips-dev make g++
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
@@ -30,13 +30,14 @@ COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
-USER node
 
 WORKDIR /usr/src/app
 
-RUN [ "$BUILDPLATFORM" != "$TARGETPLATFORM" ] && \
+RUN /bin/bash -c '[ "$BUILDPLATFORM" != "$TARGETPLATFORM" ] && \
     npm rebuild && \
-    npm cache clean --force
+    npm cache clean --force'
+
+USER node
 
 COPY --chown=node:node . /usr/src/app
 

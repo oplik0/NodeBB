@@ -33,9 +33,9 @@ RUN mkdir -p /usr/src/app && \
 
 WORKDIR /usr/src/app
 
-RUN /bin/bash -c '[ "$BUILDPLATFORM" != "$TARGETPLATFORM" ] && \
+RUN /bin/bash -c "[ $BUILDPLATFORM != $TARGETPLATFORM ] && \
     npm rebuild && \
-    npm cache clean --force'
+    npm cache clean --force"
 
 USER node
 

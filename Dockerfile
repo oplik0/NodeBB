@@ -16,6 +16,9 @@ RUN npm install --omit=dev --no-optional
 
 FROM node:lts-alpine3.18
 
+ARG BUILDPLATFORM
+ARG TARGETPLATFORM
+
 RUN apk add --no-cache git bash vips-dev
 
 ARG NODE_ENV

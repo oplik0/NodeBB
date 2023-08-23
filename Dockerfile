@@ -11,12 +11,12 @@ COPY --chown=node:node install/package.json /usr/src/build/package.json
 
 USER node
 
-RUN npm install --omit=dev
+RUN npm install --omit=dev --no-optional
 
 
-FROM node:lts-alpine3.16
+FROM node:lts-alpine3.18
 
-RUN apk add --no-cache git bash
+RUN apk add --no-cache git bash vips-dev
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
@@ -31,8 +31,8 @@ USER node
 
 WORKDIR /usr/src/app
 
-RUN npm rebuild && \
-    npm cache clean --force
+RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then npm rebuild && \
+    npm cache clean --force; fi
 
 COPY --chown=node:node . /usr/src/app
 

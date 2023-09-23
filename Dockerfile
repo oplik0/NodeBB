@@ -19,9 +19,9 @@ ARG BUILDPLATFORM
 ARG TARGETPLATFORM
 
 RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/rebuild
+    chown -R node:node /usr/src/build
 
-COPY --from=npm /usr/src/build /usr/src/rebuild
+COPY --from=npm /usr/src/build /usr/src/build
 
 RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
     npm rebuild && \

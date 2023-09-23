@@ -13,13 +13,21 @@ USER node
 
 RUN npm install --omit=dev
 
-
-FROM node:lts-slim
+FROM node:lts as rebuild
 
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
-ARG TARGETARCH
-ARG TARGETVARIANT
+
+RUN mkdir -p /usr/src/build && \
+    chown -R node:node /usr/src/rebuild
+
+COPY --from=npm /usr/src/build /usr/src/rebuild
+
+RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
+    npm rebuild && \
+    npm cache clean --force; fi
+
+FROM node:lts-slim
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
@@ -33,11 +41,6 @@ COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 
 WORKDIR /usr/src/app
-
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm install --platform=linux --arch=${TARGETARCH} --arm-version=${TARGETVARIANT} sharp && \
-    npm install sass-embedded && \
-    npm cache clean --force; fi
 
 USER node
 

@@ -33,9 +33,8 @@ COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm rebuild && \
-    npm cache clean --force; fi
+RUN npm rebuild && \
+    npm cache clean --force
 
 USER node
 

@@ -18,7 +18,8 @@ FROM node:lts-slim
 
 ARG BUILDPLATFORM
 ARG TARGETPLATFORM
-
+ARG TARGETARCH
+ARG TARGETVARIANT
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \
@@ -33,8 +34,10 @@ COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 WORKDIR /usr/src/app
 
-RUN npm rebuild && \
-    npm cache clean --force
+RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
+    npm install --platform=linux --arch=${TARGETARCH} --arm-version=${TARGETVARIANT} sharp && \
+    npm install sass-embedded && \
+    npm cache clean --force; fi
 
 USER node
 

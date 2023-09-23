@@ -27,7 +27,7 @@ RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
     npm rebuild && \
     npm cache clean --force; fi
 
-FROM node:lts-slim
+FROM node:lts-slim as run
 
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV \

@@ -61,14 +61,14 @@ jobs:
           - 5432:5432
 
       ferret-postgres:
-        image: ${{ startsWith(matrix.backend, 'postgres') && 'ghcr.io/ferretdb/production' || '' }}
+        image: ${{ startsWith(matrix.backend, 'postgres') && 'ghcr.io/ferretdb/ferretdb' || '' }}
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
         env:
           FERRETDB_POSTGRESQL_URL: postgres://ferretdb:ferretdb@postgres:5432/ferretdb
       ferret-sqlite:
-        image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/production' || '' }}
+        image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/ferretdb' || '' }}
         ports:
             # Maps port 27017 on service container to the host
             - 27017:27017

@@ -19,6 +19,8 @@ on:
       - src/database/mongo/**
       - test/database/**
   workflow_dispatch:
+  schedule:
+    - cron: '0 12 */7 * *'
 defaults:
   run:
     shell: bash

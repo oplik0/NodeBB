@@ -64,7 +64,7 @@ jobs:
           # Maps port 27017 on service container to the host
           - 27017:27017
         env:
-          FERRETDB_POSTGRESQL_URL: postgres://postgres:5432/ferretdb
+          FERRETDB_POSTGRESQL_URL: postgres://ferretdb:ferretdb@postgres:5432/ferretdb
       ferret-sqlite:
         image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/all-in-one' || '' }}
         ports:

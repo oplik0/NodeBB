@@ -1,0 +1,129 @@
+name: Test FerretDB compatibility
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+      - ferretdb
+    paths:
+        - src/database/mongo.js
+        - src/database/mongo/**
+        - test/database/**
+  pull_request:
+    branches:
+      - master
+      - develop
+    paths:
+      - src/database/mongo.js
+      - src/database/mongo/**
+      - test/database/**
+  workflow_dispatch:
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+      contents: read  # for actions/checkout to fetch code
+    name: Lint and test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        backend: [postgres, sqlite]
+        node: [20]
+    runs-on: ${{ matrix.os }}
+    env:
+      TEST_ENV: 'production'
+    services:
+      postgres:
+        image: ${{ startsWith(matrix.backend, 'postgres') && 'postgres:16-alpine' || '' }}
+        env:
+          POSTGRES_USER: ferretdb
+          POSTGRES_PASSWORD: ferretdb
+          POSTGRES_DB: ferretdb
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps port 5432 on service container to the host
+          - 5432:5432
+
+      ferret-postgres:
+        image: ${{ startsWith(matrix.backend, 'postgres') && 'ghcr.io/ferretdb/all-in-one' || '' }}
+        ports:
+          # Maps port 27017 on service container to the host
+          - 27017:27017
+        env:
+          FERRETDB_POSTGRESQL_URL: postgres://postgres:5432/ferretdb
+      ferret-sqlite:
+        image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/all-in-one' || '' }}
+        ports:
+            # Maps port 27017 on service container to the host
+            - 27017:27017
+        env:
+            FERRETDB_HANDLER: sqlite
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: cp install/package.json package.json
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: NPM Install
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: Setup on FerretDB
+        env:
+          SETUP: >-
+            {
+              "url": "http://127.0.0.1:4567",
+              "secret": "abcdef",
+              "admin:username": "admin",
+              "admin:email": "test@example.org",
+              "admin:password": "hAN3Eg8W",
+              "admin:password:confirm": "hAN3Eg8W",
+
+              "database": "mongo",
+              "mongo:host": "127.0.0.1",
+              "mongo:port": 27017,
+              "mongo:username": "",
+              "mongo:password": "",
+              "mongo:database": "nodebb"
+            }
+          CI: >-
+            {
+              "host": "127.0.0.1",
+              "port": 27017,
+              "database": "ci_test"
+            }
+        run: |
+          node app --setup="${SETUP}" --ci="${CI}"
+      - name: Node tests
+        run: npm test
+
+  finish:
+    permissions:
+      checks: write  # for coverallsapp/github-action to create new checks
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Coveralls Finished
+        uses: coverallsapp/github-action@3dfc5567390f6fa9267c0ee9c251e4c8c3f18949 # v2.2.3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true

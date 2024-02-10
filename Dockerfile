@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:lts as npm
+FROM node:lts as npm
 
 RUN mkdir -p /usr/src/build && \
     chown -R node:node /usr/src/build
@@ -12,20 +12,6 @@ COPY --chown=node:node install/package.json /usr/src/build/package.json
 USER node
 
 RUN npm install --omit=dev
-
-FROM node:lts as rebuild
-
-ARG BUILDPLATFORM
-ARG TARGETPLATFORM
-
-RUN mkdir -p /usr/src/build && \
-    chown -R node:node /usr/src/build
-
-COPY --from=npm /usr/src/build /usr/src/build
-
-RUN if [ $BUILDPLATFORM != $TARGETPLATFORM ]; then \
-    npm rebuild && \
-    npm cache clean --force; fi
 
 FROM node:lts-slim as run
 

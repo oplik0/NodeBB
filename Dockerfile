@@ -23,7 +23,7 @@ ENV NODE_ENV=$NODE_ENV \
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
 
-COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
+COPY --chown=node:node --from=npm /usr/src/build /usr/src/app
 
 
 WORKDIR /usr/src/app

@@ -37,7 +37,14 @@ ENV NODE_ENV=$NODE_ENV \
 RUN mkdir -p /usr/src/app && \
     chown -R node:node /usr/src/app
 
-COPY --chown=node:node --from=rebuild /usr/src/build /usr/src/app
+ARG USER=nodebb \
+  UID=1321 \
+  GID=1321
+
+RUN groupadd --gid ${GID} ${USER}
+RUN useradd --uid ${UID} --gid ${GID} --create-home --shell /bin/bash ${USER}
+
+COPY --chown=nodebb:nodebb --from=rebuild /usr/src/build /usr/src/app
 
 
 WORKDIR /usr/src/app
@@ -48,7 +55,7 @@ USER node
 # so these are not really useful, but when enabled (which is the default) slow down container startup (especially audit)
 RUN npm config set audit=false fund=false update-notifier=false
 
-COPY --chown=node:node . /usr/src/app
+COPY --chown=nodebb:nodebb . /usr/src/app
 
 EXPOSE 4567
 VOLUME ["/usr/src/app/node_modules", "/usr/src/app/build", "/usr/src/app/public/uploads", "/opt/config"]

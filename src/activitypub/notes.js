@@ -24,8 +24,7 @@ Notes.resolveId = async (uid, id) => {
 Notes.assert = async (uid, input, options = {}) => {
 	// Ensures that each note has been saved to the database
 	await Promise.all(input.map(async (item) => {
-		let id = activitypub.helpers.isUri(item) ? item : item.pid;
-		id = await Notes.resolveId(uid, id);
+		const id = activitypub.helpers.isUri(item) ? await Notes.resolveId(uid, item) : item.pid;
 		const key = `post:${id}`;
 		const exists = await db.exists(key);
 		winston.verbose(`[activitypub/notes.assert] Asserting note id ${id}`);

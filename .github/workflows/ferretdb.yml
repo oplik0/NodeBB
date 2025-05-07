@@ -61,19 +61,25 @@ jobs:
           - 5432:5432
 
       ferret-postgres:
-        image: ${{ startsWith(matrix.backend, 'postgres') && 'ghcr.io/ferretdb/all-in-one' || '' }}
+        image: ${{ startsWith(matrix.backend, 'postgres') && 'ghcr.io/ferretdb/ferretdb-eval:2' || '' }}
         ports:
           # Maps port 27017 on service container to the host
           - 27017:27017
         env:
           FERRETDB_POSTGRESQL_URL: postgres://ferretdb:ferretdb@postgres:5432/ferretdb
+          POSTGRES_USER: ferretdb
+          POSTGRES_PASSWORD: ferretdb
+          POSTGRES_DB: ferretdb
       ferret-sqlite:
-        image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/all-in-one' || '' }}
+        image: ${{ startsWith(matrix.backend, 'sqlite') && 'ghcr.io/ferretdb/ferretdb-eval:2' || '' }}
         ports:
             # Maps port 27017 on service container to the host
             - 27017:27017
         env:
             FERRETDB_HANDLER: sqlite
+            POSTGRES_USER: ferretdb
+            POSTGRES_PASSWORD: ferretdb
+            POSTGRES_DB: ferretdb
     steps:
       - uses: actions/checkout@v4
 

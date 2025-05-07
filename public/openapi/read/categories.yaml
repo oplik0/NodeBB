@@ -38,6 +38,9 @@ get:
                               type: array
                               items:
                                 type: string
+                            unread:
+                              type: boolean
+                              description: True if category or it's children have unread topics
                             unread-class:
                               type: string
                             children:
@@ -133,10 +136,15 @@ get:
                                 properties:
                                   pid:
                                     type: number
+                                  tid:
+                                    type: number
                                   timestamp:
                                     type: number
                                   content:
                                     type: string
+                                  sourceContent:
+                                    type: string
+                                    nullable: true
                                   timestampISO:
                                     type: string
                                     description: An ISO 8601 formatted date string (complementing `timestamp`)
@@ -146,6 +154,9 @@ get:
                                       uid:
                                         type: number
                                         description: A user identifier
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         description: A friendly name for a given user account
@@ -179,6 +190,8 @@ get:
                                   topic:
                                     type: object
                                     properties:
+                                      tid:
+                                        type: number
                                       slug:
                                         type: string
                                       title:
@@ -193,12 +206,16 @@ get:
                                   description: An ISO 8601 formatted date string (complementing `timestamp`)
                                 pid:
                                   type: number
+                                tid:
+                                  type: number
                                 index:
                                   type: number
                                   description: The index of the post
                                 topic:
                                   type: object
                                   properties:
+                                    tid:
+                                      type: number
                                     slug:
                                       type: string
                                     title:
@@ -209,6 +226,9 @@ get:
                                       uid:
                                         type: number
                                         example: 1
+                                      isLocal:
+                                        type: boolean
+                                        description: Whether the user belongs to the local installation or not.
                                       username:
                                         type: string
                                         example: Dragon Fruit

@@ -26,7 +26,7 @@ if (!fs.existsSync(logDir)) {
 	mkdirp.sync(path.dirname(outputLogFilePath));
 }
 
-const output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
+const output = logrotate({ file: outputLogFilePath, size: '10m', keep: 3, compress: true });
 const silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 let numProcs;
 const workers = [];
@@ -99,7 +99,9 @@ Loader.start = function () {
 function forkWorker(index, isPrimary) {
 	const ports = getPorts();
 	const args = [];
-
+	if (nconf.get('max-memory')) {
+		args.push(`--max-old-space-size=${nconf.get('max-memory')}`);
+	}
 	if (!ports[index]) {
 		return console.log(`[cluster] invalid port for worker : ${index} ports: ${ports.length}`);
 	}

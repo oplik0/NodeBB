@@ -11,6 +11,7 @@ const topics = require('../topics');
 const notifications = require('../notifications');
 const utils = require('../utils');
 const events = require('../events');
+const translator = require('../translator');
 
 const api = require('../api');
 const sockets = require('.');
@@ -27,8 +28,6 @@ SocketPosts.getRawPost = async function (socket, pid) {
 };
 
 SocketPosts.getPostSummaryByIndex = async function (socket, data) {
-	sockets.warnDeprecated(socket, 'GET /api/v3/posts/byIndex/:index/summary?tid=:tid');
-
 	if (data.index < 0) {
 		data.index = 0;
 	}
@@ -159,10 +158,13 @@ async function canEditQueue(socket, data, action) {
 }
 
 async function sendQueueNotification(type, targetUid, path, notificationText) {
+	const bodyShort = notificationText ?
+		translator.compile(`notifications:${type}`, notificationText) :
+		translator.compile(`notifications:${type}`);
 	const notifData = {
 		type: type,
 		nid: `${type}-${targetUid}-${path}`,
-		bodyShort: notificationText ? `[[notifications:${type}, ${notificationText}]]` : `[[notifications:${type}]]`,
+		bodyShort: bodyShort,
 		path: path,
 	};
 	if (parseInt(meta.config.postQueueNotificationUid, 10) > 0) {

@@ -221,16 +221,42 @@ SELECT o."_key" k,
 		return keys.map(k => parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10));
 	};
 
-	module.sortedSetsCardSum = async function (keys) {
+	module.sortedSetsCardSum = async function (keys, min = '-inf', max = '+inf') {
 		if (!keys || (Array.isArray(keys) && !keys.length)) {
 			return 0;
 		}
 		if (!Array.isArray(keys)) {
 			keys = [keys];
 		}
-		const counts = await module.sortedSetsCard(keys);
-		const sum = counts.reduce((acc, val) => acc + val, 0);
-		return sum;
+		let counts = [];
+		if (min !== '-inf' || max !== '+inf') {
+			if (min === '-inf') {
+				min = null;
+			}
+			if (max === '+inf') {
+				max = null;
+			}
+
+			const res = await module.pool.query({
+				name: 'sortedSetsCardSum',
+				text: `
+	SELECT o."_key" k,
+		COUNT(*) c
+	FROM "legacy_object_live" o
+	INNER JOIN "legacy_zset" z
+			 ON o."_key" = z."_key"
+			AND o."type" = z."type"
+	WHERE o."_key" = ANY($1::TEXT[])
+		AND (z."score" >= $2::NUMERIC OR $2::NUMERIC IS NULL)
+		AND (z."score" <= $3::NUMERIC OR $3::NUMERIC IS NULL)
+	GROUP BY o."_key"`,
+				values: [keys, min, max],
+			});
+			counts = keys.map(k => parseInt((res.rows.find(r => r.k === k) || { c: 0 }).c, 10));
+		} else {
+			counts = await module.sortedSetsCard(keys);
+		}
+		return counts.reduce((acc, val) => acc + val, 0);
 	};
 
 	module.sortedSetRank = async function (key, value) {
@@ -521,8 +547,38 @@ RETURNING "score" s`,
 	};
 
 	module.sortedSetIncrByBulk = async function (data) {
-		// TODO: perf single query?
-		return await Promise.all(data.map(item => module.sortedSetIncrBy(item[0], item[1], item[2])));
+		if (!data.length) {
+			return [];
+		}
+
+		return await module.transaction(async (client) => {
+			await helpers.ensureLegacyObjectsType(client, data.map(item => item[0]), 'zset');
+
+			const values = [];
+			const queryParams = [];
+			let paramIndex = 1;
+
+			data.forEach(([key, increment, value]) => {
+				value = helpers.valueToString(value);
+				increment = parseFloat(increment);
+				values.push(key, value, increment);
+				queryParams.push(`($${paramIndex}::TEXT, $${paramIndex + 1}::TEXT, $${paramIndex + 2}::NUMERIC)`);
+				paramIndex += 3;
+			});
+
+			const query = `
+INSERT INTO "legacy_zset" ("_key", "value", "score")
+VALUES ${queryParams.join(', ')}
+ON CONFLICT ("_key", "value")
+DO UPDATE SET "score" = "legacy_zset"."score" + EXCLUDED."score"
+RETURNING "value", "score"`;
+
+			const res = await client.query({
+				text: query,
+				values,
+			});
+			return res.rows.map(row => parseFloat(row.score));
+		});
 	};
 
 	module.getSortedSetRangeByLex = async function (key, min, max, start, count) {

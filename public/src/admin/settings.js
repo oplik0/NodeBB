@@ -21,7 +21,7 @@ define('admin/settings', [
 				if (anchor.startsWith('section')) {
 					$this.parent().attr('id', anchor);
 				}
-				tocList.append(`<a class="btn-ghost-sm text-xs justify-content-start text-decoration-none" href="#${anchor}">${header}</a>`);
+				tocList.append(`<a class="btn btn-ghost btn-sm text-xs text-start text-decoration-none" href="#${anchor}">${header}</a>`);
 			});
 			const offset = mainHader.outerHeight(true);
 			// https://stackoverflow.com/a/11814275/583363
@@ -215,10 +215,8 @@ define('admin/settings', [
 				return callback(err);
 			}
 
-			for (const field in data) {
-				if (data.hasOwnProperty(field)) {
-					app.config[field] = data[field];
-				}
+			for (const [field, value] of Object.entries(data)) {
+				app.config[field] = value;
 			}
 
 			callback();

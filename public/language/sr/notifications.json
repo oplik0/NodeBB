@@ -52,10 +52,10 @@
     "user-posted-to-multiple": "<strong>%1</strong>, <strong>%2</strong> и осталих %3 су објавили одговор: <strong>%4</strong>",
     "user-posted-topic": "<strong>%1</strong> је поставио нову тему: <strong>%2</strong>",
     "user-edited-post": "<strong>%1</strong> је уредио поруку у <strong>%2</strong>",
-    "user-posted-topic-with-tag": "<strong>%1</strong> је објавио нову тему са ознаком <strong>%2</strong>",
-    "user-posted-topic-with-tag-dual": "<strong>%1</strong> је објавио нову тему са ознакама <strong>%2</strong> и <strong> %3</strong>",
-    "user-posted-topic-with-tag-triple": "<strong>%1</strong> је објавио нову тему са ознакама <strong>%2</strong>, <strong> %3</strong> и <strong> %4</strong>",
-    "user-posted-topic-with-tag-multiple": "<strong>%1</strong> је објавио нову тему са ознакама <strong>%2</strong>",
+    "user-posted-topic-with-tag": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3)",
+    "user-posted-topic-with-tag-dual": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3 and %4)",
+    "user-posted-topic-with-tag-triple": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3, %4, and %5)",
+    "user-posted-topic-with-tag-multiple": "<strong>%1</strong> has posted <strong>%2</strong> (tagged %3)",
     "user-posted-topic-in-category": "<strong>%1</strong> has posted a new topic in <strong>%2</strong>",
     "user-started-following-you": "<strong>%1</strong> је почео да вас прати.",
     "user-started-following-you-dual": "<strong>%1</strong> и <strong>%2</strong> су почели да вас прате.",
@@ -97,5 +97,9 @@
     "notificationType-post-queue": "Када је нова порука на чекању",
     "notificationType-new-post-flag": "Када је порука означена заставицом",
     "notificationType-new-user-flag": "Када је корисник означен заставицом",
-    "notificationType-new-reward": "Када зарадите нову награду"
+    "notificationType-new-reward": "Када зарадите нову награду",
+    "activitypub.announce": "<strong>%1</strong> shared your post in <strong>%2</strong> to their followers.",
+    "activitypub.announce-dual": "<strong>%1</strong> and <strong>%2</strong> shared your post in <strong>%3</strong> to their followers.",
+    "activitypub.announce-triple": "<strong>%1</strong>, <strong>%2</strong> and <strong>%3</strong> shared your post in <strong>%4</strong> to their followers.",
+    "activitypub.announce-multiple": "<strong>%1</strong>, <strong>%2</strong> and %3 others shared your post in <strong>%4</strong> to their followers."
 }

@@ -18,12 +18,13 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const useragent = require('express-useragent');
 const favicon = require('serve-favicon');
-const detector = require('spider-detector');
+const detector = require('@nodebb/spider-detector');
 const helmet = require('helmet');
 
 const Benchpress = require('benchpressjs');
 const db = require('./database');
 const analytics = require('./analytics');
+const errors = require('./meta/errors');
 const file = require('./file');
 const emailer = require('./emailer');
 const meta = require('./meta');
@@ -69,11 +70,20 @@ server.on('connection', (conn) => {
 	});
 });
 
-exports.destroy = function (callback) {
-	server.close(callback);
-	for (const connection of Object.values(connections)) {
-		connection.destroy();
-	}
+exports.destroy = function () {
+	return new Promise((resolve, reject) => {
+		server.close((err) => {
+			if (err) reject(err);
+			else resolve();
+		});
+		for (const connection of Object.values(connections)) {
+			connection.destroy();
+		}
+	});
+};
+
+exports.getConnectionCount = function () {
+	return Object.keys(connections).length;
 };
 
 exports.listen = async function () {
@@ -105,6 +115,7 @@ async function initializeNodeBB() {
 	await meta.blacklist.load();
 	await flags.init();
 	await analytics.init();
+	await errors.init();
 	await topicEvents.init();
 	if (nconf.get('runJobs')) {
 		await require('./widgets').moveMissingAreasToDrafts();
@@ -182,7 +193,6 @@ function setupExpressApp(app) {
 			req: apiHelpers.buildReqObject(req),
 		}, next);
 	});
-	app.use(middleware.autoLocale); // must be added after auth middlewares are added
 
 	const toobusy = require('toobusy-js');
 	toobusy.maxLag(meta.config.eventLoopLagThreshold);
@@ -229,7 +239,13 @@ function configureBodyParser(app) {
 	}
 	app.use(bodyParser.urlencoded(urlencodedOpts));
 
-	const jsonOpts = nconf.get('bodyParser:json') || {};
+	const jsonOpts = nconf.get('bodyParser:json') || {
+		type: [
+			'application/json',
+			'application/ld+json',
+			'application/activity+json',
+		],
+	};
 	app.use(bodyParser.json(jsonOpts));
 }
 

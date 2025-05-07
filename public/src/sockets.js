@@ -1,10 +1,8 @@
 'use strict';
 
-// eslint-disable-next-line no-redeclare
 const io = require('socket.io-client');
-// eslint-disable-next-line no-redeclare
 const $ = require('jquery');
-// eslint-disable-next-line import/no-unresolved
+
 const { alert } = require('alerts');
 
 app = window.app || {};
@@ -16,6 +14,7 @@ app = window.app || {};
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
+		autoConnect: false,
 		path: config.relative_path + '/socket.io',
 		query: {
 			_csrf: config.csrf_token,
@@ -48,11 +47,12 @@ app = window.app || {};
 		hooks = _hooks;
 		if (parseInt(app.user.uid, 10) >= 0) {
 			addHandlers();
+			socket.connect();
 		}
 	});
 
 	window.app.reconnect = () => {
-		if (socket.connected) {
+		if (socket.connected || parseInt(app.user.uid, 10) < 0) {
 			return;
 		}
 

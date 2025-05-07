@@ -22,7 +22,7 @@ module.exports = function (Posts) {
 
 	const md5 = filename => crypto.createHash('md5').update(filename).digest('hex');
 	const pathPrefix = path.join(nconf.get('upload_path'));
-	const searchRegex = /\/assets\/uploads\/(files\/[^\s")]+\.?[\w]*)/g;
+	const searchRegex = /\/assets\/uploads(\/files\/[^\s")]+\.?[\w]*)/g;
 
 	const _getFullPath = relativePath => path.join(pathPrefix, relativePath);
 	const _filterValidPaths = async filePaths => (await Promise.all(filePaths.map(async (filePath) => {
@@ -54,22 +54,23 @@ module.exports = function (Posts) {
 
 		// Extract upload file paths from post content
 		let match = searchRegex.exec(content);
-		const uploads = [];
+		let uploads = new Set();
 		while (match) {
-			uploads.push(match[1].replace('-resized', ''));
+			uploads.add(match[1].replace('-resized', ''));
 			match = searchRegex.exec(content);
 		}
 
 		// Main posts can contain topic thumbs, which are also tracked by pid
 		if (isMainPost) {
 			const tid = await Posts.getPostField(pid, 'tid');
-			let thumbs = await topics.thumbs.get(tid);
+			let thumbs = await topics.thumbs.get(tid, { thumbsOnly: true });
 			thumbs = thumbs.map(thumb => thumb.path).filter(path => !validator.isURL(path, {
 				require_protocol: true,
 			}));
-			thumbs = thumbs.map(t => t.slice(1)); // remove leading `/` or `\\` on windows
-			uploads.push(...thumbs);
+			thumbs.forEach(t => uploads.add(t));
 		}
+
+		uploads = Array.from(uploads);
 
 		// Create add/remove sets
 		const add = uploads.filter(path => !currentUploads.includes(path));
@@ -102,7 +103,9 @@ module.exports = function (Posts) {
 		const tsPrefix = /^\d{13}-/;
 		files = files.filter(filename => tsPrefix.test(filename));
 
-		files = await Promise.all(files.map(async filename => (await Posts.uploads.isOrphan(`files/${filename}`) ? `files/${filename}` : null)));
+		files = await Promise.all(files.map(
+			async filename => (await Posts.uploads.isOrphan(`/files/${filename}`) ? `/files/${filename}` : null)
+		));
 		files = files.filter(Boolean);
 
 		return files;
@@ -142,13 +145,12 @@ module.exports = function (Posts) {
 			filePaths = [filePaths];
 		}
 
-		if (process.platform === 'win32') {
-			// windows path => 'files\\1685368788211-1-profileimg.jpg'
-			// turn it into => 'files/1685368788211-1-profileimg.jpg'
-			filePaths.forEach((file) => {
-				file.path = file.path.split(path.sep).join(path.posix.sep);
-			});
-		}
+		// windows path => 'files\\1685368788211-1-profileimg.jpg'
+		// linux path => files/1685368788211-1-profileimg.jpg
+		// turn them into => '/files/1685368788211-1-profileimg.jpg'
+		filePaths.forEach((file) => {
+			file.path = `/${file.path.split(path.sep).join(path.posix.sep)}`;
+		});
 
 		const keys = filePaths.map(fileObj => `upload:${md5(fileObj.path.replace('-resized', ''))}:pids`);
 		return await Promise.all(keys.map(k => db.getSortedSetRange(k, 0, -1)));
@@ -163,7 +165,7 @@ module.exports = function (Posts) {
 		filePaths = await _filterValidPaths(filePaths); // Only process files that exist and are within uploads directory
 
 		const now = Date.now();
-		const scores = filePaths.map(() => now);
+		const scores = filePaths.map((p, i) => now + i);
 		const bulkAdd = filePaths.map(path => [`upload:${md5(path)}:pids`, now, pid]);
 		await Promise.all([
 			db.sortedSetAdd(`post:${pid}:uploads`, scores, filePaths),
@@ -192,7 +194,9 @@ module.exports = function (Posts) {
 				filePaths.map(async filePath => (await Posts.uploads.isOrphan(filePath) ? filePath : false))
 			)).filter(Boolean);
 
-			const uploaderUids = (await db.getObjectsFields(deletePaths.map(path => `upload:${md5(path)}`, ['uid']))).map(o => (o ? o.uid || null : null));
+			const uploaderUids = (await db.getObjectsFields(
+				deletePaths.map(path => `upload:${md5(path)}`, ['uid'])
+			)).map(o => (o ? o.uid || null : null));
 			await Promise.all(uploaderUids.map((uid, idx) => (
 				uid && isFinite(uid) ? user.deleteUpload(uid, uid, deletePaths[idx]) : null
 			)).filter(Boolean));

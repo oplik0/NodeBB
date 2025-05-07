@@ -4,10 +4,15 @@ const validator = require('validator');
 
 const user = require('../user');
 const topics = require('../topics');
+const categories = require('../categories');
 const posts = require('../posts');
 const meta = require('../meta');
 const privileges = require('../privileges');
+const events = require('../events');
+const batch = require('../batch');
+const activitypub = require('../activitypub');
 
+const activitypubApi = require('./activitypub');
 const apiHelpers = require('./helpers');
 
 const { doTopicAction } = apiHelpers;
@@ -56,6 +61,7 @@ topicsAPI.create = async function (caller, data) {
 	}
 
 	const payload = { ...data };
+	delete payload.tid;
 	payload.tags = payload.tags || [];
 	apiHelpers.setDefaultPostData(caller, payload);
 	const isScheduling = parseInt(data.timestamp, 10) > payload.timestamp;
@@ -80,6 +86,10 @@ topicsAPI.create = async function (caller, data) {
 	socketHelpers.emitToUids('event:new_topic', result.topicData, [caller.uid]);
 	socketHelpers.notifyNew(caller.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 
+	if (!isScheduling) {
+		await activitypubApi.create.note(caller, { pid: result.postData.pid });
+	}
+
 	return result.topicData;
 };
 
@@ -88,6 +98,7 @@ topicsAPI.reply = async function (caller, data) {
 		throw new Error('[[error:invalid-data]]');
 	}
 	const payload = { ...data };
+	delete payload.pid;
 	apiHelpers.setDefaultPostData(caller, payload);
 
 	await meta.blacklist.test(caller.ip);
@@ -96,8 +107,7 @@ topicsAPI.reply = async function (caller, data) {
 		return await posts.addToQueue(payload);
 	}
 
-	const postData = await topics.reply(payload); // postData seems to be a subset of postObj, refactor?
-	const postObj = await posts.getPostSummaryByPids([postData.pid], caller.uid, {});
+	const postData = await topics.reply(payload);
 
 	const result = {
 		posts: [postData],
@@ -113,8 +123,9 @@ topicsAPI.reply = async function (caller, data) {
 	}
 
 	socketHelpers.notifyNew(caller.uid, 'newPost', result);
+	await activitypubApi.create.note(caller, { post: postData });
 
-	return postObj[0];
+	return postData;
 };
 
 topicsAPI.delete = async function (caller, data) {
@@ -205,7 +216,7 @@ topicsAPI.deleteTags = async (caller, { tid }) => {
 	await topics.deleteTopicTags(tid);
 };
 
-topicsAPI.getThumbs = async (caller, { tid }) => {
+topicsAPI.getThumbs = async (caller, { tid, thumbsOnly }) => {
 	if (isFinite(tid)) { // post_uuids can be passed in occasionally, in that case no checks are necessary
 		const [exists, canRead] = await Promise.all([
 			topics.exists(tid),
@@ -219,7 +230,7 @@ topicsAPI.getThumbs = async (caller, { tid }) => {
 		}
 	}
 
-	return await topics.thumbs.get(tid);
+	return await topics.thumbs.get(tid, { thumbsOnly });
 };
 
 // topicsAPI.addThumb
@@ -297,4 +308,52 @@ topicsAPI.bump = async (caller, { tid }) => {
 
 	await topics.markAsUnreadForAll(tid);
 	topics.pushUnreadCount(caller.uid);
+};
+
+topicsAPI.move = async (caller, { tid, cid }) => {
+	const canMove = await privileges.categories.isAdminOrMod(cid, caller.uid);
+	if (!canMove) {
+		throw new Error('[[error:no-privileges]]');
+	}
+
+	const tids = Array.isArray(tid) ? tid : [tid];
+	const uids = await user.getUidsFromSet('users:online', 0, -1);
+	const cids = [parseInt(cid, 10)];
+
+	await batch.processArray(tids, async (tids) => {
+		await Promise.all(tids.map(async (tid) => {
+			const canMove = await privileges.topics.isAdminOrMod(tid, caller.uid);
+			if (!canMove) {
+				throw new Error('[[error:no-privileges]]');
+			}
+			const topicData = await topics.getTopicFields(tid, ['tid', 'cid', 'mainPid', 'slug', 'deleted']);
+			if (!cids.includes(topicData.cid)) {
+				cids.push(topicData.cid);
+			}
+			await topics.tools.move(tid, {
+				cid,
+				uid: caller.uid,
+			});
+
+			const notifyUids = await privileges.categories.filterUids('topics:read', topicData.cid, uids);
+			socketHelpers.emitToUids('event:topic_moved', topicData, notifyUids);
+			if (!topicData.deleted) {
+				socketHelpers.sendNotificationToTopicOwner(tid, caller.uid, 'move', 'notifications:moved-your-topic');
+				activitypubApi.announce.note(caller, { tid });
+				const { activity } = await activitypub.mocks.activities.create(topicData.mainPid, caller.uid);
+				await activitypub.feps.announce(topicData.mainPid, activity);
+			}
+
+			await events.log({
+				type: `topic-move`,
+				uid: caller.uid,
+				ip: caller.ip,
+				tid: tid,
+				fromCid: topicData.cid,
+				toCid: cid,
+			});
+		}));
+	}, { batch: 10 });
+
+	await categories.onTopicsMoved(cids);
 };

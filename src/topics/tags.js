@@ -323,7 +323,7 @@ module.exports = function (Topics) {
 		}
 		tags.forEach((tag) => {
 			tag.valueEscaped = validator.escape(String(tag.value));
-			tag.valueEncoded = encodeURIComponent(tag.valueEscaped);
+			tag.valueEncoded = encodeURIComponent(tag.value);
 			tag.class = tag.valueEscaped.replace(/\s/g, '-');
 		});
 		return tags;
@@ -416,6 +416,7 @@ module.exports = function (Topics) {
 
 		tags = await Topics.filterTags(tags, cid);
 		await Topics.addTags(tags, [tid]);
+		plugins.hooks.fire('action:topic.updateTags', { tags, tid });
 	};
 
 	Topics.deleteTopicTags = async function (tid) {
@@ -563,6 +564,10 @@ module.exports = function (Topics) {
 		return await db.getSortedSetRange(`tag:${tag}:followers`, start, stop);
 	};
 
+	Topics.getTagsFollowers = async function (tags) {
+		return await db.getSortedSetsMembers(tags.map(tag => `tag:${tag}:followers`));
+	};
+
 	Topics.followTag = async (tag, uid) => {
 		if (!(parseInt(uid, 10) > 0)) {
 			throw new Error('[[error:not-logged-in]]');
@@ -593,9 +598,10 @@ module.exports = function (Topics) {
 		}
 		tags = tags.map(tag => tag.value);
 
-		const [followersOfPoster, allFollowers] = await Promise.all([
+		const [followersOfPoster, allFollowers, title] = await Promise.all([
 			db.getSortedSetRange(`followers:${exceptUid}`, 0, -1),
 			db.getSortedSetRange(tags.map(tag => `tag:${tag}:followers`), 0, -1),
+			Topics.getTopicField(postData.topic.tid, 'title'),
 		]);
 		const followerSet = new Set(followersOfPoster);
 		// filter out followers of the poster since they get a notification already
@@ -608,23 +614,22 @@ module.exports = function (Topics) {
 		const { displayname } = postData.user;
 
 		const notifBase = 'notifications:user-posted-topic-with-tag';
-		let bodyShort = translator.compile(notifBase, displayname, tags[0]);
+		let bodyShort = translator.compile(notifBase, displayname, title, tags[0]);
 		if (tags.length === 2) {
-			bodyShort = translator.compile(`${notifBase}-dual`, displayname, tags[0], tags[1]);
+			bodyShort = translator.compile(`${notifBase}-dual`, displayname, title, tags[0], tags[1]);
 		} else if (tags.length === 3) {
-			bodyShort = translator.compile(`${notifBase}-triple`, displayname, tags[0], tags[1], tags[2]);
+			bodyShort = translator.compile(`${notifBase}-triple`, displayname, title, tags[0], tags[1], tags[2]);
 		} else if (tags.length > 3) {
-			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, tags.join(', '));
+			bodyShort = translator.compile(`${notifBase}-multiple`, displayname, title, tags.join(', '));
 		}
 
 		const notification = await notifications.create({
 			type: 'new-topic-with-tag',
-			nid: `new_topic:tid:${postData.topic.tid}:uid:${exceptUid}`,
-			subject: bodyShort,
+			nid: `new_topic:tags:${tags.join('.')}:tid:${postData.topic.tid}:uid:${exceptUid}`,
 			bodyShort: bodyShort,
 			bodyLong: postData.content,
 			pid: postData.pid,
-			path: `/post/${postData.pid}`,
+			path: `/post/${encodeURIComponent(postData.pid)}`,
 			tid: postData.topic.tid,
 			from: exceptUid,
 		});

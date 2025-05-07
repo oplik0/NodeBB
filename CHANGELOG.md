@@ -1,10 +1,1853 @@
-#### v3.5.2 (2023-11-29)
+#### v4.3.0 (2025-05-01)
 
 ##### Chores
 
-*  up composer (49013f81)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.category, nodebb.world (2827498d)
+  *  fallback strings for new resources: nodebb.error (c889d60c)
+  *  fallback strings for new resources: nodebb.admin-settings-user, nodebb.user (d3409b40)
+  *  fallback strings for new resources: nodebb.global (6c163f7c)
+  *  fallback strings for new resources: nodebb.notifications (dcf34e3d)
+  *  fallback strings for new resources: nodebb.error (b1e95bc6)
+*  v4.3.0-beta.2 (e3e78445)
+*  v4.3.0-beta.1 (0689da81)
+*  cut 4.3.0-alpha.3 (2e3e675b)
+*  cut v4.3.0-alpha.2 (c4690392)
+*  cut v4.3.0-alpha (4379df68)
+*  up pg, pg-cursor (#13351) (b57ce29d)
+*  incrementing version number - v4.2.2 (17fecc24)
+*  update changelog for v4.2.2 (ce196589)
+*  up eslint-nodebb (853244a1)
+*  up themes (4301bf97)
+*  incrementing version number - v4.2.1 (852a270c)
+*  up dbsearch (bc8126c7)
+*  up dbsearch (4b9331d9)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **deps:**
+  *  update redis docker tag to v7.4.3 (#13358) (7800016f)
+  *  update dependency sass-embedded to v1.87.0 (#13347) (bee79784)
+  *  update dependency @eslint/js to v9.25.1 (#13344) (25e4e844)
+  *  update dependency eslint-config-nodebb to v1.1.3 (#13343) (d687fe60)
+  *  update dependency @eslint/js to v9.25.0 (#13342) (0cc492c6)
+  *  update dependency lint-staged to v15.5.1 (#13319) (9046acea)
+  *  update dependency jsdom to v26.1.0 (#13330) (3f000ed6)
+  *  update dependency @eslint/js to v9.24.0 (#13310) (41be539f)
+  *  update dependency sass-embedded to v1.86.3 (#13301) (0bd43940)
+  *  update dependency sass-embedded to v1.86.2 (#13291) (fdcd2a84)
+  *  update dependency @apidevtools/swagger-parser to v10.1.1 (#13037) (3305c7b0)
+
+##### Documentation Changes
+
+*  update openapi spec with new (missing) properties (b32b7fcc)
+
+##### New Features
+
+*  upgrade script to remote duplicate remote users and categories as per #13352 (5aee2f26)
+*  add new mixin clamp-fade, and handler for expanding it in category description (decc9cf1)
+*  handle Announce(Update(Note)) as well, #13320 (04473669)
+*  #13255, proper handling of upvotes shared by group actors (74e32a17)
+*  send the whole post content in `summary` as well (5c5fd3d4)
+*  show/hide categories on world page, #13255 (804208b7)
+*  notice on remote categories that have no local followers, #13255 (93a5b35f)
+*  add new option to categorySearch module, `defaultCategories`, use to populate the category list when you don't want to poll backend for the main category list (a487d5f6)
+*  category quick search on world page, theme version updates, #13255 (17909516)
+*  show tracked/watched remote categories in world page, #13255 (34ab6771)
+*  remote user to category migration should also migrate local user follows into category watches (ac7b7f81)
+*  allowing manual group assertion via category search input (23b3148c)
+*  remote group actors migrated to categories if they were previous asserted as remote users (d19f692b)
+*  #13255 new topics in remote category addresses remote category, tests, fixes to tests (b8c531d5)
+*  #13255, deliver asserted topics to remote category followers (9c1d5cd3)
+*  #13255, add category name and handle to category search zset (876d1b04)
+*  integrate remote category pruning into actor pruning logic (9b5855f7)
+*  migration of group-as-user to group-as-category, remote category purging, more tests (4be0f73a)
+*  asserted topics and posts to remote categories will notify and add to unread based on remote category watch state (f483e883)
+*  also include category in `to` field when mocking post for federation (f73f727d)
+*  chat allow/deny list, closes #13359 (a5afad27)
+*  show topic follower counts (#13326) (bf2d4c46)
+*  federate out as:Article with `preview` for root-level posts in a topic, instead of `as:Note` (3c4be773)
+*  body-parser-2.x test (#13278) (389bc062)
+*  upgrade commander, get rid of custom color & wrapping code (485562d5)
+*  testing eslint9 (#13266) (68136641)
+
+##### Bug Fixes
+
+*  bump harmony (2bf2e556)
+*  #13352, also do the webfinger backreference check when calling assertGroup (2572cbf5)
+*  regression that caused non-public content with source.content to fail parsing (e9b3306e)
+*  closes #13360, catch error in buildAccountData middleware (537a7428)
+*  bug where disparate ids all claiming to be the same handle were causing duplicate remote users due to collisions, #13352 (c2a3ef81)
+*  posts incorrectly excluded from results if result pid is in a remote category (a0a8c462)
+*  ap helpers.makeSet to handle undefined property values (d020e334)
+*  add back localCategories to categorySearch when defaultCategories is supplied (d58d5861)
+*  remote bare hash for remote users on prune as well (f02d9661)
+*  missing teasers for remote categories on /world (695312f1)
+*  remove superfluous privilege filter in markAllRead (0fab4255)
+*  reversed image and icon for remote categories, omit fa icon if remote category has icon property set, #13255 (dabcefaf)
+*  closes #13289, id can be null (f1d1d082)
+*  marking remote category topics as read (4a7111d0)
+*  markAllRead to get tids based on same logic as unread page, instead of marking all recent posts read (b0236735)
+*  key ownership cross-check to also work with remote categories, #13255 (6dee3e56)
+*  #13255, assert all recipients of the main post when asserting a note, so that remote categories can be discovered (1f046782)
+*  remote categories should not show up in a user's follow lists (4d1d7c3d)
+*  #13255, remote user-to-category migration should not move shares that are already in an existing cid (3213da1c)
+*  proper handling of actors.qualify response (f2e0ba21)
+*  missing dep (2cb6d10d)
+*  topics in remote categories showing up in /recent (c4274a3d)
+*  regression that caused resolveInboxes to always return empty, added tests for resolveInboxes (0246c146)
+*  spread fail, @julianlam (c1b71964)
+*  filter out non-asserted targets when sending ap messages, diff. getter method when passed-in ID is a remote category (309deb0d)
+*  tag whitelist check socket call for remote categories (c5901e0d)
+*  migrate topics as system user instead of uid 0 (ee34396c)
+*  do not send out ap (undo:)follow if local user or category is (not)already following (c6f2c874)
+*  allow category controller to respond also by remote category id (0b333fb7)
+*  #13255, update category search logic to allow for remote categories (6e23de46)
+*  delete shares zset on account deletion (7ccd6b73)
+*  persona tooltip so it doesn't appear when dropdowns are open (ea9f7903)
+*  lang keys (4277765b)
+*  closes #13353, don't use index for finding plugin data (ed92ffaf)
+*  regression on search query that is a url, via 3526c937ccec843d4637efa894f49efc9bac5493 (41252197)
+*  closes #13313, add error:post-deleted (b49a4586)
+*  upgrade script (52ca086b)
+*  tag urls getting double escaped (#13306) (3526c937)
+*  notifications.markAllRead (bf243e07)
+*  posts.uploads.usage since paths changed (c41c7e8a)
+*  req.body can be undefined (cd70e6c6)
+*  closes #13298, catch exceptions in webfinger and nodeinfo (bbfd6445)
+*  closes #13205, make parent post font-size small until expanded (ef98f8f9)
+*  closes #13275, set 'announces' after adding to zset to prevent race condition (2c59007b)
+*  use slug instead of groupname in acp for groups (d9f33204)
+*  do not await the batch call to sendMessage (aa4f23bf)
+*  commenting out outward federation of Add activity, pending forumwg discussion (4b22f297)
+*  on user deletion during assertion (due to 410), if delete fails, just run ap post-deletion to clean up (4bbe27d4)
+*  race condition in test (807a8c66)
+* **deps:**
+  *  update dependency pg to v8.15.6 (#13362) (7f533167)
+  *  update dependency pg-cursor to v2.14.6 (#13363) (03e06784)
+  *  update dependency webpack to v5.99.7 (#13361) (0a3e4d61)
+  *  update dependency pg to v8.15.5 (#13356) (74558b0f)
+  *  update dependency ace-builds to v1.40.1 (#13354) (4eec053a)
+  *  update dependency esbuild to v0.25.3 (#13355) (43d7d47f)
+  *  update dependency pg-cursor to v2.14.5 (#13350) (00be573d)
+  *  update dependency pg to v8.15.2 (#13349) (b49436de)
+  *  update dependency sass to v1.87.0 (#13348) (50a58bbc)
+  *  update dependency connect-redis to v8.0.3 (#13345) (8d84206f)
+  *  update dependency mongodb to v6.16.0 (#13346) (3c24810d)
+  *  update dependency chart.js to v4.4.9 (#13328) (0c5ef0e8)
+  *  update dependency nconf to v0.13.0 (#13333) (6f8c7aba)
+  *  update dependency ace-builds to v1.40.0 (#13331) (5d461f04)
+  *  update dependency nodemailer to v6.10.1 (#13329) (6fbb2b4b)
+  *  update dependency ioredis to v5.6.1 (#13318) (74d9806d)
+  *  update dependency cron to v4.3.0 (#13332) (f96ce25a)
+  *  update dependency sanitize-html to v2.16.0 (#13339) (24a5f407)
+  *  update dependency webpack to v5.99.6 (#13341) (cac1c37b)
+  *  update dependency bootbox to v6.0.3 (#13327) (8f784bb3)
+  *  update dependency nodebb-theme-harmony to v2.1.6 (#13314) (1bd12622)
+  *  update dependency nodebb-theme-persona to v14.1.5 (#13316) (6de89952)
+  *  update dependency webpack to v5.99.5 (#13312) (140440cc)
+  *  update dependency cron to v4.1.4 (#13307) (5fa09a67)
+  *  update dependency nodebb-theme-persona to v14.1.2 (#13311) (6f3e9853)
+  *  update dependency nodebb-theme-harmony to v2.1.3 (#13309) (9905e6aa)
+  *  update dependency bootswatch to v5.3.5 (#13308) (4b511546)
+  *  update dependency bootstrap to v5.3.5 (#13304) (22b3dc65)
+  *  update dependency sass to v1.86.3 (#13302) (70e788ba)
+  *  update dependency spdx-license-list to v6.10.0 (#13303) (cd2ed209)
+  *  update dependency bootstrap to v5.3.4 (#13299) (d9074dbc)
+  *  update dependency nodebb-plugin-mentions to v4.7.3 (#13294) (dd3d1917)
+  *  update dependency bootbox to v6.0.2 (#13293) (dfd2621e)
+  *  update dependency sass to v1.86.2 (#13295) (1a763cbb)
+  *  update dependency benchpressjs to v2.5.5 (#13292) (311cbec2)
+  *  update dependency nodebb-theme-harmony to v2.1.0 (#13296) (5caadd2d)
+  *  update dependency esbuild to v0.25.2 (#13284) (e6a02176)
+  *  update dependency cron to v4.1.3 (#13282) (c46c2623)
+  *  update dependency cron to v4.1.2 (#13281) (11f7b42c)
+  *  update dependency satori to v0.12.2 (#13280) (28ec8a79)
+  *  update dependency cron to v4.1.1 (#13276) (57819810)
+  *  update dependency nodebb-plugin-composer-default to v10.2.49 (#13272) (40ecffa0)
+  *  update dependency nodebb-theme-harmony to v2.0.42 (#13274) (5b40c149)
+  *  bump mentions (7d32cdac)
+  *  update dependency validator to v13.15.0 (#13273) (d275af60)
+  *  update dependency csrf-sync to v4.1.0 (#13268) (92caab97)
+  *  update dependency nodebb-theme-persona to v14.0.17 (#13263) (ca479efc)
+  *  update dependency nodebb-theme-harmony to v2.0.41 (#13262) (33c25ce6)
+  *  update dependency nodebb-plugin-composer-default to v10.2.48 (#13261) (5b98af9f)
+  *  update dependency sanitize-html to v2.15.0 (#13264) (e17163ad)
+  *  update dependency ace-builds to v1.39.1 (#13260) (532fea99)
+
+##### Other Changes
+
+*  yup. (28b7a203)
+*  fix tabs (4cdfcf95)
+*  fix typo (352c42d8)
+
+##### Refactors
+
+*  use promise.all (74661381)
+*  categories.sortTidsBySet to not take cid, retrieve from tids themselves (bfc7daf2)
+*  allow topics to be asserted directly into a remote category, or -1 otherwise (0fa98237)
+*  ability to browse to remote categories, group actor assertion logic, etc. -- no logic to assign topics to remote categories yet (1f40995f)
+*  remove datepicker (be7959e5)
+*  add sping/ping into openapi (8ffbc359)
+*  moved these rules to nodebb-config (e184c910)
+*  switch eslint configs to esm (92d6e022)
+*  move topic/post menu lists to core (9f93cc9b)
+*  show topic tools if plugins add them (87aacc89)
+*  remove reply icons (b73fb67b)
+*  remove debug log (021b3af0)
+*  break long line (c93dc589)
+*  only write to db on runJobs processes (a6839b61)
+*  use bulk increment (667367a6)
+*  remove spammy error log (9637abca)
+
+##### Reverts
+
+*  use of vanity domains, needs rethinking. Originally added in 709a02d97ae7acbab08c7fa1fecfd01e0dcadcc7 (55c89969)
+
+##### Tests
+
+*  article for new topic, note for replies (3e508d6c)
+*  missing clear ap send cache (512f889e)
+*  additional test for ensuring handle:uid is continually set even after re-assertion (39fc9bae)
+*  additional test for remote category topic assertion when ignoring category (c2f77cee)
+*  #13255, reply to topic in remote category addresses remote category (85e7c1a2)
+*  remote user pruning tests (53dc79a1)
+*  introduce overrides into person and group mocks (4f748158)
+*  have ap helper mocks for person and group auto-save to ap cache (80069a19)
+*  add failing tests for actor/group assertion via wrong method, remote user to category migration (afc47643)
+*  add tests for topics slotting into remote categories if addressed (804052f2)
+*  group actor assertion tests (ca9a5b6d)
+*  shorter test (e0235a1e)
+*  eslint for tests (f864a5a4)
+*  fix tests (321defb9)
+*  fix test expecting Note when it is now Article (5d94f2ca)
+
+#### v4.2.2 (2025-04-22)
+
+##### Chores
+
+*  incrementing version number - v4.2.1 (852a270c)
+*  update changelog for v4.2.1 (4cee37b9)
+*  incrementing version number - v4.2.0 (87581958)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  escape displayname in topic events (42a5a127)
+*  closes #13336, allow main post deletion from "delete posts" tool (4f13eb03)
+*  bug where generateHandle would throw when passed in an invalid slug (2a98a9b3)
+
+##### Other Changes
+
+*  fix semi (6832541c)
+*  fix missing comma (d59a5728)
+
+##### Refactors
+
+*  use sortedSetsCard (46ed56cf)
+
+#### v4.2.1 (2025-04-10)
+
+##### Chores
+
+*  up harmony (d161eb6f)
+*  up persona (2237e17a)
+*  up persona (75f1f6fb)
+*  incrementing version number - v4.2.0 (87581958)
+*  update changelog for v4.2.0 (c9e0198d)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  closes #13317, fix email confirm for changing email (33d50637)
+*  check if latestversion is valid before using semver.gt (6fe066ce)
+*  closes #13256, allow keyboard access to icon colors (c6620170)
+
+##### Refactors
+
+*  get rid of async.parallel (e722e869)
+*  remove pointless true (747457d7)
+*  make register intro heading (c258f597)
+
+#### v4.2.0 (2025-03-19)
+
+##### Chores
+
+* **deps:**
+  *  update commitlint monorepo to v19.8.0 (#13244) (ee3c0bf4)
+  *  update dependency lint-staged to v15.5.0 (#13245) (f4fe3f5f)
+  *  update dependency sass-embedded to v1.86.0 (#13251) (3bb861ae)
+*  up widgets (ed57f896)
+*  incrementing version number - v4.1.1 (b2afbb16)
+*  update changelog for v4.1.1 (2c3f8561)
+*  add missing file to az lang (d7116adc)
+*  language labels for az/pl (61d17c95)
+*  alphabetize transifex config file languages (b7bb35f8)
+*  incrementing version number - v4.1.0 (36c80850)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-email (866cd539)
+  *  fallback strings for new resources: nodebb.error (b4dfd7fe)
+  *  fallback strings for new resources: nodebb.admin-settings-chat (2f957655)
+  *  fallback strings for new resources: nodebb.user (78a2c087)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (c3993018)
+  *  fallback strings for new resources: nodebb.admin-manage-categories (efdb416c)
+  *  fallback strings for new resources: nodebb.category (8314d8ba)
+
+##### Documentation Changes
+
+*  openapi schema for admin/extend/plugins (f2a16422)
+*  update openapi schema from 6c26d9f4a3c398b4d7add0a2d9c91685a0336a74 (128dd2d3)
+
+##### New Features
+
+*  1b12 category announce on post move to a new tid, #13236 (254f0738)
+*  add Azerbaijani localisations, təşəkkür edirəm! (825e4c70)
+*  if an incoming remote message is too long, don't create the room, but notify the local recipients instead (885b83e5)
+*  new ACP config for max length of remote chat messages, #13174 (81509b13)
+*  add `federatedDescription` property to a category. (dfabadbe)
+*  add link to category edit page in acp category sidebar (fa8216f2)
+*  add additional logic that checks whether a cid follows the activity actor, and asserts note into that category if so (3589c570)
+*  move category sidebar to ACP partial, add sidebar to category-federation (dc2dcaf1)
+*  add line to description exposing a category's handle if accessible by fediverse pseudo-user, closes #13126 (6c26d9f4)
+*  call announceObject on topic fork, #13215 (e3edfef8)
+
+##### Bug Fixes
+
+*  wrong property name used (08796a0a)
+*  #13254, configurable ap content prune (80e03c85)
+*  only 1b12 announce topic fork if OP is local, fix race condition in tests (945617cb)
+*  bug where remote post was attempted to be announced on post move (291af926)
+*  handling of `href` in remote object attachments, #13169 (44354dac)
+*  #13100, direct access to a tag page no longer excludes cid -1 (14fd33ce)
+*  expose remote url in user object (78c9239b)
+*  hide disable and purge buttons from category-federation.tpl (43248578)
+*  show 'copy settings from' button in acp category sidebar only on category.tpl (1f6871e5)
+*  improper cc and object fields in announceObject (deb5ee5e)
+*  move AP send logging earlier (dca3c35d)
+*  #13224, handle note attributedTo when it is of type object (d9483347)
+*  allow actor assertion of loopback actors depending on ACP setting (73aaa990)
+* **deps:**
+  *  update dependency mongodb to v6.15.0 (#13253) (1c23d0cf)
+  *  update dependency pg to v8.14.1 (#13247) (4d6d71d8)
+  *  update dependency nodebb-widget-essentials to v7.0.36 (#13250) (dbd0fd22)
+  *  update dependency sass to v1.86.0 (#13252) (a1465268)
+  *  update dependency esbuild to v0.25.1 (#13243) (ce3bb8b5)
+  *  update dependency ioredis to v5.6.0 (#13246) (b96f532b)
+  *  update dependency connect-redis to v8.0.2 (#13242) (e90a8b26)
+  *  update dependency autoprefixer to v10.4.21 (#13241) (4e69ed56)
+  *  update dependency pg-cursor to v2.13.1 (#13248) (92727549)
+  *  update fontsource monorepo to v5.2.5 (#13226) (8ca1d6e6)
+  *  update dependency mongodb to v6.14.2 (#13229) (b39e4d19)
+  *  update dependency terser-webpack-plugin to v5.3.14 (#13230) (7b40e210)
+  *  update dependency mongodb to v6.14.1 (#13225) (a58af228)
+  *  update dependency tough-cookie to v5.1.2 (#13217) (e19109ad)
+  *  update dependency mongodb to v6.14.0 (#13214) (ad680d6a)
+  *  update dependency terser-webpack-plugin to v5.3.12 (#13213) (4c22af8c)
+  *  update dependency cron to v4.1.0 (#13200) (f56838a3)
+
+##### Refactors
+
+*  remove announceObject in favour of feps.announce, added create activity mock to support (74443c3b)
+*  move all input note normalization into helper method, have assertPrivate mock a message object (with said normalization) before sending message (4ec7552c)
+
+##### Tests
+
+*  add url/statusCode to failing test (8982923e)
+*  fix remoteUrl property generation, tests for topic moving (0e1006fb)
+*  fix actor tests (537880d2)
+*  openapi schema for remoteUrl (fc64e89f)
+*  add failing test for #13215 (feb94215)
+*  adjust test runner detection in AP code (7ceb6d69)
+*  new test file for feps (e510e826)
+*  log outgoing AP messages for local test runner (6e872b5f)
+*  allow ap/notes tests to be run in isolation (98aafaaf)
+
+#### v4.1.1 (2025-03-12)
+
+##### Chores
+
+*  up themes (34414f16)
+*  up mentions (39ff5dde)
+*  up markdown (1d4be475)
+*  incrementing version number - v4.1.0 (36c80850)
+*  update changelog for v4.1.0 (3292a858)
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow self-signed certs, closes #13238 (de502cd2)
+
+##### Bug Fixes
+
+*  lang typo (fc9cc8d6)
+*  check if folder exists when uploading files in acp (76896859)
+*  sanitize category svg image files (810e8dbb)
+*  #13094, update unread chats on reconnect (1e6c6f4e)
+*  don't update topic lastposttime by announce (6b9f166c)
+*  closes #13078, toggle /world navItem when AP is toggled (bef17920)
+*  closes #13231, add some text-truncate, match width (bb13ea30)
+*  #13228, use timestamp from mainpost/lastpost (48f0f47a)
+*  add starterPlan check (40a5314e)
+*  closes #13219, only delete local user folder (8dbd50d4)
+*  don't crash if there are exceptions in action hooks (30068245)
+
+##### Other Changes
+
+*  missing semi (c4e31395)
+*  fix ) (9549f1fa)
+
+##### Refactors
+
+*  prevent following symlinks (e775564f)
+*  show simple error if path doesn't exist (6d74ee2f)
+*  use navAdmin (b517f05e)
+*  dont generate UUID if no email (c83f91bd)
+*  show warning if there is no email for validation (84d3fe79)
+
+##### Tests
+
+*  fix inf loop if dirname results in same dir, ie \ (1ca7b7ec)
+*  #13078, add nav test (04279718)
+
+#### v4.1.0 (2025-02-27)
+
+##### Chores
+
+*  incrementing version number - v4.0.6 (4a52fb2e)
+*  update changelog for v4.0.6 (78bbea30)
+*  comment out testing helper call (bad0a4c2)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  up harmony (ea110a0e)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  bump emoji for #13077 as well (ff0de097)
+*  fix ap dev helper (b14494b0)
+*  add helper method to ease in dev (d7d64a14)
+*  add helper method to ease in dev (7d5482b2)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **deps:**
+  *  update dependency sass-embedded to v1.85.1 (#13208) (3907e6c8)
+  *  update postgres docker tag to v17.4 (#13196) (cba2bc5e)
+  *  update postgres docker tag to v17.3 (#13162) (47e28a0e)
+  *  update dependency sass-embedded to v1.85.0 (#13161) (2258e145)
+  *  update commitlint monorepo to v19.7.1 (#13123) (ca6734b3)
+  *  update coverallsapp/github-action action to v2.3.6 (#13089) (84b28fae)
+  *  update dependency lint-staged to v15.4.3 (#13079) (1d846134)
+  *  update dependency mocha to v11.1.0 (#13069) (8e99c97a)
+  *  update dependency lint-staged to v15.4.1 (#13060) (153e65bc)
+  *  update dependency lint-staged to v15.4.1 (#13060) (37b2b83d)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.category (00253821)
+  *  fallback strings for new resources: nodebb.error (589be143)
+  *  fallback strings for new resources: nodebb.themes-harmony (25049714)
+  *  fallback strings for new resources: nodebb.admin-settings-advanced (ad6b6132)
+  *  fallback strings for new resources: nodebb.themes-harmony (fc063bb0)
+  *  fallback strings for new resources: nodebb.admin-settings-general (d41109a0)
+
+##### New Features
+
+*  support remote "Video" type objects in note assertion, #13120 (95f2c4ed)
+*  1b12 compatibility (7dc1e8ab)
+*  remove activities older than a week (d9e86c7b)
+*  federate out Announce of a tid's mainPid if the tid is moved out of cid -1 (b7f9983a)
+*  syncUserInboxes to take into account remote topic tags, closes #13074 (637addc4)
+*  allow search bar to load remote 7888 Conversations, aka nodebb topics (7687da00)
+*  introduce new 'markdown' post parsing type, closes #13077 (b386e4a6)
+*  #13066, report canonical URL in user agent for outgoing requests (c3e9cb68)
+*  changes to how a topic is presented via ActivityPub; conformance with upcoming changes to 7888 (4fd7a9dc)
+*  changes to how a topic is presented via ActivityPub; conformance with upcoming changes to 7888 (adeaff4b)
+
+##### Bug Fixes
+
+*  scheduled topics and posts should return 404 on AP request (428300de)
+*  tag handling when remote objects contain tags without leading # symbol (5c3f1cfe)
+*  handle multiple types in remote actor payload (65895651)
+*  missing db (058befb3)
+*  remove handle on category purge (adb430f2)
+*  restrict feps methods to real cids (8b717d54)
+*  restore old behaviour of 1b12 federating both object and activity (f0ee43dc)
+*  send `actor` with 1b12 announce, fixes #13072 again (86b0e591)
+*  isArray check (5f3ed76d)
+*  delete from payload instead of setting null (489c5ce2)
+*  send `actor` with 1b12 announce, fixes #13072 (3cd87f1b)
+*  #13139, payload.version can be null (be1598d1)
+*  tidChanged (bfd4e68b)
+*  bad logic that invisibly broke outgoing user follows completely (334be721)
+*  #13076, allow pulling in of topics by their topic URL fix: reapply fixes that were part of since-reverted 4fd7a9dc59b65e8654d704c493f2254793e8d6a9 (c6e6ab43)
+*  call relativeToAbsolute helper when generating markdown source content in mocks.notes.public/private (02fb99eb)
+*  extend remoteAnchorToLocalProfile ap helper to handle markdown content (db1f8959)
+*  incorrect `posts` url in topic posts collection (812ec73e)
+*  incorrect `posts` url in topic posts collection (b2530e61)
+* **deps:**
+  *  update dependency sass to v1.85.1 (#13209) (386ab89f)
+  *  update dependency bcryptjs to v3 (#13160) (6ea65678)
+  *  update dependency cron to v4 (#13184) (41eec8d7)
+  *  update dependency xregexp to v5.1.2 (#13195) (23621eca)
+  *  update dependency ace-builds to v1.39.0 (#13197) (a3f5721a)
+  *  update dependency chart.js to v4.4.8 (#13182) (474d267e)
+  *  update dependency postcss to v8.5.3 (#13183) (5fc4c806)
+  *  update dependency mongodb to v6.13.1 (#13187) (77b0160c)
+  *  update dependency nodebb-plugin-web-push to v0.7.3 (#13178) (000ceee4)
+  *  update dependency sass to v1.85.0 (#13163) (75a7188a)
+  *  update dependency pg to v8.13.3 (#13157) (f3c156e9)
+  *  update dependency pg-cursor to v2.12.3 (#13158) (6b8e4b39)
+  *  update dependency webpack to v5.98.0 (#13159) (db74c1e8)
+  *  update dependency nodebb-widget-essentials to v7.0.33 (#13156) (af7f4242)
+  *  update dependency pg-cursor to v2.12.2 (#13150) (b5ce9e14)
+  *  update dependency compression to v1.8.0 (#13152) (1e52cf34)
+  *  update dependency ace-builds to v1.38.0 (#13151) (db0b816c)
+  *  update dependency pg to v8.13.2 (#13149) (bea1367d)
+  *  update dependency postcss to v8.5.2 (#13144) (3449e76d)
+  *  update dependency benchpressjs to v2.5.3 (#13098) (6688edde)
+  *  update dependency esbuild to v0.25.0 (#13141) (d7fdd80c)
+  *  update dependency tough-cookie to v5.1.1 (#13140) (33ce7239)
+  *  update dependency ioredis to v5.5.0 (#13138) (b337e999)
+  *  update dependency sass to v1.84.0 (#13128) (f872a768)
+  *  update dependency semver to v7.7.1 (#13122) (5f3c5a55)
+  *  update dependency mongodb to v6.13.0 (#13106) (31ff6c2e)
+  *  update dependency semver to v7.7.0 (#13099) (a348e808)
+  *  update dependency nodemailer to v6.10.0 (#13073) (8ab71e4f)
+  *  update dependency nodebb-theme-persona to v14.0.2 (#13064) (8ec3ceae)
+  *  update dependency nodebb-theme-harmony to v2.0.3 (#13063) (b98d047a)
+
+##### Other Changes
+
+*  remove unused db (06b3d9ad)
+*  remove tab (54bc54e1)
+*  fix tab (397d28e3)
+
+##### Performance Improvements
+
+*  closes #13145, reduce calls in actors.prune (676acb7e)
+
+##### Refactors
+
+*  remove cid:-1:tids (and variants) from intersection in /world, fixes #13125 (d0561a60)
+*  single remove (0784e11b)
+*  move 1b12 announce logic out of inbox and into separate feps module (9fd6ac6b)
+*  acceptable types in context.js to index.js, allow searching for remote topis by topic url (d644c0f4)
+*  Posts.relativeToAbsolute so that the regexes passed to it no longer need a pre-defined length, it is now calculated from the match result, added new regex for markdown image/anchors (f64e6f0f)
+
+##### Tests
+
+*  moved AP actor tests to separate actors.js file, added failing test for scheduled topics (01be4d79)
+*  update test to assert the note assertion itself (c6ba56a5)
+*  update bcrypt hash for 3.x (bfffbfbe)
+*  update pwd test for bcrypt3.x (ca0fa1d3)
+*  add sourceContent to spec (d1d55461)
+*  adjust webfinger test for updated 404 status code (59afd193)
+
+#### v4.0.6 (2025-02-27)
+
+##### Chores
+
+*  up dbsearch (9e1a0a13)
+*  add sourceContent to schema (b2cdd5fd)
+*  up harmony (f94cf5ce)
+*  up deps (a9563d75)
+*  up harmony (08014e7c)
+*  up harmony (8385d4ae)
+*  up harmony (0a9d28d5)
+*  up harmony (c920836a)
+*  up esbuild (2ab6a368)
+*  up widgets (02a8d9b6)
+*  up harmony (05bbefd1)
+*  incrementing version number - v4.0.5 (1792a62b)
+*  update changelog for v4.0.5 (f84b9fc7)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  match events and parent style (e38d1531)
+*  merge consecutive share events (9153f8cf)
+* **config:**  add `acpPluginInstallDisabled` option (#13189) (577eee2f)
+
+##### Bug Fixes
+
+*  add missing file (04d5edbb)
+*  #13202, private note assertion failure when cc property is missing (c65e1ebb)
+*  tests for public and private note assertion, failing test for private note assertion with missing cc prop (efb27ce0)
+*  closes #13206, truncate long usernames (51872d54)
+*  closes #13207, add localComments (13a13e1d)
+*  handle multiple types in remote actor payload (d91b80d2)
+*  don't send validation email for pending emails (07957e82)
+*  missing db (52b23313)
+*  #13198, use email from confirmObj (b4dfc48b)
+*  summary post parse (e9d4c7b9)
+*  add sourceContent to getPostSummaryByPids (ad92e931)
+*  #13193, add lang strings (2c830567)
+*  #13194, dont notify about cid=-1 (b8c8ae09)
+*  old upgrade script so it doesn't create settings objects (fe980688)
+*  escape confirm email in acp manage users (9bfa8853)
+*  add missing await on filter:user.logout (c6b8256f)
+*  relaxing strict allowedTags configuration for incoming AP content (allowing picture, source, and additional attributes for img) (2ad48f17)
+
+##### Other Changes
+
+*  fix (ec11b0c2)
+
+##### Refactors
+
+*  use sortedSetRemoveBulk (349084d8)
+*  don't make db request if there is no code (53a2be9d)
+
+##### Tests
+
+*  remove extra .only, add basic tests for public note assertion (64267f7d)
+
+#### v4.0.5 (2025-02-20)
+
+##### Chores
+
+*  bump composer to 10.2.46 for #13132 (7520e4f6)
+*  up harmony (f82f00e5)
+*  up widgets (e23a14c1)
+*  up harmony (c0996a80)
+*  up dbsearch (d0a9ddea)
+*  up dbsearch (310fab65)
+*  add test helper to activitypub file (4bc0031f)
+*  incrementing version number - v4.0.4 (b1125cce)
+*  update changelog for v4.0.4 (d3b69a39)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  add upload button to quickreply (f67a0a12)
+*  remove activities older than a week (9997189a)
+
+##### Bug Fixes
+
+*  typo (e63f1234)
+*  #13136, do not log 404s for AP requests (93f48409)
+*  #13129, serve category backgroundImage as actor `icon`, not `image` (b8200095)
+*  escape ip blacklist rules (625f4751)
+*  closes #13180, don't execute cron jobs if ap disabled (a410587c)
+*  #13172, Topics.addParentPosts not sending sourceContent in calling parsePosts (bb9687bd)
+*  #13179, fix context resolution failure bug with frequency (6245e33d)
+*  add back chronological sorting of asserted notes (de6e63bb)
+*  #13170, remove mime-type and regex test for "Emoji" attachment, wrap tag name in colons if not provided (92708d2f)
+*  closes #13176, check if uid is number when creating tokens (80cc1d34)
+*  notes.assertPrivate sanity checks (5e71d597)
+*  page index for single page, closes #13173 (b0e8058f)
+*  remove handle on category purge (4134a075)
+
+##### Tests
+
+*  dont clear local when testing (669755d1)
+*  show objects on fail (f2824073)
+*  wait after post request (64318242)
+
+#### v4.0.4 (2025-02-17)
+
+##### Chores
+
+*  up harmony (0fed9a76)
+*  up harmony (ef2c606d)
+*  up harmony (f1da510f)
+*  up deps (fa366095)
+*  up harmony (df07fcfa)
+*  up harmony (de5caf8f)
+*  up harmony (d1f78295)
+*  incrementing version number - v4.0.3 (2b65c735)
+*  update changelog for v4.0.3 (123e1635)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+* **i18n:**  fallback strings for new resources: nodebb.themes-harmony (99210918)
+
+##### Bug Fixes
+
+*  clear parsed post cache when updating a post's attachments, #13164 (33d7b9b3)
+*  logic failure causing remote posts with image to not parse properly, #13164 (d936d5c0)
+*  change the passed-in notificatiom id for `notifyTagFollowers` to contain the list of matched tags (04f51cc6)
+*  actor.prune, dont try deleting same users (ffbe4b7b)
+*  getLocalFollowCounts, show non existing deletes (cfbb8ff8)
+*  return null if field isn't in hash (70a9f6d3)
+*  getUserField so that it always returns null (e85662a5)
+*  isArray check (224910b1)
+*  sanity-check the id when mocking a post (5cbf3dd7)
+*  missing actor on some local activities when federating out (040584f0)
+
+##### Performance Improvements
+
+*  closes #13145, reduce calls in actors.prune (d590c2af)
+
+##### Refactors
+
+*  single remove (77dd6dd0)
+*  cleanup ip:recent (d8724708)
+*  hooks button (c4b01330)
+
+#### v4.0.3 (2025-02-09)
+
+##### Chores
+
+*  up harmony (2ee0cda2)
+*  update persona (b6b76639)
+*  bump persona to fix theme description issue (cd88cce0)
+*  up harmony (a01bf73e)
+*  forgot to remove bad code (865c09a5)
+*  up harmony (c3f8222f)
+*  up harmony (f07f3801)
+*  up harmony (67a789ad)
+*  up themes (c1c5cc6e)
+*  up themes (b2b0ed35)
+*  up peace (55eedcbe)
+*  up themes (38a21e29)
+*  up harmony (58e551fe)
+*  incrementing version number - v4.0.2 (73fe5fcf)
+*  update changelog for v4.0.2 (75588ffe)
+*  incrementing version number - v4.0.1 (a461b758)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### Bug Fixes
+
+*  delete from payload instead of setting null (1b4e0c87)
+*  regression :tmi: (f5328aa8)
+*  #13139, payload.version can be null (bfe6d9d8)
+*  tidChanged (1f8e2f9a)
+*  #13135, tids are not numeric for ap topics (d687f081)
+*  handle cases where url passed to mime does not pass because url contained a query string (5baa46d0)
+*  isDraft logic, closes #13119 (21156673)
+*  path on windows, #13119 (36063d1f)
+*  #13115, prevent messages from getting duplicated (1ff8e1e4)
+*  #13115, limit bodyLength length (8e9fdb5f)
+
+##### Other Changes
+
+*  remove log (a8e7bf35)
+
+##### Refactors
+
+*  events are returned inside post objects (3ab22c2c)
+*  move dropdown search inputs into dropdown (b993be6f)
+*  server.destroy (72091ec4)
+*  remove deprecated methods (265e44f0)
+
+##### Tests
+
+*  search endpoint with start & end (c1b630d4)
+
+#### v4.0.2 (2025-02-02)
+
+##### Chores
+
+*  up persona (0298a3af)
+*  up harmony (d77d2055)
+*  up themes, closes #13102 (6672de00)
+*  incrementing version number - v4.0.1 (a461b758)
+*  update changelog for v4.0.1 (3dbd2b30)
+*  incrementing version number - v4.0.0 (c1eaee45)
+
+##### New Features
+
+*  allow selecting empty for custom selects (be62ae24)
+*  add uid to post.parent (4d733590)
+*  add description and keywords to api/config (933c18f4)
+
+##### Bug Fixes
+
+*  bad logic that invisibly broke outgoing user follows completely (51e660d5)
+*  closes #13096, fix regression from renaming language files (0b92d525)
+
+##### Refactors
+
+*  remove old comment (d4a1b4da)
+
+##### Tests
+
+*  fix schema (ef5ae006)
+*  fix schema (47734d4c)
+
+#### v4.0.1 (2025-01-29)
+
+##### Chores
+
+*  up dbsearch (88fa4553)
+*  up benchpress (c9584800)
+*  up harmony (10409e0e)
+*  up themes (6918c3f3)
+*  up themes (050effe2)
+*  up harmony (90e0a2d6)
+*  incrementing version number - v4.0.0 (c1eaee45)
+*  update changelog for v4.0.0 (ae8f58d6)
+
+##### New Features
+
+*  use text-danger if chat over limit (2f5b4b29)
+
+##### Bug Fixes
+
+*  #13087, disallow following cid -1 (ddb6e0f3)
+*  encoding of pid in notifyCategoryFollowers, #13087 (6d88dcb2)
+*  #13084 bump persona (4feda224)
+*  closes #13091, dont show world category (4c66eed9)
+*  #13088, up dbsearch (8644565a)
+*  #13090, update themes fix selector (822bff62)
+*  #13086 move rateLimit check (487d9f73)
+*  null checks for category sync and actor assertions (b3b8b9e9)
+*  #13067, add sourceContent to teasers (679fcb71)
+*  #13065, send missing `actor` property when 1b12 announcing local posts (e61df4de)
+*  closes #13068, encodeURIComponent X-Redirect (f3b8ed27)
+*  #13062 add displayname to email tpl data (f0c2090d)
+
+##### Other Changes
+
+*  missing ; (8b38cb3a)
+*  reduce image size (#12702) (a95a51c6)
+
+##### Refactors
+
+*  🤡 (4ba01d18)
+
+##### Tests
+
+*  adjust webfinger test for updated 404 status code (4a827b7e)
+*  fix x-redirect tests (b80440aa)
+*  add sourceContent to spec (526a9521)
+*  change test to 404 (52f7f0a7)
+*  remove only (0ba4ba65)
+
+#### v4.0.0 (2025-01-20)
+
+##### Breaking Changes
+
+*  add new `escape` option to getPostSummaryByPids [breaking] (16c8a652)
+*  core html stripping on plaintext, remove 'filter:teasers.configureStripTags' hook, remove html stripping from teaser generation (c01f1549)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.error (e53b3737)
+  *  fallback strings for new resources: nodebb.aria (d04bdd9d)
+*  update changelog for v3.12.4 (e7e682ed)
+*  bump persona (3e08eb39)
+*  bump markdown, harmony, and persona to new major versions (499df8ab)
+*  remove now-unneeded v4 upgrade scripts (487e7be5)
+*  add type to webpack config file (#12072) (d79dfd03)
+*  rc4 (aa1f65e9)
+*  bump harmony for #12938 (8ec388af)
+*  rc3 (754ef9b2)
+*  upgrade script to fix outdated slugs for users with periods in their usernames (d1c27b4d)
+*  bump to rc.2 (e2b653b0)
+*  bump version to rc.1 (5aab151e)
+*  up persona (b25aa336)
+*  beta.4 (c1079356)
+*  up harmony (098836c1)
+*  beta.3 (27fb01f7)
+*  up harmony (34353bdb)
+*  beta.2 (cc267714)
+*  beta tag (86f624f8)
+*  up themes (471fbd3a)
+*  up themes (d4cf5e7e)
+*  restore activity history check in AP inbox middleware now that NodeBB sends unique IDs with applicable activities (7e23e192)
+*  up harmony (16fe85e2)
+*  up themes (789520e4)
+*  up harmony (7a5588da)
+*  bump version to 4.0.0-alpha (b691d2a9)
+*  up harmony (aae0b5b0)
+*  up harmony (b540ecd3)
+*  up harmony (18f9baff)
+*  info -> verbose logging in ap inbox.js (931a0f0a)
+*  make getParentChain logging verbose (6069bee0)
+*  lint (f6d4d563)
+*  up mentions (68c91650)
+*  up mentions (2b6e31a6)
+*  commenting out logic that drops requests if the id has already been seen, due to a regression in interoperability between NodeBB instances (bb0360bf)
+*  up mentions (2c87c6e8)
+*  up mentions (bad094e8)
+*  up markdown (58668b46)
+*  up markdown (dbd901d3)
+*  update ap cron job config (c680fa67)
+*  up mentions (c4c3c207)
+*  bump harmony (4cec6783)
+*  bump mentions (5ec24977)
+*  bump markdown (4fd0d27e)
+*  up mentions (78e11d6e)
+*  bump harmony (228c9173)
+*  some linting (fdba6840)
+*  debug log (3636dec7)
+*  up widgets (1ce986f7)
+*  lint (5e776088)
+*  minor cleanup (1253ded7)
+*  add verbose logging to middleware.validate (719bb0a0)
+*  up harmony (550e522f)
+*  move assertTopic to top of file, rename to assert (4ee8519d)
+*  up harmony (a84dba27)
+*  lint (c5c0c473)
+*  remove now-unused notes.assert (c6624b63)
+*  up harmony (66b4dc2c)
+*  up harmony (d31978b3)
+*  lint (0c2cfbe7)
+*  removed unused requires (911177ce)
+*  remove debug log (92c990f2)
+*  remove debug log (403bf3e1)
+*  update log verbiage (9c15b02a)
+*  additional logging (641a94d6)
+*  move assertNote to separate file in preparation for additional note-based methods (2b3b6e56)
+*  small var rename (8a5fb86d)
+*  minor re-shuffling of code (5e693702)
+*  reorganize controllers for clarity (2e899008)
+*  update AP helpers export, 404 logic reversal, no slugify in userslug in mock profile from remote instance (0cbbce8c)
+* **deps:**
+  *  update dependency lint-staged to v15.4.0 (#13059) (1c4c4f57)
+  *  update dependency sass-embedded to v1.83.4 (#13045) (be2098d8)
+  *  update dependency @commitlint/config-angular to v19.7.0 (#13030) (03432960)
+  *  update dependency jsdom to v26 (#13040) (d12d9efb)
+  *  update redis docker tag to v7.4.2 (#13033) (fd6f3ee6)
+  *  update dependency lint-staged to v15.3.0 (#13031) (3340d984)
+  *  update dependency sass-embedded to v1.83.1 (#13025) (b9364de2)
+
+##### Documentation Changes
+
+*  add `resizeImageWidth` to openapi definition for /api/config route (7c1b9000)
+*  fix comment (e5331b84)
+*  schema update for activitypub acp route (3a05171f)
+*  update comment to reflect new behaviour (2cbd63dc)
+
+##### New Features
+
+*  fix activitypub toggler to be more complete; tests. #13054 (af4d07fb)
+*  add activitypub file to translations (74831034)
+*  save audience into post hash (for remote posts) (b537437c)
+*  add `filter:topics.hasThumbs` filter hook (f4835695)
+*  append uploaded images into thumbnail set (cc65214d)
+*  #12976, shares collection (e83036a9)
+*  pending follows and logic for remote users, #12938 (2851e56b)
+*  #12935, show 'shared this to x' in topic event when moving topics out of cid -1 (fcf0f799)
+*  support for FEP fb2a (new-style account metadata) (549a6b7d)
+*  #12924, parse incoming custom fields from remote users (0f351ba7)
+*  #12924, custom user fields for local users now federating out (62fe70f2)
+*  add title property to custom emoji markup (3968c822)
+*  #12683, parse incoming emoji tags and replace in content prior to storage in database (09b1e119)
+*  fire new hook `filter:activitypub.mocks.note` on note mocking (4ba41a68)
+*  handle receipt of `Add` activity #12707 (3023b251)
+*  associate new topics created from asserted notes with their originating context, if that context is resolvable (6f237c57)
+*  #12822, send all outgoing links to `/ap` first to see if it's activitypub enabled, parse if able, otherwise redirect as normal (069c8228)
+*  normalization middleware to ensure incoming objects' data types are as expected (simplifies later logic) (13c048a5)
+*  send Update(Note) on chat message deletion and restoration, serving Tombstone if deleted (61445d3d)
+*  handle Update(Note) when object has limited visibility, #12834 (e5948464)
+*  check room counts on actor prune, #12834 (e0e2051d)
+*  federate  on chat message edit, #12834 (1659015c)
+*  notify users on new message from remote users, fix use of parseInt in generating chat notification (2464d13c)
+*  handle incoming non-public activities as chat message, #12834 (b82e20df)
+*  federating out chat messages (2ab5ea39)
+*  update mdidleware.assert.message so roomId is optional (2b71434e)
+*  #12647, federate out `Add` activity on inbox.create and local post creation (bd44783e)
+*  send 308 when activitypub request for remote post comes in, #12831 (7f1f4859)
+*  dynamic category icon generation (edff3394)
+*  enable web-push plugin on first install (34c4cefe)
+*  service worker icon and badge support (4ae86145)
+*  update `buildRecipients` to include all topic participants and their followers, #12735 (6752a541)
+*  notification rescind support (d6bab253)
+*  update service worker to handle push and notificationclick (5109b539)
+*  add onmessage handler for service worker (40fe4d88)
+*  extend activitypubApi.create.note to accept a post object to reduce unnecessary calls to retrieve post summary (b63440cb)
+*  moving a topic out of cid -1 federates an Announce activity, #12734 (daa665eb)
+*  additional copy re: editing remote posts, #12732 (c3e14912)
+*  allow use of vanity domains pointing to an account hosted elsewhere (709a02d9)
+*  show local users who follow (or are followed) by a remote user, on a remote user's profile (a884681a)
+*  additional logic to handle special case where a queried object id reports a context, but it is not actually contained in the resolved context's collection (f9937a84)
+*  #12695 Topic Synchronization via resolvable `context` (ff0c289e)
+*  activitypub.get; allow the passing-in of custom headers via existing `options` parameter (da25fd21)
+*  add post attachments to topic thumbnails (2aeabce5)
+*  icon replacing user status for remote users, denoting that they are from outside the local instance, #12688 (a81ef609)
+*  allow activitypub request cache to be ignored (485b7758)
+*  send join date in local actor mock (3c9337b7)
+*  AP note replies collection, closes #12675 (26a7c51a)
+*  topic backfill logic via resolvable context #12647 (e75ec39b)
+*  send out `Update(Actor)` when a category is edited (09d8fbf9)
+*  instance-level allow andd deny list for federatioN (6e2178b0)
+*  store encountered instances by last seen date (d0a1ebcf)
+*  sending out 1b12-style Announce activities on incoming Create/Update/Like/Delete/Undo(Like) activities, when they pertain to notes (6569066e)
+*  assert actors when mocking post (f5b856f4)
+*  check to/cc/audience for local category and put topic there instead (overrides passed-in cid) (b6ffc47c)
+*  plumb audience into _activitypub when mocking posts (d9f1fa3a)
+*  send cause to ap.get error handler, delete local account representation if assertion fails with a 410 (3567f55a)
+*  #12589, add nodeinfo endpoint (578a53dd)
+*  add timestamp to most activity ids (42f514b7)
+*  show category followers in category federation ACP page (7313d5c6)
+*  logic for remote user deletion, cronjob, and ACP options for pruning options (4bb2c1a8)
+*  remote user deletion logic, #12611 (539300ff)
+*  allow user.exists to respond to requests for remote uids too (3dca79dd)
+*  pruning of stale notes older than 30 days with no engagement (709c9132)
+*  save remote user urls backreference (ff53f3c0)
+*  add another sanitization round before federating to remove classes from all tags in output html, closes #12573 (7c79e231)
+*  passing in types to parsePost for more specific handling by plugins (8cf96176)
+*  track incoming requests by id, analytics increment for some metrics, ignore repeated requests by id (4e9cd8ef)
+*  added analytics.peek (b106a6a0)
+*  Note deletion logic and refactoring, #12551 (ccd187e0)
+*  handle receipt of Update(Tombstone) (f4043959)
+*  on post delete, federate out an Update(Tombstone) (96db519b)
+*  serve Tombstone objects for soft deleted posts (5e9d47a1)
+*  ability to query remote users by webfinger handle (97615267)
+*  support the ability to search for posts and users by url (4cbb1f2a)
+*  basic retry queue (50bc9a37)
+*  on post edit, also target anyone who announced the post and their followers (807c3eac)
+*  add id to reject activity (32d1adf6)
+*  openapi spec for acp category federation page (fc3f3a78)
+*  support rescinding user flags (61a595de)
+*  slightly better title generation (b9d6aa46)
+*  help modal for world page (cf291a51)
+*  remove `/world/all` route, add intro header to `/world` (af324dae)
+*  add id to Like (ab055a77)
+*  handle 1b14 announce for remote content too (2ce3a116)
+*  resolve Crate and Announce activities (f802564e)
+*  utility functions to get local followers/counts given a remote actor uri, plumb cid into notes.assert via inbox.announce if a local cid is following the sending actor (452cb0a9)
+*  send id back during accepts (b7629c6e)
+*  handle Undo(Flag) (a1a7fb77)
+*  send undo when rescinding/deleting a report (c1dfa8d2)
+*  federate flag creation (2a2b855f)
+*  bulk purge flags (7bacbf76)
+*  rescind post flags (9ab1a2d1)
+*  integrate post uploads into attachments for outgoing note mocks (fdbd30dc)
+*  add id to profile updates (4d07ca4c)
+*  noremalize actor property in middleware (18ba2e38)
+*  save remote post url into hash for use (525b7c2c)
+*  note attachments via link preview plugin (6fc6cc33)
+*  add ids for undoing follows (3cc09d20)
+*  send back follow id in Accept (66b0d81c)
+*  add id to follows and verify accepts (72dbcfe3)
+*  resolve objects from ids in middleware (102c174e)
+*  filter out topics in cid -1 from tagged topics page, closes #12489 (d437d969)
+*  sign public key requests (fcd5447c)
+*  populate and send link tag/header respectively for activitypub-enabled content (4e0d7dd3)
+*  basic AP Flag support (d9eba6d2)
+*  send unique identifiers for note activities (9fc194e3)
+*  upgrade script to re-assert all known actors to save URL into hash, and bump mentions (943cef6d)
+*  sorting an filtering in /world (d1fa6a59)
+*  make the /api/world data more category-like (e266b447)
+*  add more properties from /category to /world (3c6966fb)
+*  follow redirects in API (e0138cbe)
+*  add checks to only continue with topic assertion if there is a relation to existing content, #12442 (55e947a0)
+*  add assertion lock on activitypub.notes.assert (2688b6bb)
+*  have category actor send Announce(Note) on remote replies to topics in a cid (04c743eb)
+*  have category actor send Announce(Note) activity on posts from that cid (7df5cabb)
+*  ability to update category handles (9dc20d0c)
+*  category handles, #12434 (3cc99a17)
+*  rename 'world' category to 'uncategorized' (9a5d4ffb)
+*  plumb pid into return data from posts.loadPostTools, add link to view original post, for remote content (17f62f24)
+*  add TTL cache for Actors.assert (d75894eb)
+*  log all post edits to the event log, return eid when logging events, plumb eid into Update(Note) to federate out as a unique id (83392f3c)
+*  if Update(Note) is received for a post that does not already exist, assert it (0bfdbb6a)
+*  return count of new notes in assertTopic (519e025e)
+*  add /world and /world/all to available nav items (f31d8c2e)
+*  mentions support (e4c1ca1e)
+*  allow user.search to handle remote handles, beginning of mentions support (1b64fdb5)
+*  integrate notifications for remote likes, follows, and announces. (c707a32a)
+*  federate tags out on new post (if new topic) (e1c43112)
+*  restrict loopback calls (77a3efb4)
+*  fine-grained privileges integration for fediverse users and world pseudo-category (1bd8f9a1)
+*  temporarily deny handling non-public notes (eaba2aa3)
+*  shared inbox (49c69a0f)
+*  security, cross-check key ownership against received actor (a94341f4)
+*  attachments support (e5b6ee97)
+*  save tids to individual user inboxes based on recipient list, new /world/all route (89128634)
+*  save actor follower URL backreference and sorted set backreference (da085b0e)
+*  infinite scrolling for /world (874b24cb)
+*  record remote Announce(Note) (6508287d)
+*  handle Announce(Note) when Note is a piece of remote content (94dcd29e)
+*  Announce(Note) and Undo(Announce) (415b4fe1)
+*  exposed method to find topic events based on a subset of saved info, returns topic event ids (b9821c52)
+*  topic and category S2S get responses (a461e5dd)
+*  send proper content-type on AP S2S responses (d18e65c4)
+*  category actors, stub outbox (88733a51)
+*  returning following and follower collections upon request (ae042ce3)
+*  Like(Note) and Undo(Like); federating likes (607c4623)
+*  origin checking on received Update activities (6930973d)
+*  Update(Note) (0e59f312)
+*  Update(Person) (6e87cf57)
+*  activitypub response to note retrieval via pid (6b517252)
+*  added mocks.actor and Update(Person) activity on profile update (8453b83e)
+*  Create(Note) on new topic or reply (0e016c6e)
+*  proper webfinger response for instance actor (da0211b1)
+*  application actor + public key for uid 0 signs, moved homepage route to after core routes are generated (9885f94a)
+*  native parsing of title for topics (981b4f14)
+*  beginnings of the /world route (04423232)
+*  handle Update(note) (ac672f08)
+*  handle Create(note) (f7477536)
+*  flesh out more topic info, fix navigator (7e89eadb)
+*  some additional work to properly save and retrieve remote topic data (4bd7a574)
+*  ability to browse to any ActivityPub note and have the entire topic chain render (485cf200)
+*  add activitypub request cache (326bb995)
+*  assertNotes method (ab40ba61)
+*  ability to load remote post data in a topic (3ce84b39)
+*  plumb uid into .addParentPosts() so .assertNotes() can be properly called (0d478b2c)
+*  stub lib for retrieving and mocking posts (f1e5e5a0)
+*  send name property in getActor response (5e1e8099)
+*  ability to browse follower/following lists of remote accounts (2a77ae55)
+*  expose following/follower counts in actor response (7fd15d66)
+*  show remote followers/following in user profile pages (739b0548)
+*  update mockProfile to accept actor uris as well as actor objects (672c7014)
+*  accept and undo support (4c1b2b3f)
+*  update activitypub helper resolveLocalUid to accept both webfinger name and full URL as input (1f79f542)
+*  follow/unfollow logic and receipt (c02271c7)
+*  actor cache, method to resolve inboxes, stub code for sending requests. Now base64 encoding digest as expected by Mastodon (cdc4275f)
+*  http signatures support, .sign() and .verify() AP helper methods (e7184eb8)
+*  add webfinger ttl cache (4f5f025d)
+*  add .has() call to cache/ttl (57895b72)
+*  ability to view federated profiles via url manipulation (a05b674e)
+*  followers and following endpoints (7e1dac39)
+*  inbox and outbox routes, stub controllers (81b6260f)
+*  global switch for disabling federation, + test (099124c4)
+*  activitypub actor endpoint for user accounts (2dec357a)
+* **activitypub:**  show world category in selectors (953231fc)
+
+##### Bug Fixes
+
+*  ap webfinger test (3e33e1a3)
+*  if user is logged in after registration don't go back to /login (23b37f62)
+*  closes #13056, guard against undefined keyid,compare (6073a25b)
+*  bug where newly create cids were not responding via webfinger, 404 on webfinger errors, not 400 (c17809e4)
+*  #12990, local references via remote posts are not linkified properly, + tests for helper (98280d30)
+*  #12984, fix pids numeric sorting, handle non-integers (4dc740a2)
+*  add deprecation note re: as:audience (3cf3f93a)
+*  #13021, save details of follow request before sending the follow, avoid race condition (16616814)
+*  handle ap send errors with object body (450322d1)
+*  thumbs.get to handle null case from mime.getType (50b510e3)
+*  post upload sync duplication bug (cfeb49dd)
+*  language fallbacks for activitypub-related strings (37a4fd7c)
+*  add sourceContent prop to posts API; fix other tests (e1db9642)
+*  add sourceContent prop to posts API (8ebe6de1)
+*  add missing file for openapi tests (e6b20ed3)
+*  activitypub tests (12fb205b)
+*  broken tests (9c78255e)
+*  #13014, possible fix for peertube incompatibility: strip hash value from key IDs during check (0ad8ed9d)
+*  #12996, invalid title generation when remote post content has markdown source (1d36ab6d)
+*  #13017, probe redirection if url is identical to id (39705a17)
+*  #13016, remote account deletion frontend UI bug (2005a02a)
+*  add missing catch, closes #13012 (45021b5b)
+*  check if url is undefined (fa81078a)
+*  #12941, inherit audience from earlier posts in the chain so as to send a coherent value to Lemmy instances, re: lemmynet/lemmy#5278 (97384b2c)
+*  add 10s timeout for AP message send (25d6ef43)
+*  ignore subsequent shares of the same topic by that user (d734ce49)
+*  #12972, allow bridgyfed accounts to pass isWebfinger regex validation (a7e6cfe8)
+*  bump harmony (ee8ec61e)
+*  fix double thumb due to post attachments (755b9855)
+*  lemmy integration, handle `image` property as topic thumb (b15a684a)
+*  wrap try..catch around topics.reply in note assertion to output errors (b551abce)
+*  have options.update also trigger handle and search updates on actor assertion (050acb4f)
+*  separate out removals vs. additions in actor assertion in order to hopefully resolve #12959 (546ffed2)
+*  openapi schema for ap routes (c86b6f24)
+*  get version directly from package.json (3340720e)
+*  set linkValue for remote user fields (3d653cbb)
+*  crash due to missing param when calling getCustomUserFields (e5fdf9f1)
+*  set a user-agent when sending requests (64339e61)
+*  persist `sourceContent` into post hash when ingesting remote posts, update markdown so that field is parsed instead of ignoring content (1839388b)
+*  use fediverse pseudo-user for webfinger privilege checks (f32184b2)
+*  regression on remote deletes, received object is not always a simple id (d7fe3558)
+*  thrown exception from failed note assertion (830aab66)
+*  one more (304fa554)
+*  another fix re: 3780fdc6ff9fb23048266b43ceae86646fb795cc (69d5544a)
+*  thrown exception from failed note assertion (f7a294a7)
+*  additional fixes re: 3780fdc6ff9fb23048266b43ceae86646fb795cc (97861dd1)
+*  regression on remote deletes, received object is not always a simple id (3780fdc6)
+*  #12939 convert custom emoji in actor summary into images (78a9e86c)
+*  translate custom field names and values when federating out (e6edcefd)
+*  bump emoji-android version (552298f8)
+*  bump harmony and re-tag (593a1933)
+*  bump emoji to 6.0.1 (efa0cac3)
+*  bump harmony (00b2dd49)
+*  strip html from remote custom fields, linkify if url detected in now-plaintext field value (065f84b6)
+*  handling of empty custom user fields from remote users (1bebb82b)
+*  don't send custom fields in remote user actor object if no value is entered (09f00f8e)
+*  hotfix for empty user fields (ce1efd39)
+*  bump mentions (e5f804ff)
+*  #12928, topic showing wrong queued posts in-topic when topic is remote (7b747c8f)
+*  replace parseInt that was excluding remote pids from calculation (93bb73c1)
+*  #12923, inability to start chat with remote users via profile (b6a2520f)
+*  inability to directly post to a nodebb category from the fediverse (55ab85ac)
+*  #12919, handle when buildTopicsSortedSet returns a non-array (e4e6b1d2)
+*  #12912, strip custom emoji from remote content titles (7adc3140)
+*  don't chop off colons when generating titles as they could interfere with emoji (f449fafc)
+*  #12893, topic with pages returning OrderedCollectionPage instead of OrderedCollection. (d685b20e)
+*  missing return (cf3555fa)
+*  #12887, strip target attribute from remote posts' html (3eb0a0ed)
+*  #12866 again, more tests (a59dae3f)
+*  raise probe timeout to 2s (94e34907)
+*  topic count not showing up on category page (dd363446)
+*  #12882, view original post circles back to same topic (93844321)
+*  #12883, activitypub probe timeout (f8729571)
+*  errant mention detection via actors.note (22dbf15e)
+*  #12880, refactored ap controller.list to use `buildTopicsSortedSet`, moved out poor man's intersect to internal method (05c8ee9f)
+*  don't trust timestamps on received items (b1d779ca)
+*  use `categories.getTopicIds` instead of duplicating existing logic to get world tids (7bf41138)
+*  #12866, improve title generator, refactor tests (beb85604)
+*  one more fix (eccad588)
+*  debug return not restored back (0e982fcf)
+*  #12865, crash on liking a chat message (fc3243d6)
+*  possible fix to escaped emoji in titles (f5324501)
+*  #12707 ensure actor matches context attributedTo (998273cd)
+*  federate out an Add on post creation even if there are no category followers (15516862)
+*  accidental sending of Set to ActivityPub.send (3030a720)
+*  #12857 byebye cheerio (8492b5f4)
+*  inputIndex check (cac4f8e7)
+*  convert some more verbose logging to use ap logging helper (6208ab8d)
+*  regression introduced by 903d03891941902ddac80b380552530e1853c306 (d451adaf)
+*  lint (c34407d8)
+*  errant parseInt in canEditDelete (0f1b1164)
+*  guard against missing to/cc (1d5f490d)
+*  object not array (873d033b)
+*  backend logic fixes for #12853 (b472c589)
+*  groups not showing up on new reply (1bf09907)
+*  re-enable logging only for dev mode (a226ee9e)
+*  defer postdata retrieval (9062691a)
+*  `inReplyTo` incorrectly including system messages, #12834 (7ad7bc47)
+*  remote debug log (e9a27db2)
+*  error on replying to remote mids #12834 (adf33cfa)
+*  proper urls in `to`, #12834 (94ac57ea)
+*  simplify uid logic, explicitly mention all participants, even local users, #12834 (70fe8689)
+*  adjust timestamp after message creation instead of passing timestamp in, #12834 (0346e92b)
+*  limited visibility remote posts with greater scope than asserted roomId should add those users to the chat room, #12834 (22931be1)
+*  empty mid on frontend for remote posts (8abfd951)
+*  recent chats string generation to handle remote users #12834 (0a17a0b9)
+*  inReplyTo bug, #12834 (fc1d064d)
+*  remove sender from recipients, #12834 (8f7d0499)
+*  private note `inReplyTo` url, #12834 (f3045309)
+*  `inReplyTo` for private notes so that refer to the immediately previous message if not explicitly defined (f4a02d9c)
+*  duplicate logic and double-parsing issue, #12834 (8a1abe68)
+*  federate out a Create(Note) instead of just the note... doi... (74d5ced2)
+*  chat room kicking of remote users, (un)read logic for remote users (there is none), sendNotification to only apply to local uids (52080ba2)
+*  restrict the ability to make a remote user a chat room owner (b610b520)
+*  display of remote users in chat room search (f5129017)
+*  also ignore non-public notes on Update activity (2713d13c)
+*  bump web-push (f57758b9)
+*  logic tweak (15f60b24)
+*  fall back to inReplyTo traversal on context resolution failure (903d0389)
+*  tests (45a0b818)
+*  null defense (3d25a079)
+*  #12821, improvements to search bar and search logic (0b83e5b8)
+*  lint (c265666c)
+*  parse aboutme when mocking a user (c5e10c1a)
+*  remove superfluous service-worker code (90cc7e61)
+*  explicitly set `updated` property when federating notes out (6fe4d446)
+*  buttons for general settings (5bc907a0)
+*  bump mentions (e0c410cd)
+*  actors.assert attempting to process things that aren't actors, #12809 (6b4b4b1a)
+*  carry out mime-type guessing on incoming attachments (71ce3089)
+*  re-use already parsed html in api.posts.edit's call to getPostSummaryByPids, delay federating out edit activity for 5s to give link preview a chance to resolve (b04a1105)
+*  id on 1b12 announces (047d5992)
+*  better handling for remote posts that do not contain content (3c55d102)
+*  #12799 add externally linked images to `attachment` (1a0a2cd1)
+*  remove includeUncontrolled as we are posting messages, and that only works with windows you control lol (028b6d74)
+*  add logic to automatically take over clients from old service workers (1fbf9114)
+*  closes #12787, filter null topics (c2600b12)
+*  remove use of jquery $(this) in ajaxify (176f4d0d)
+*  crash when AP S2S call made to retrieve a remote user account (not allowed); now returning 404 (d42d3b1c)
+*  prevent crash if items is undefined (a80e3141)
+*  regression that caused replies to not get federated (652d6c6e)
+*  #12760, add proper security context for application actor (045e16d3)
+*  on topic move out of cid -1, also federate to the public address (909437c3)
+*  bump harmony (6ed32f67)
+*  type casting in user block logic (0f63f67b)
+*  restrict announce activity to topic moving OUT of cid -1 (f3eb6d50)
+*  #12751, topics:recent zset not updated when tid moved in/out of cid -1 (76551c71)
+*  bump mentions (e6d8e059)
+*  bump composer (22952c54)
+*  bump composer (e2879563)
+*  #12732 editing of remote post content (25bf97ae)
+*  #12733, html present in generated title for remote topics (34747122)
+*  #12729, replies to existing topics from Pixelfed not asserting properly due to incorrect `toPid` (f481cde1)
+*  move topic reply call in notes.assert to its own line (95e6d2b4)
+*  #12510, blocking of a single remote user causes content from all remote users to be blocked (53aee401)
+*  serve category actor image instead of nothing, serve brand logo in icon (cbe0a0ad)
+*  lint (d33fb92d)
+*  have note federation call .parsePost instead of firing plugin hook (93536386)
+*  always send replies uri instead of null if no replies exist, @trwnh (ff08fbb7)
+*  send `null` instead of empty array in `replies` property if mocked note has no replies (9bd6896d)
+*  bug that caused remote replies to other remote content to not always assert (2ced3502)
+*  bugs in user searching causing remote lookups to fail (1f896fb6)
+*  `audience` property in topic actor response (9a54f6bc)
+*  updating of post counts for remote users (3e494dc7)
+*  add privilege check to user follows (399d4103)
+*  accidental passing of string instead of constant (7bf349b6)
+*  lint (fc5a829c)
+*  update upgrade script date (b9f37c5c)
+*  include follower sets for reassertion (be393d57)
+*  missing await (5c9ac5d3)
+*  null check for note attachments for thumbs view (2aa04837)
+*  incorrect parsing of context items during note assertion, logic error with slicing (60408f23)
+*  logging in topic actor logic (bc00835c)
+*  issue with topic actors not returning proper json (609035b5)
+*  off by one error @barisusakli (cfbaf145)
+*  map to actual mainPid value (7bdf3769)
+*  skip topic retrieval when cid is -1, as it is done again later (92191995)
+*  flawed logic in generating topic context collection (31c7226e)
+*  rename announcers to shares (3c0d7616)
+*  catch thrown errors in src/api/activitypub (fdc0d670)
+*  federating category mentions (00a26679)
+*  send html in category description (f605e188)
+*  Update activity handling for non-Person actors (5e343a83)
+*  remove await from category update federation call (bacbfba9)
+*  issue where incrementing user hash fields didn't use the right key name for remote announce @barisusakli (e84cfd8c)
+*  lint (b0eec67d)
+*  send back empty array if no direct replies, bug with reply generation (af6ae6ee)
+*  accidental passing-in of an array into getUserField, breaks in pgsql? (8e1fccf0)
+*  hardcoded tid in topic thumbs test (78a6c60c)
+*  tighten up logic in checkToPid internal method (f629b20f)
+*  partial revert to fix url_parsed not being available at top of file @barisusakli (8ecbb5cc)
+*  removal of topics from applicable user inboxes when synced (46341673)
+*  tweak logic for topic counters sorted sets, #12642 (0d549f1d)
+*  #12667; handle cases where received id is not a URL (d92efb8a)
+*  #12673 fullname not defined in some remote actors (f662a606)
+*  only send Update(Actor) to followers, #12674 (26946c7f)
+*  missing sorted set member removal on category unfollow (a748068c)
+*  add timestamp to follow activity to make it unique (eab231ee)
+*  additional logging for activities with no context property (cb5e5b4b)
+*  update handling of Announce(Create(Note)) to also handle non-note types (600b1a86)
+*  push instead of unshift, now that order is reversed (cc0bbcb7)
+*  wrong property name for OrderedCollection items (a2fb939b)
+*  improper sourceContent in mocks (615aaa01)
+*  #12662, add original activity actor to Announced activity's cc (d6f44d8e)
+*  remove duplicate 1b12 announce in notes.assert (already handled in inbox) (4dbb73a4)
+*  #12652, incorrect user, post, topic counters with AP enabled (fe70a2b8)
+*  incorrect activity id sent out on 1b12 announce (ef97a784)
+*  #12654, incorrect location of `sharedInbox` property (b66d998d)
+*  regression that caused new notes to have undefined cid and fail privilege check (a371c9fc)
+*  move call to retrieve cid followers out of loop (89dd2fb0)
+*  do not retrieve remote outbox count when asserting actor (16f8f536)
+*  double sanitization (d9ac7f49)
+*  dont load  cid=-1 in tag filter dropdown (7d679db2)
+*  change setImmediate to a 5s timeout to give plugins (or anything waiting for the return value of the API call) a chance to finish execution (7fada44b)
+*  openapi spec for v3 posts get (4b86b378)
+*  wrap ap note creation in setImmediate to let internal hooks have a chance to wrap up first (a3c6c872)
+*  improper sanitization and parsing in mocks.note (59818031)
+*  remove parseInt on users controller (5a2fa52c)
+*  send additional @context entry for `publicKey` support, fixes #12604 (4eb998d5)
+*  null case handling (e6e6c2a2)
+*  category follow schema test (4b8a9e58)
+*  getCidByPid call returning improper values because a remote url to a local post was passed in (4030c09e)
+*  1b12 conformance for inbox.create as well (c8bc6e55)
+*  re-add sending of Announce(Note) for microblog support, #12434 (89d2363d)
+*  FEP 1b12 conformance, federate Announce(Create(Note)) instead of Announce(Note), #12434 (be95b5b1)
+*  missing openapi schema change (e9a0d495)
+*  eliminate infinite loop in actors.assert via user.getUsersFields (18e58318)
+*  minor adjustment in logic to work around relation logic (1219d7d3)
+*  introduce artificial 5s delay for 1b12 announces (101062cb)
+*  move logic to move topic on note assertion earlier in the flow so it actually runs (acd1630b)
+*  post count (badb7e2c)
+*  skip follower count check if cid follower is found (f29214e0)
+*  don't crash process on error in cronjobs (89465ec6)
+*  handle missing fullname in actor removal logic (ae3fa85f)
+*  guard against infinite loop during topic purge batch call (6272d059)
+*  unintentional parseInt during post purge (bcfac00b)
+*  pid in api call (70625133)
+*  missing await on topic purge (6ecc791d)
+*  don't attempt user reset token cleaning if uid is not a number (8d790964)
+*  set (f83a3672)
+*  incorrect use of .map on a Set (c6f2155f)
+*  another crash (f8d9f644)
+*  closes #12618, handle missing selector (35eb2d0d)
+*  crash in mocks.profile (6f37825b)
+*  bug that stopped remote users with dashes in their handle from being properly asserted (76290e37)
+*  parse incoming HTML to remove useless classes too (47406d13)
+*  update post cache clearing logic to call helper function (547fc17d)
+*  have replies provide `name` when mocked (b6653d15)
+*  lint (f93b237e)
+*  remove .only (a0054400)
+*  minor cleanup (129017f7)
+*  Notes.delete to delete announcer zsets too (b5b89038)
+*  rename api.activitypub.create.post to .note() (2d7ca48d)
+*  canPurge logic fault (d40d0b06)
+*  allow remote content to skip isReady check on topic creation/reply (5bfde4c4)
+*  Topic.isOwner check to handle remote users (0a1ad87d)
+*  special handling for privsTopics.canPurge for remote posts (b67a7c3c)
+*  Posts.isMain cast pid to String instead (9fbd48b1)
+*  special logic for purge privilege checks (9f44e99f)
+*  unnecessary parseInt in post purge api method (eda97da1)
+*  type error in attachment emptying method (336ea1ee)
+*  tag notification if pid is not int (baada2fc)
+*  encode most uses of pid to avoid more bugs like #12545 (c973a9ca)
+*  allow quoting AP posts, fixes #12545 (43dfb60f)
+*  Update(Note) federation should only apply to local content (6f9fa660)
+*  attach announcers and their followers to cc, not to targets, only attach announcers to targets (51089a34)
+*  bump harmony (2cd9088c)
+*  inability to query local content via remote url (ac74d9c5)
+*  ensure consistent return type from notes.assert (a7aeabc8)
+*  remove unnecessary check and guard against unsupported URIs before fetching (af986758)
+*  handle retry queue invalidation across a cluster (22b42f11)
+*  use batch.processArray properly (729f0fca)
+*  if an unknown post is navigated to by a logged-in user, automatically assert the post and add it to their inbox (4e7b12b9)
+*  bump harmony (e341a5d8)
+*  bump composer-default (4e006adb)
+*  save followersUrl to remote user hashes (738d47c7)
+*  notifications for tag followers not being sent if author is a remote user (8de2352e)
+*  send topic title in context object (05cdb7d9)
+*  partOf and type (109f4232)
+*  if post count is less than posts per page, don't paginate in ordered collection (1a21c8ad)
+*  send id for category announces (0336e8f0)
+*  post deletion of remote posts (5e203197)
+*  update title generator to include the punctuation, and also take into account question marks and exclamation marks (6ac5a779)
+*  remove unneeded `flagged` property in favour of flagId, use existing language key for rescind-report (449ffd66)
+*  have category sync routes return full api response, openapi schema for that pair of routes (b7ad4317)
+*  update signature parsing logic to handle values with equal signs in them, closes #12538 (596a5e4b)
+*  unintentional object pollution by buildForSelectCategories (40b9dabd)
+*  better logic for choosing webfinger lookups (ed84eed8)
+*  don't look up webfinger when it's not necessary (dd71340a)
+*  update hasRelation condition to be true if cid is passed in in options (6964b1fd)
+*  handle requests to URI IDs correctly (1ecbf02a)
+*  handle URI actor IDs (70001664)
+*  percent-encode outgoing webfinger requests (3d1e2cde)
+*  bump harmony (59021d8a)
+*  icon:text and icon:bgColor for remote users (3721f819)
+*  handle Announce(Create(Note)) (a9a7fd1e)
+*  use system pseudo-user for topic move call (dce33446)
+*  if the topic already existed in -1, move it to another category if one was passed in options (49a64dc7)
+*  add back reverse lookup for notes assertion checking via cids (407dda78)
+*  actors.assert should return false if webfinger cannot resolve to an id (b7ff7be2)
+*  support reporting remote content in Flag (026449dc)
+*  #12505, convert relative urls in links and images into absolute urls, uses same logic as for emails (7c4ae8eb)
+*  #12502, improper decrement (6befff5e)
+*  send userslug in preferredUsername (64258dac)
+*  wrong variable name (50f31b23)
+*  change default attachment type to Link, or Image if mediaType matches (bb4e418d)
+*  save modified actor back to req.body (c3365908)
+*  you scurvy cur! (52271cae)
+*  handle (created) and (expires) in http signatures (4d23a837)
+*  #12496, url in schema (f7833386)
+*   handle remote userslugs with non-lowercase letters (f5ea470d)
+*  send hs2019 as algo (to match cavage-12, handle incoming algorithm value (8d0876b8)
+*  bump harmony (b8daa02f)
+*  throw errors when local objects don't exist (959e1820)
+*  #12493, send unescaped fullname through via AP if displayname is set/used (e0f542c9)
+*  send only the id into actors.assert (465a46f2)
+*  use a slightly better error code to indicate object resolution failure (c92b5e07)
+*  assume object is full object and not just id everywhere (e0166ccc)
+*  use resolved object in likes (962c6351)
+*  reject accepts of invalid follows and return when already following (b6168202)
+*  handle resolved objects in flag (41f77f8f)
+*  additional verbose logging for signature verification (464dd806)
+*  bump mentions (6b169e04)
+*  default to showing alternate as link to the post object (86107535)
+*  pid via index calculation (de83d6b0)
+*  support ldjson with ActivityStreams profile in actor queries (c30c1288)
+*  early return on invalid actor (2d1524ee)
+*  use actor id in flags (e25f0621)
+*  make sort work with world filters (cd8a91fe)
+*  uppercase digest algorithm name for compatibility reasons (5c1c1d21)
+*  better handle null return from notes.assert (cbfc8d25)
+*  bump mentions (86caf237)
+*  actor assertion logic to ignore loopback urls (f40df387)
+*  lol (983153fb)
+*  maybe last tweak (42bdffdc)
+*  tweak upgrade script again (ae146024)
+*  tweak upgrade script again (166e3e2f)
+*  add timeout on activitypub.get, tweak upgrade script (442e98e4)
+*  tests, save actor URL into userRemote hash (59709a3c)
+*  show locally captured remote posts when browsing remote profiles (1084f21d)
+*  have getCidsByPrivilege include cid -1 when set is categories:cid (e828e87e)
+*  updateLastOnlineTime for remote uids (893788a2)
+*  bump harmony (2cbc3913)
+*  adjust world schema (a3dce463)
+*  redirect to /api/world for API requests (495d5435)
+*  lint (f078e1e2)
+*  skip notes.assert checks for Announce(Note) if it's a remote object, do our own checks; #12442 (4fcd2bb2)
+*  getSortedTopics; filter out topics in cid -1 unless explicitly asked for (dff5d1c6)
+*  #12444 add uncategorized topics counted stats to separate sorted set (8dcdf8ef)
+*  undefined object in notes.assert (1fb3c4fd)
+*  typo (bab41d12)
+*  restore userOrGroupExists, as alias to slugTaken (e0f6b707)
+*  send handle as category actor's preferredUsername, #12434 (803975fd)
+*  use CategoryObject in admins-mods schema def (aafdefa7)
+*  only send activitypub+json links via webfinger if activitypub is global enabled (65bb8666)
+*  bump harmony (9c03e6e9)
+*  resolve interoperability issues with Misskey, et al. (003c6469)
+*  bump harmony (da2a1e20)
+*  issue where cid -1 appeared in all category searches (8f131b71)
+*  bump harmony (2756aae7)
+*  post urls to use  prefix instead of linking out directly to origin server, exposed encodeURIComponent as a template helper for themes (2408ecd8)
+*  regression that caused S2S calls to topics to return with a 404 (5a2d17df)
+*  restore accidentally removed calls to updateLocalRecipients and saveAttachments (5f60f75f)
+*  properly handle empty fields param (c76d4018)
+*  circular object ref. (7af07151)
+*  tweak maxTags handling (ccd9c7ed)
+*  bump mentions (ff6cc90c)
+*  send topic notif on reply (1a92239c)
+*  typo (44a183dd)
+*  double-OP issue when remote reply comes in to local mainPid (0a2482cf)
+*  filter out system tags and prune extra tags beyond number allowed, when creating topic from remote data (7aa56c72)
+*  resolve toPid to local pid if able (ebd750b4)
+*  tweak user.search to better handle local usernames with colons in them (c346177b)
+*  accidental saving of ephemeral _activitypub object into db, should plumb into hooks only (81b319f4)
+*  handle actor assertion failure if mocked profile does not have a fullname (338c568c)
+*  template helper (52c143aa)
+*  tests (4b2495b5)
+*  remove unused param in addParentPosts (01f7af92)
+*  only dereference id if it doesn't exist locally — fewer calls (eb8ff75b)
+*  specify param for api test for /world (b1491ca3)
+*  AP S2S handling for /user/:userslug route (9cd6b496)
+*  handle fetch failures on helpers.query (5768a437)
+*  more duplicate detection in to/cc (ceab77e4)
+*  markAsRead to handle remote topics (17c55922)
+*  parse questions like a post (90e7d3a1)
+*  properly build recipients... old logic was just plain wrong :shipit: (1e663239)
+*  reallow topic:read privilege for fediverse group (97e5b0fd)
+*  only serve local posts via S2S when queried (00101d9e)
+*   note not federated out to mentioned users' inboxes (6423d514)
+*  update styling of available nav items in ACP (6aece689)
+*  remove unresolvable actors from parsing prior to mocking profile (39da3ab6)
+*  send explicitly empty array for attachment prop in mocks.note (4a8b06e8)
+*  remove some privs from fediverse in world category (6999bd68)
+*  inability to retrieve previously-unknown remote users via url manipulation (28f38b26)
+*  tags received via AP should only be of type Hashtag (as mentions are also in tag prop (81b81e54)
+*  data schema of reject activities (beaedc86)
+*  fallbacks for if preferredUsername is not set (9f8c706f)
+*  pass proper uid to privilege check in AP note federation (95427c4a)
+*  remove console logging (4c2cbb5b)
+*  move fallback 0 return in parseIntFields to other side of ternary conditional (5b74f6da)
+*  remove intFields hack and update db.parseIntFields to only parseInt if field value is a number (f368a1a8)
+*  truthy check in notes.assert (6671b511)
+*  remote user avatars in notifications (aef1215f)
+*  bump mentions (ae09aa20)
+*  properly handle if mainPid is not a number (1ca9994f)
+*  mainPid detection in unprocessed ids in assertTopic (b529610b)
+*  redir on bad world filter (0cf6af9b)
+*  serve fallback images on category actor (8cb984d4)
+*  bump markdown (44452a3b)
+*  missing invocation of generatePostUrl in generateRepliedTo helper (a08b2efb)
+*  unable to process Update(Person) (96a3a746)
+*  crash in resolveLocalId if Number is passed in (d51f5e59)
+*  missing await, and handle local posts with no toPid (i.e. reply to OP) (0b6b86d1)
+*  don't overwrite title if present, on assertTopic (a3368a69)
+*  bump markdown (b1894276)
+*  copy fixes, rename upgrade script, disable federation on upgrades (281e9d6e)
+*  update ap-related deps to prerelease versions (10abb82e)
+*  defer federation of new topics when topic is scheduled, tie activitypub api module to global enable toggle (5f85e700)
+*  lint (563db78f)
+*  put postcount retrieval behind try..catch so errors are handled appropriately (28370b10)
+*  side-effects from adding toPid to post intFields (now removed) (b0115951)
+*  revert introduction of toPid into post intFields, manually cast toPid as int in getPostSummaryByPids if present and numeric (3a870360)
+*  check origin only if object is a string (92a8951b)
+*  send string to validator (893dd523)
+*  regression re: attachment handling (53d1c10e)
+*  parseIntFields for tids (31fd135f)
+*  handle undo(Announce) of remote notes (cfbbf4ca)
+*  assert actors on note assertion, resolve crash if announcing something that's already been announced (6a7f8f14)
+*  don't crash when no attachment, oops (0edaf17c)
+*  sanitize post remote post content regardless (8b0ccc80)
+*  wrong id parsed in announce (068c4fa9)
+*  accidental overwrite of hoisted internal variable (56cfae07)
+*  include mainPid in topic counts calculation (5c04e805)
+*  guests visiting /world should see all remote topics (19d017b9)
+*  timestamp calculation (6a11c89b)
+*  better handling of missing of invalid to, cc, timestamp values (76d5feb7)
+*  remote announces not showing up in local inboxes (814c4794)
+*  handle inaccessible boosts (9439987e)
+*  remove invalid/inaccessible object from parent traversal chain on get error (672a907d)
+*  handle invalid score (609a9a37)
+*  mainPid accidental int (22da3a6a)
+*  getParentChain error handling (69f1ace3)
+*  take mainPid into account in syncUserInboxes (d13980c8)
+*  typo (de71b733)
+*  stringify error body in ap.send (401b4c5f)
+*  activitypub.get failure handling (12968b62)
+*  only log warning on ap.send failure (ce4b5679)
+*  rejig some tertiary conditionals, fix broken inReplyTo when toPid is not defined and mainPid is a remote post (5fee4e33)
+*  resolveLocalId to return null values instead of throwing for no resolution (11dba85d)
+*  don't crash on activitypub.send non-2xx, better logging for successful sends (ac56289f)
+*  replies to remote content overriding mainPid in topic (2b1a3477)
+*  assertTopic incorrectly creating new id if passed-in id did not match the actual object's id (f1b8f3fe)
+*  urls in posts and announces (4fb6574c)
+*  remove now unused world/:tid route and assoc. controller (a61e7fe7)
+*  cast cids passed in to getCategoriesFields as ints (aafdebd2)
+*  logic error (80377599)
+*  logic derp (9795abbf)
+*  new language source file for activitypub text (21a2876e)
+*  getUserInfo internal method in topic events to not filter out uids because getUsersFields already does it (f7259ccb)
+*  category following and acceptance logic (25f0d484)
+*  properly assert resources in AP router (d2f14c36)
+*  update preferredUsername in category actor to match webfinger representation (d213ce79)
+*  follower calls to return empty item list unless a page is explicitly passed in (94361721)
+*  move all actor object urls to immutable variants (86a607ce)
+*  send proper @context value for posts (was missing) (457bfe16)
+*  remote follows, yet again (fef18824)
+*  a bunch of broken things, added test for Create(Note) (a3a0edb7)
+*  error handling for actor.assert (fa1c5490)
+*  missing break statement (2c834263)
+*  reject spiders on remote profile GETs (a355c05d)
+*  send back correct actor id on webfinger calls (25434d2a)
+*  parseInt on timestamp from post (ddf17ee5)
+*  /uid/:uid route to return actor (0b3ca8e3)
+*  the id of an actor should be its immutable uri (/uid/:uid) and not userslug (e07c3131)
+*  unused require, tests (3c24cfb4)
+*  send full as:Image object for icon and image in mocked actor object (0af97dd4)
+*  clear post cache on Update(Note) (f51bbe91)
+*  webfinger loopback (1ee03f2b)
+*  revert home page routing change and moved instance actor endpoint to (e00a03bb)
+*  restore avatars in topic list (3bdaa8a8)
+*  send preferredUsername in application actor response (f8cfe64c)
+*  note assertion on Create(Note) and Update(Note) to use instance key instead of uid 1's user key (4cc7ee65)
+*  add workaround for nodejs/undici#1305 required to remove sec-fetch-mode header (2cb37088)
+*  response, not res (9e58b04c)
+*  automatically reject unsigned POSTs to inbox (a3e1a666)
+*  handle case where pubKey cannot be found (33f3da8a)
+*  user data in /world (518169fe)
+*  bookmark in topic data is nullable now (970a5a6e)
+*  saving teaserPid, timestamp, lastposttime in topic, fixed post index issue in loading topics (60bc27ec)
+*  preserve cid if set (e038eb05)
+*  incorrect author uid saved in topic (75654852)
+*  infinite scroll for posts (8cd3ff1a)
+*  reply expansion (5ac02765)
+*  issues related to adding new reply chains to an existing topic, resolveId method in notes module (2981f663)
+*  simplify increasePostCount logic by combining methods (81d81098)
+*  have mocks.posts return same number of items as received (d992239d)
+*  show full names for remote users (d1cdb8f8)
+*  improper params sent to get and getActor (9221506b)
+*  restore hostname prop in getActor method (ec3c6b67)
+*  ActivityPub.get now throws on failure, handle in getActor (7ec75f58)
+*  send in mocked profile data in follow routes as well (942a9b7e)
+*  tests (c66b1867)
+*  isUri helper so that it passes ci tests (27e256d2)
+*  frontend follow logic, as uid is no longer webfinger slug (fcca9259)
+*  use simpler getSortedSetRevRange instead of unnecessary zunion call (283e460a)
+*  accept and undo logic saving improper id into database, updated follow logic so remote follow is not added to collection until an accept is received (759d69e0)
+*  relax activity-failed condition (3339baac)
+*  additional refactors and updates to follow/unfollow logic (6a54e009)
+*  bug where body wasn't properly sent on ap-style content-types (ac344011)
+*  send actor uris in follow instead of webfinger ids (543daee8)
+*  some wip code regarding handling a follow activity, remove unfollow activity as that does not exist (f3b0794d)
+*  accidental double-hash in sign/verify (0eadad84)
+*  incorrect logic (71e3d26b)
+*  update proceedOnActivityPub middleware to handle how Mastodon doesn't send the 'Accepts' header (dd480aa4)
+*  another bad call to request lib (88527884)
+*  broken call to request lib, tests (8d796170)
+*  update isJSON test in request lib (510763af)
+*  handle null actor uri in helpers.query (a21110fd)
+*  unused require (7f46f07c)
+*  store remote followed users count separately from local (e794f1d2)
+*  icon text and bgColor in remote profiles (4324f09c)
+*  add basic sanity-checking to middleware.validateActivity (99cc60c8)
+*  incorrect host/hostname usage in well-known test (bcee1c8d)
+*  save remote follower count separately from local follower count (4218ecc4)
+*  missing req.body when parsing ActivityPub requests (e6753ce5)
+*  bugs, more prep to start making calls to self (5d95765e)
+*  moved .well-known assets to separate router file, added basic webfinger implementation (51d8f3b1)
+* **deps:**
+  *  update dependency ace-builds to v1.37.5 (#13058) (76a14de3)
+  *  update dependency fs-extra to v11.3.0 (#13055) (9a401b5b)
+  *  update dependency postcss to v8.5.1 (#13050) (3ba1d264)
+  *  update dependency nodebb-plugin-web-push to v0.7.2 (#13049) (e9a4c42b)
+  *  update dependency nodebb-plugin-2factor to v7.5.8 (#13048) (3827f438)
+  *  update dependency sass to v1.83.4 (#13046) (8e62800b)
+  *  update dependency postcss to v8.5.0 (#13044) (c4c89116)
+  *  update dependency cron to v3.5.0 (#13042) (5e5d920b)
+  *  pin dependencies (#12987) (430d1479)
+  *  update dependency satori to ^0.12.0 (#12995) (05f7b58c)
+  *  update dependency tough-cookie to v5.1.0 (#13039) (34b0cf6b)
+  *  update fontsource monorepo to v5.1.1 (#13029) (b1e87aa9)
+  *  update dependency fetch-cookie to v3.1.0 (#13006) (df69b399)
+  *  update dependency ace-builds to v1.37.4 (#12988) (3a33cd5b)
+  *  update dependency esbuild to v0.24.2 (#12989) (701780fe)
+  *  update dependency sanitize-html to v2.14.0 (#12994) (bfc962b9)
+  *  update dependency ioredis to v5.4.2 (#12993) (7943fcde)
+  *  update dependency cron to v3.4.0 (#13026) (de571d24)
+  *  update dependency sass to v1.83.1 (#13028) (438f4e0a)
+  *  update dependency nodebb-widget-essentials to v7.0.32 (#13027) (de076a21)
+  *  #12683 bump emoji plugin to v6 (e8fda4c0)
+  *  swap ntfy for web-push plugin (aa060d31)
+  *  persona v4 support (83993cad)
+  *  bump markdown (daed7413)
+
+##### Other Changes
+
+*  fix paranthesis (8fd8079a)
+*  remove unused utils (7e450e1d)
+*  remove unused function (26765fe9)
+*  remove unused (530241e0)
+*  comment out actor assertion call in Users.getUsersFields (691f6917)
+*  fix some but not all tests (76453650)
+*  fix privileges in test runner (aadac705)
+*  unused requires, linting fixes (3e02efcd)
+*  additional logging (08f8babd)
+*  fix eslint errors (47b3ffb9)
+
+##### Performance Improvements
+
+*  ~18x speedup of /world route (f6f01ba3)
+*  get rid of exists call, load all attachments  in one call (9b8c834e)
+*  use batch in resolveInboxes (644bcec5)
+*  get rid of getPidByIndex, use postAtIndex (ad22b54e)
+*  '-inf' faster (c95075e1)
+*  move attachments to post hash (291bf7db)
+
+##### Refactors
+
+*  use helpers.log (40257663)
+*  add `thumbsOnly` option to thumbs retrieval method so that embeds/attachments don't show up in composer thumbnail modal (51fd65ab)
+*  split (and remove) activitypub.json file and move strings to more appropriate locations (e4e10636)
+*  topic thumb logic so that `isDraft` is based on topic existence, and not whether it is a UUID, as remote topics are also UUIDs. (3439fdb6)
+*  post object schema to its own reference object, added sourceContent as optional value in post data (3073abd9)
+*  prolly dont need exists check (a42c9a6b)
+*  buildTopicsSortedSet (c1093c92)
+*  expose buildRecipients as a main activitypub lib method, call buildReceipients in ap controller actors for notes (5e47b194)
+*  followers url filtering logic, #12834 (ca683c6d)
+*  check HTTP signatures on all activitypub requests (8ef0df57)
+*  simplified ajaxify.check and likely made it equally more confusing (cf6c4c52)
+*  split out logic to determine ajaxification into exported method (fc4f6a4c)
+*  standardization; onNewPost internal method to return a superset of post summary (9357e718)
+*  follow/accept/undo logic to pass the same timestamp throughout the follow's lifetime (e015339c)
+*  store local follow backreferences for remote users (both followers and following), update actor pruning to take local follow counts into consideration, fixes #12701 (39f92eac)
+*  collection logic out to an activitypub helper (352857cf)
+*  context item retrieval logic (20aee8e9)
+*  announces (c021e7e8)
+*  single db call (c231ab78)
+*  actor pruning logic (6227ab90)
+*  catch errors (f76a5863)
+*  add method from mentions into core (3eca9785)
+*  dont need exist check, if post doesnt exist getPostData returns null (b2d03da9)
+*  User.getUidsByUserslugs, so it works with multiple slugs (eb6fe339)
+*  suggest topics, use strings for tids (3488a4bf)
+*  unused winston (869df3c2)
+*  change to info (d1625d5f)
+*  remove verbose logs, (2ae58570)
+*  comment out verbose logs (ba2d1841)
+*  get rid of noop (eaf43541)
+*  single cache.del call (9868a728)
+*  #12553, buildRecipients so that it is separate from addressing in mocks.js (1fa93465)
+*  use batch.processArray for sending AP messages (ea6e15bf)
+*  context actor to serve an as:OrderedCollection instead of as:Page, and added context property (as per FEP-7888) to refer to it, changed audience to point to category (4b29a1b9)
+*  post announce logic to save to separate zset instead of to topic events, closes #12536 (119800d9)
+*  remove unnecessary flag routes added in 9ab1a2d (53b352d0)
+*  split activitypub tests to subfolder files (94eafe1d)
+*  use URLSearchParams instead of multiple encodeURIComponent (844d1402)
+*  stub routes for category synchronization, refactor remote follow logic to allow categories to conduct follows as well (59a9dd84)
+*  use a helper to resolve actor URI (b921f8d1)
+*  use getSortedSetUnion in syncUserInboxes instead (6c1a0fb1)
+*  use one internal rejection method (ac765f1e)
+*  use topics.post, topics.reply, and posts.edit in Create(Note), Create(Note), and Update(Note), respectively (f7c8967e)
+*  use topics.create internal method instead of directly setting topic hash, handle incoming tags for OP (f5a61079)
+*  assertTopic to only call setObject when it is a new topic (bdcd862c)
+*  resolveId method, add hostname verification (ed4ccbfc)
+*  use existing sets for topics (instead of topicRemote, etc.) (ec2b375a)
+*  activitypub sending to handle signed requests from categories (35819cc9)
+*  replace JIT actor retrieval with actor assertion and storage logic (ef8cd34b)
+*  added mocks.note in preparation for AP note retrieval logic, inReplyTo is always populated now, unless new topic (5de4f084)
+*  simplify remote (un)follow controller (c9feb925)
+*  guard dispatcher definition so non-Node runtimes won't have issues (2ce14f50)
+*  generate a topic id when asserting a new topic (2ff70fdd)
+*  move activitypub-related middlewares to their own file (538776f9)
+*  simplify mocks.post as it only needs minimal data for saving into db (2bd9e984)
+*  move mockProfile and mockPost to separate mocks.js (06e15834)
+*  update ActivityPub.get and all methods calling it to take a uid so that requests can be signed (a1c8c3a0)
+*  validator check to helper method (2e330d8b)
+*  move profile mocking logic to discrete method in main activitypub lib (8d4fd9c0)
+*  update ap libs to use core request lib (5c881d3f)
+*  update activitypub.getActor to accept either url or webfinger id (68d5e4a8)
+*  minor restructure to move logic out of main controller file to src/api (c803b212)
+*  acp tpl + config option (ab3ff320)
+
+##### Code Style Changes
+
+*  remove unused variable (9f94653b)
+
+##### Tests
+
+*  fix spec (b80f0dab)
+*  missing ; (866588f7)
+*  fix guest handles in onNewPost (81f7371a)
+*  have actor assertion always use cache for tests (ad05f06b)
+*  fix broken test in category follows (4949d6c4)
+*  add attachments (6042f4a7)
+*  refactor tests to support additional Note tests (0c0f01b5)
+*  use encoded parameters in webfinger tests (8fd4ae2d)
+*  fix well-known error code repsonse (175521ba)
+*  refactor AP tests (42a09241)
+*  fix tests (e138b915)
+*  fix tests to reflect new immutable IDs, and added new tests for resource retrieval (42bb3c33)
+*  fix error copy (91a509c4)
+*  allow http proto on ci (24c1dfac)
+*  fixed improper signed_string reconstruction in `.verify()` (cc0d1886)
+*  fix webfinger test (9dfa1b72)
+*  added passing test cases for .sign() and .verify() (a10df987)
+*  updated activitypub test suite (1c8e13bb)
+*  added test cases for activitypub integration, WIP (4bd8d28a)
+
+#### v3.12.4 (2025-01-20)
+
+##### Chores
+
+*  up harmony (cfb22da1)
+*  up harmony (d0715ca4)
+*  incrementing version number - v3.12.3 (abb2417e)
+*  update changelog for v3.12.3 (0cc94bbe)
+*  incrementing version number - v3.12.2 (a1269b39)
+*  incrementing version number - v3.12.1 (944c4e66)
+*  incrementing version number - v3.12.0 (052c195e)
+*  incrementing version number - v3.11.1 (0c0dd480)
+*  incrementing version number - v3.11.0 (acf27e85)
+*  incrementing version number - v3.10.3 (57d54224)
+*  incrementing version number - v3.10.2 (2f15f464)
+*  incrementing version number - v3.10.1 (cca3a644)
+*  incrementing version number - v3.10.0 (b60a9b4e)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
 *  incrementing version number - v3.5.1 (4c543488)
-*  update changelog for v3.5.1 (48f7ae99)
 *  incrementing version number - v3.5.0 (d06fb4f0)
 *  incrementing version number - v3.4.3 (5c984250)
 *  incrementing version number - v3.4.2 (3f0dac38)
@@ -36,16 +1879,50 @@
 
 ##### Bug Fixes
 
-*  closes #12185, fix cli user password reset (6790000d)
-*  thumb width (a9ef58a5)
+*  404 request if payload invalid (de021bda)
+*  add HEAD check to unsub route (205bf477)
 
-#### v3.5.1 (2023-11-14)
+#### v3.12.3 (2025-01-15)
 
 ##### Chores
 
-*  up mentions (b1b3dcb6)
+*  up harmony (5120d117)
+*  up 2factor (c6eaea30)
+*  incrementing version number - v3.12.2 (a1269b39)
+*  update changelog for v3.12.2 (98e5d1b5)
+*  incrementing version number - v3.12.1 (944c4e66)
+*  incrementing version number - v3.12.0 (052c195e)
+*  incrementing version number - v3.11.1 (0c0dd480)
+*  incrementing version number - v3.11.0 (acf27e85)
+*  incrementing version number - v3.10.3 (57d54224)
+*  incrementing version number - v3.10.2 (2f15f464)
+*  incrementing version number - v3.10.1 (cca3a644)
+*  incrementing version number - v3.10.0 (b60a9b4e)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
 *  incrementing version number - v3.5.0 (d06fb4f0)
-*  update changelog for v3.5.0 (5d7c10f1)
 *  incrementing version number - v3.4.3 (5c984250)
 *  incrementing version number - v3.4.2 (3f0dac38)
 *  incrementing version number - v3.4.1 (01e69574)
@@ -73,6 +1950,1791 @@
 *  incrementing version number - v3.1.0 (0cb386bd)
 *  incrementing version number - v3.0.1 (26f6ea49)
 *  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  closes #13051, catch errors from widget render (168e6b2c)
+*  for attribute label (e89b7ec8)
+*  don't confirm emails on HEAD request (45eabbf5)
+
+##### Performance Improvements
+
+*  closes #13052, only call loadConfig once per page (539693a4)
+
+#### v3.12.2 (2025-01-08)
+
+##### Chores
+
+*  remove log (2f5effda)
+*  up markdown (0a135d88)
+*  up deps (48944a86)
+*  up composer-default (80ddc03a)
+*  up harmony (5b2dfd74)
+*  incrementing version number - v3.12.1 (944c4e66)
+*  update changelog for v3.12.1 (22606767)
+*  incrementing version number - v3.12.0 (052c195e)
+*  incrementing version number - v3.11.1 (0c0dd480)
+*  incrementing version number - v3.11.0 (acf27e85)
+*  incrementing version number - v3.10.3 (57d54224)
+*  incrementing version number - v3.10.2 (2f15f464)
+*  incrementing version number - v3.10.1 (cca3a644)
+*  incrementing version number - v3.10.0 (b60a9b4e)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### New Features
+
+*  add -y flag to upgrade, closes #13023 (4f682a31)
+*  add missing default notification settings (d155da3c)
+*  closes #13001, allow keyboard to change cover position (45c5351f)
+*  use displayname for user image titles (52366101)
+
+##### Bug Fixes
+
+*  closes #13036, if image isn't loaded yet width is 0 (d05c203b)
+*  closes #13024, on register dont auto login with user doesn't have local:login privilege (238a3ed5)
+*  closes #13022, don't do anything if notif setting isnt set to email (fcf50a3c)
+*  closes #13019, use displayname in vote tooltip (dcc2342c)
+*  overflow on dashboard/searches (1b13cce2)
+*  #13011, catch errors (25655d5a)
+*  truncate popular search terms, closes #13010 (2f72e32d)
+*  #13007, replace $ with \uFF04, like . (c60cee59)
+*  dont stripEXIF from gifs (f478adac)
+*  closes #13008, catch errors in post redirect (77521494)
+*  test on redis (a6f0eba5)
+*  convert to str than filter (c69fa811)
+*  closes #13002, make chats keyboard focusable (e71feeec)
+*  js error when clicking a notification (d40762b7)
+*  don't close search if children have focus, closes #13004 (1cb7bb6a)
+*  #12991, switch to nodemailer address object (a489abc7)
+*  make fork/move dropdowns go up (89b8de50)
+
+##### Other Changes
+
+*  whitespace (27e945fd)
+*  index.js (7bfca7ba)
+* //github.com/NodeBB/NodeBB/issues/13018 (68f73fd0)
+
+##### Refactors
+
+*  silence deprecations in prod (d75b169c)
+*  check if useragent exists firt (a0e66816)
+*  get rid of RegExp (e4dd697a)
+*  remove debug (646b9ea7)
+
+##### Tests
+
+*  fix spec (23298060)
+*  remove resizeImageWidth (25f1fa67)
+*  editor tests (82538ca3)
+*  missing service worker test (e845afc1)
+*  add last one (54233dcd)
+*  custom fields tests (ae2bd5ab)
+*  fix controller tests (b129c6c0)
+*  missing translator tests (0d3a8757)
+*  fix relative path in tests (127e0e22)
+*  add translateInPlace test (225c91ed)
+*  subfolder in category link (407b0cc6)
+*  add helper tests (95b42f83)
+*  debounce/throttle (d5ae91a3)
+*  add back disabled test since node 18 is minimum (8864e658)
+*  fix user picture test (29804a10)
+*  fix thumb test (fa24f1dd)
+
+#### v3.12.1 (2024-12-20)
+
+##### Chores
+
+*  up harmony (18904bbb)
+*  up persona (b4ec3a6a)
+*  incrementing version number - v3.12.0 (052c195e)
+*  update changelog for v3.12.0 (5395062d)
+*  incrementing version number - v3.11.1 (0c0dd480)
+*  incrementing version number - v3.11.0 (acf27e85)
+*  incrementing version number - v3.10.3 (57d54224)
+*  incrementing version number - v3.10.2 (2f15f464)
+*  incrementing version number - v3.10.1 (cca3a644)
+*  incrementing version number - v3.10.0 (b60a9b4e)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+
+##### Bug Fixes
+
+*  check install.values, it can be undefined (9bb8002a)
+
+#### v3.12.0 (2024-12-18)
+
+##### Chores
+
+* **deps:**
+  *  update dependency @commitlint/cli to v19.6.1 (#12981) (f25312a8)
+  *  update dependency sass-embedded to v1.83.0 (#12974) (c4399dd0)
+  *  update dependency lint-staged to v15.2.11 (#12964) (607d1895)
+  *  update dependency sass-embedded to v1.82.0 (#12951) (6e2b33b7)
+  *  update dependency mocha to v11 (#12954) (55ad7af8)
+*  up harmony (831422d0)
+*  up peace, refactor widgets (0f5e1457)
+*  up themes (a79426f9)
+*  up harmony (5045a1ae)
+*  up harmony (03b9df08)
+*  remove lines re: incrementing version number, in changelog (cc6963f2)
+*  up themes (e0c345b2)
+*  up persona (2a085cdb)
+*  incrementing version number - v3.11.1 (0c0dd480)
+*  update changelog for v3.11.1 (fee57816)
+*  up themes (e532dcb4)
+*  up spam-be-gone (3a7e9733)
+*  up peace (a72c067f)
+*  up themes (a4a752bb)
+*  up mentions (4db5a5b6)
+*  incrementing version number - v3.11.0 (acf27e85)
+*  incrementing version number - v3.10.3 (57d54224)
+*  incrementing version number - v3.10.2 (2f15f464)
+*  incrementing version number - v3.10.1 (cca3a644)
+*  incrementing version number - v3.10.0 (b60a9b4e)
+*  incrementing version number - v3.9.1 (f120c91c)
+*  incrementing version number - v3.9.0 (4880f32d)
+*  incrementing version number - v3.8.4 (4833f9a6)
+*  incrementing version number - v3.8.3 (97ce2c44)
+*  incrementing version number - v3.8.2 (72d91251)
+*  incrementing version number - v3.8.1 (527326f7)
+*  incrementing version number - v3.8.0 (e228a6eb)
+*  incrementing version number - v3.7.5 (6882894d)
+*  incrementing version number - v3.7.4 (6678744c)
+*  incrementing version number - v3.7.3 (2d62b6f6)
+*  incrementing version number - v3.7.2 (cc257e7e)
+*  incrementing version number - v3.7.1 (712365a5)
+*  incrementing version number - v3.7.0 (9a6153d7)
+*  incrementing version number - v3.6.7 (86a17e38)
+*  incrementing version number - v3.6.6 (6604bf37)
+*  incrementing version number - v3.6.5 (6c653625)
+*  incrementing version number - v3.6.4 (83d131b4)
+*  incrementing version number - v3.6.3 (fc7d2bfd)
+*  incrementing version number - v3.6.2 (0f577a57)
+*  incrementing version number - v3.6.1 (f1a69468)
+*  incrementing version number - v3.6.0 (4cdf85f8)
+*  incrementing version number - v3.5.3 (ed0e8783)
+*  incrementing version number - v3.5.2 (52fbb2da)
+*  incrementing version number - v3.5.1 (4c543488)
+*  incrementing version number - v3.5.0 (d06fb4f0)
+*  incrementing version number - v3.4.3 (5c984250)
+*  incrementing version number - v3.4.2 (3f0dac38)
+*  incrementing version number - v3.4.1 (01e69574)
+*  incrementing version number - v3.4.0 (fd9247c5)
+*  incrementing version number - v3.3.9 (5805e770)
+*  incrementing version number - v3.3.8 (a5603565)
+*  incrementing version number - v3.3.7 (b26f1744)
+*  incrementing version number - v3.3.6 (7fb38792)
+*  incrementing version number - v3.3.4 (a67f84ea)
+*  incrementing version number - v3.3.3 (f94d239b)
+*  incrementing version number - v3.3.2 (ec9dac97)
+*  incrementing version number - v3.3.1 (151cc68f)
+*  incrementing version number - v3.3.0 (fc1ad70f)
+*  incrementing version number - v3.2.3 (b06d3e63)
+*  incrementing version number - v3.2.2 (758ecfcd)
+*  incrementing version number - v3.2.1 (20145074)
+*  incrementing version number - v3.2.0 (9ecac38e)
+*  incrementing version number - v3.1.7 (0b4e81ab)
+*  incrementing version number - v3.1.6 (b3a3b130)
+*  incrementing version number - v3.1.5 (ec19343a)
+*  incrementing version number - v3.1.4 (2452783c)
+*  incrementing version number - v3.1.3 (3b4e9d3f)
+*  incrementing version number - v3.1.2 (40fa3489)
+*  incrementing version number - v3.1.1 (40250733)
+*  incrementing version number - v3.1.0 (0cb386bd)
+*  incrementing version number - v3.0.1 (26f6ea49)
+*  incrementing version number - v3.0.0 (224e08cd)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-extend-plugins (6b5b9a4e)
+  *  fallback strings for new resources: nodebb.admin-extend-plugins (26a1a2f1)
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (0c665342)
+  *  fallback strings for new resources: nodebb.admin-manage-user-custom-fields (1c33285a)
+
+##### New Features
+
+*  add support for saas_plan (68198e8a)
+*  add some missing canonical tags, closes #12961 (e6bdbb6b)
+*  use displayname in chat teasers/userlist, in digest email (69a08c0f)
+*  add "keep original image after resize" option (9a635870)
+*  add visibility option to, closes #12942 (77382e3b)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency ace-builds to v1.37.0 (#12983) (808e483e)
+  *  update dependency @fortawesome/fontawesome-free to v6.7.2 (#12982) (69214d79)
+  *  update dependency terser-webpack-plugin to v5.3.11 (#12973) (a054cbd7)
+  *  update dependency sass to v1.83.0 (#12975) (7f020037)
+  *  update dependency nodebb-theme-peace to v2.2.30 (#12970) (645bddb8)
+  *  update dependency cron to v3.3.1 (#12969) (b8a0a502)
+  *  update dependency jsesc to v3.1.0 (#12968) (3a8ae12c)
+  *  update dependency cron to v3.3.0 (#12965) (0913c307)
+  *  update dependency mongodb to v6.12.0 (#12966) (3d33c5cb)
+  *  update dependency nodebb-theme-peace to v2.2.29 (#12967) (6b77441b)
+  *  update dependency express to v4.21.2 (#12955) (55a07bcb)
+  *  update dependency chart.js to v4.4.7 (#12950) (300ca704)
+  *  update dependency sass to v1.82.0 (#12952) (3bd447be)
+  *  update dependency webpack to v5.97.1 (#12953) (122d3841)
+  *  update dependency connect-redis to v8.0.1 (#12944) (38d904b2)
+  *  update dependency sortablejs to v1.15.6 (#12943) (694827cf)
+*  closes #12980, properly reset all plugins with `./nodebb reset -a` (f0aa960c)
+*  chat header line-height (8883eaf7)
+*  make sure theme screenshot starts with themeDir (3b713afe)
+*  closes #12963, change translation to general (04eb9e1a)
+*  race condition that results in 2x localReset call the same process (c25fd40a)
+*  closes #12962, fix js error for guests on /users (4568ec3e)
+*  closes #12957, don't overflow thumbs modal if filename is too long (c8a38667)
+*  escape about me on user flags (26026fb2)
+*  issue where clicking on a topic thumb caused a page nav, fixes #12948 (5b60aee6)
+*  users page QoL improvements (2e0a1751)
+
+##### Other Changes
+
+*  missing semi (0495842f)
+*  long line (c69765e3)
+*  update connect-redis to 8 (8c5d7c4d)
+
+##### Refactors
+
+*  closes #12979, show plugin id/version on semver error (abcb200f)
+*  move to saas plugin (27867d77)
+*  check if caches have the requested cache name (38520769)
+*  add csrf protection to webinstall POST route (8f465afc)
+*  explicit settings/appearance routes (bb0ff6d6)
+*  only send required fields in query (76caa92c)
+*  replace math.random with crypto (9d2af7e1)
+*  remove "password" in comments (fe811537)
+
+##### Tests
+
+*  fix spec (68f87ccf)
+*  add missing field (456373c5)
+*  add missing spec files (6eb28077)
+*  remove routes that no longer exist (468d930a)
+*  fix test (b05dc7f7)
+
+#### v3.11.1 (2024-12-09)
+
+##### Chores
+
+* **config:**  migrate config renovate.json (#12960) (14f698f9)
+*  up spam-be-gone (e5c8deb8)
+*  update changelog for v3.11.0 (0333d263)
+
+##### Bug Fixes
+
+*  escape about me on user flags (4e69bff7)
+
+#### v3.11.0 (2024-11-27)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-reputation, nodebb.error (985e5e3d)
+  *  fallback strings for new resources: nodebb.admin-manage-user-custom-fields, nodebb.error (174be398)
+  *  fallback strings for new resources: nodebb.error (b676c220)
+  *  fallback strings for new resources: nodebb.admin-manage-user-custom-fields (b89036cd)
+  *  fallback strings for new resources: nodebb.admin-settings-uploads (e3ef858b)
+  *  fallback strings for new resources: nodebb.admin-manage-users, nodebb.error (15e16704)
+  *  fallback strings for new resources: nodebb.topic (9fd5ca27)
+  *  fallback strings for new resources: nodebb.pages, nodebb.user (1c26048f)
+*  migrate admin/settings/social.json into admin/settings/general.json (206613dd)
+*  migrate admin/settings/languages.json into admin/settings/general.json (ab143b1d)
+*  migrate admin/settings/homepage.json into admin/settings/general.json (a7678185)
+*  combine admin/settings/guest.json language file into admin/settings/user.json (3f14373c)
+*  up themes (388a156d)
+*  up harmony (2324a5bf)
+*  up harmony (03cea237)
+*  up themes (2ec3d1af)
+*  up themes (965ca636)
+*  up persona (1a4a9d08)
+*  up peace (acd42c23)
+*  up peace (7179a280)
+*  up peace (bcf8dee2)
+*  up peace (524b2b76)
+*  up themes (4ad082b4)
+*  up peace (953ea609)
+*  up widgets (6a71fd24)
+*  up harmony (f13b7f8d)
+*  up persona (6f89bf6b)
+*  up persona (79c93c85)
+*  up themes (d63a828d)
+*  up themes (6aa8f1b6)
+*  up peace (a4d8baf3)
+*  up themes (24e9adf6)
+*  up persona (baff68b4)
+*  up peace (c4b50607)
+*  up lavender (c32c63aa)
+*  up lavender (66214bea)
+*  update tx config (4ce387b9)
+*  up themes (65f64eba)
+*  up themes (280e7613)
+*  up widgets (b13bd803)
+*  update changelog for v3.10.3 (83965385)
+*  up harmony (f6f1d906)
+*  up harmony (9426fd1a)
+* **deps:**
+  *  update commitlint monorepo to v19.6.0 (#12920) (151e0164)
+  *  update postgres docker tag to v17.2 (#12931) (036f4564)
+  *  update postgres docker tag to v17.1 (#12915) (0d0f9144)
+  *  update dependency sass-embedded to v1.81.0 (#12914) (ff258028)
+  *  update dependency sass-embedded to v1.80.6 (#12894) (37f877b3)
+  *  update dependency sass-embedded to v1.80.5 (#12889) (383f332c)
+  *  update dependency mocha to v10.8.2 (#12884) (d86bedf8)
+  *  update coverallsapp/github-action action to v2.3.4 (#12867) (351bcdbf)
+  *  update dependency sass-embedded to v1.80.4 (#12861) (be0c92ec)
+  *  update dependency smtp-server to v3.13.6 (#12859) (a0804485)
+  *  update coverallsapp/github-action action to v2.3.3 (#12854) (48b09f1d)
+  *  update coverallsapp/github-action action to v2.3.2 (#12846) (c16192dc)
+  *  update dependency sass-embedded to v1.79.5 (#12850) (6f227264)
+  *  update dependency eslint-plugin-import to v2.31.0 (#12832) (cc2e0e9f)
+  *  update redis docker tag to v7.4.1 (#12836) (e7cba341)
+  *  update mongo docker tag to v8 (#12810) (2fd89558)
+  *  update dependency sass-embedded to v1.79.4 (#12825) (24928b17)
+  *  update postgres docker tag to v17 (#12829) (d7299f90)
+
+##### New Features
+
+*  use displayname in chat system messages, closes #12937 (e6f78d25)
+*  move website/location fields into custom user fields (669c9c50)
+*  add pagination to groups page, api routes (49e0e1ab)
+*  add date and multiselect custom fields (9cf85ced)
+*  new language file for user custom fields (05fb8aa5)
+*  closes #12902, allow adding users as post editors (bc00df3c)
+*  added nn_NO, takk\! (b9eff72d)
+*  add read topics route (757d7101)
+
+##### Bug Fixes
+
+*  update acp template to use new lang keys (bc5b91aa)
+*  spec, dont show registered-users, verified-users, unverified-users in manage groups (8605584f)
+*  #12927, give more right padding on FF (5b3b003d)
+*  dont show chat upload btn if maxFileSize is 0, #12926 (14125858)
+*  dont allow core user fields to be used as custom fields (836e8458)
+*  button to match category dropdown (5e9b7b44)
+*  filter undefined posts/topics (db291ecd)
+*  don't crash if post is undefined (d4770908)
+*  spec (d5c9c0ba)
+*  block search showing old matches (a9fc13dd)
+*  missing template (008ad1e3)
+*  naive checking to handle uploaded images whose filenames end with '-resized' (1268ed50)
+*  update copy to reflect real default value of 2000px for `resizeImageWidthThreshold` (4614958b)
+*  editor removal (977d80c1)
+*  add warning txt file for nn-NO (23b3a64a)
+*  incorrect folder syntax for nn_NO (396c7766)
+*  use postData.topic.title instead of topicData.title (d24bc5c5)
+*  another missing await (10a85e94)
+* **deps:**
+  *  update dependency sortablejs to v1.15.4 (#12934) (2db5b815)
+  *  update dependency nodebb-plugin-2factor to v7.5.7 (#12930) (f9c4815a)
+  *  update dependency @fortawesome/fontawesome-free to v6.7.1 (#12929) (80b4d10b)
+  *  update dependency mongodb to v6.11.0 (#12932) (c3b42c85)
+  *  update dependency @fortawesome/fontawesome-free to v6.7.0 (#12921) (a3042479)
+  *  update dependency ace-builds to v1.36.5 (#12913) (68637633)
+  *  update dependency sass to v1.81.0 (#12916) (ee91e516)
+  *  update dependency cron to v3.2.1 (#12911) (42791287)
+  *  update dependency postcss to v8.4.49 (#12910) (85f55695)
+  *  update dependency winston to v3.17.0 (#12906) (87c276dd)
+  *  update dependency postcss to v8.4.48 (#12907) (aa57b248)
+  *  update dependency nodebb-theme-peace to v2.2.8 (#12901) (8af37a7d)
+  *  update dependency cron to v3.1.9 (#12899) (87ec8637)
+  *  update dependency ace-builds to v1.36.4 (#12898) (3aa0fa61)
+  *  update dependency winston to v3.16.0 (#12896) (a4f75ca1)
+  *  update dependency compression to v1.7.5 (#12890) (f5439d95)
+  *  update dependency webpack to v5.96.1 (#12895) (3d847a5a)
+  *  update dependency sass to v1.80.6 (#12892) (c5dd8b67)
+  *  update dependency jquery-ui to v1.14.1 (#12891) (3fb6587a)
+  *  update dependency nodebb-plugin-composer-default to v10.2.42 (#12888) (2cb2ac3a)
+  *  update dependency cron to v3.1.8 (#12881) (8ae2f503)
+  *  update dependency chart.js to v4.4.6 (#12876) (89bd1a24)
+  *  update dependency nodemailer to v6.9.16 (#12874) (51cb249e)
+  *  update dependency pg-cursor to v2.12.1 (#12870) (e3203b66)
+  *  update dependency pg to v8.13.1 (#12869) (b628013d)
+  *  update socket.io packages to v4.8.1 (#12871) (cdd9caa7)
+  *  update dependency nodebb-theme-harmony to v1.2.77 (#12868) (d30e1f91)
+  *  update dependency mongodb to v6.10.0 (#12862) (6da24583)
+  *  update dependency ace-builds to v1.36.3 (#12860) (8d8243c4)
+  *  update dependency sass to v1.80.4 (#12855) (80034ae8)
+  *  update socket.io packages to v4.8.0 (#12815) (4788e2a3)
+  *  update dependency chart.js to v4.4.5 (#12852) (c504b49f)
+  *  update dependency workerpool to v9.2.0 (#12851) (8dfb2237)
+  *  update dependency sass to v1.79.5 (#12847) (ab859aec)
+  *  update dependency cookie-parser to v1.4.7 (#12842) (526faf07)
+  *  update dependency express to v4.21.1 (#12843) (0e7f11bd)
+  *  update dependency express-session to v1.18.1 (#12844) (38c1072f)
+  *  update dependency sanitize-html to v2.13.1 (#12839) (5159552d)
+  *  update dependency winston to v3.15.0 (#12840) (29826cf2)
+  *  update dependency webpack to v5.95.0 (#12828) (55faa8a2)
+  *  update dependency sass to v1.79.4 (#12826) (376ac905)
+  *  update dependency helmet to v7.2.0 (#12827) (5acf0398)
+  *  update dependency nodebb-theme-harmony to v1.2.71 (#12820) (b1993ff0)
+
+##### Other Changes
+
+*  remove unused utils (0e4fc531)
+*  remove unused utils (b6a79365)
+* //github.com/NodeBB/NodeBB/issues/12824 (c4a60dbb)
+
+##### Refactors
+
+*  shorter check for showfullname (6ebff2e1)
+*  remove unused uids (20da7148)
+*  no category sharing for a long time (6af5cef7)
+*  move flags into core (3dff083d)
+*  add some margin bottom to bs tags (40758b32)
+*  post queue btn and dropdown (038fb71e)
+*  search logic to use switch..case (bd76ccf0)
+
+##### Tests
+
+*  fix tests (173c604a)
+*  fix crash due to excludeGroups (61d43ee1)
+*  fix spec (70d99501)
+*  fix spec (c586854a)
+*  update spec on plugins (f9178a39)
+
+#### v3.10.3 (2024-10-23)
+
+##### Chores
+
+*  update changelog for v3.10.2 (e780120a)
+
+##### Bug Fixes
+
+*  add missing await (0082ac98)
+*  closes #12858 (e6ab4b07)
+*  don't crash if profile folder doesn't exist (8a89c5d7)
+
+#### v3.10.2 (2024-10-18)
+
+##### Chores
+
+*  update changelog for v3.10.1 (d63a8cca)
+
+##### Bug Fixes
+
+*  closes #12848, add missing purge class (64779352)
+
+##### Performance Improvements
+
+*  make unread faster if there are 60k+ unread topics (f53f1394)
+
+##### Refactors
+
+*  single line (120b184e)
+*  hide modal and show alert on success (a309918e)
+*  more immediate feedback on category purge (72ccb870)
+
+#### v3.10.1 (2024-10-09)
+
+##### Chores
+
+*  up composer (a5f3d097)
+*  update changelog for v3.10.0 (a9da495d)
+
+##### Bug Fixes
+
+* **deps:**  bump 2factor (712767f6)
+
+##### Refactors
+
+*  don't block ./nodebb upgrade if suggested modules are not loaded (39f57f9e)
+
+#### v3.10.0 (2024-09-25)
+
+##### Chores
+
+*  move service worker generation code to its own controller file (c153c469)
+* **deps:**
+  *  update dependency jsdom to v25.0.1 (#12816) (9a24eb7e)
+  *  update dependency sass-embedded to v1.79.3 (#12813) (e0cb1d26)
+  *  update dependency sass-embedded to v1.79.2 (#12811) (8a6ced2d)
+  *  update dependency nyc to v17.1.0 (#12806) (d55c3f03)
+
+##### New Features
+
+*  port updated service worker code to `develop`, allow plugins to define scripts to import into service worker (979954c2)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency esbuild to v0.24.0 (#12817) (8c148bc4)
+  *  update dependency commander to v12.1.0 (#12587) (c7d4db8c)
+  *  update dependency sass to v1.79.3 (#12814) (f0cdc249)
+  *  update dependency sass to v1.79.2 (#12812) (2a5d481f)
+  *  update dependency nodebb-widget-essentials to v7.0.29 (#12805) (86c2caed)
+
+##### Refactors
+
+*  silence saas deprecations on prod (3fdec51a)
+
+#### v3.9.1 (2024-09-25)
+
+##### Chores
+
+*  up themes (8bca9768)
+*  up widgets (41c73de5)
+*  update changelog for v3.9.0 (c3d97c6c)
+
+##### Bug Fixes
+
+*  closes #12819, add helper to escape tx strings (7d0c2cb6)
+*  closes #12807, fix quick reply js error (06ac0c99)
+
+##### Refactors
+
+*  silence saas deprecations on prod (05e4307e)
+*  remove deprecation warnings, still used from widgets (3cee59f9)
+
+#### v3.9.0 (2024-09-18)
+
+##### Chores
+
+* **deps:**
+  *  update dependency sass-embedded to v1.79.1 (#12803) (fa75a7e0)
+  *  update dependency eslint to v8.57.1 (#12800) (fc9f0e8c)
+  *  update commitlint monorepo to v19.5.0 (#12790) (b25e7639)
+  *  update dependency smtp-server to v3.13.5 (#12781) (98957726)
+  *  update dependency eslint-plugin-import to v2.30.0 (#12771) (2460b050)
+  *  update redis docker tag to v7.4.0 (#12712) (a2a30ebd)
+  *  update dependency sass-embedded to v1.78.0 (#12772) (fde0a65a)
+  *  update dependency lint-staged to v15.2.10 (#12767) (a55b985e)
+  *  update commitlint monorepo to v19.4.1 (#12762) (f608f786)
+  *  update dependency jsdom to v25 (#12756) (e8abf502)
+  *  update dependency jsdom to v24.1.3 (#12755) (07151f8a)
+  *  update dependency lint-staged to v15.2.9 (#12730) (1b6572bb)
+  *  update dependency mocha to v10.7.3 (#12723) (e0850ef7)
+  *  update postgres docker tag to v16.4 (#12726) (948d3080)
+  *  update dependency @commitlint/cli to v19.4.0 (#12725) (bf5c1855)
+  *  update dependency lint-staged to v15.2.8 (#12717) (d0e6cd8f)
+  *  update dependency jsdom to v24.1.1 (#12705) (f35068e6)
+  *  update dependency mocha to v10.7.0 (#12704) (4609083e)
+  *  update dependency sass-embedded to v1.77.8 (#12691) (39bcc903)
+  *  update dependency mocha to v10.6.0 (#12672) (8ea9b4a8)
+  *  update dependency mocha to v10.5.2 (#12657) (1933b765)
+  *  update dependency mocha to v10.5.1 (#12651) (35053887)
+  *  update docker/build-push-action action to v6 (#12641) (a78cd1b4)
+  *  update dependency lint-staged to v15.2.7 (#12638) (d023933d)
+  *  update dependency nyc to v17 (#12627) (31186b8c)
+  *  update dependency sass-embedded to v1.77.5 (#12639) (66f66ede)
+  *  update dependency jsdom to v24.1.0 (#12601) (91e79c22)
+  *  update dependency lint-staged to v15.2.5 (#12598) (3f904986)
+  *  update postgres docker tag to v16.3 (#12576) (8f6ef987)
+  *  update dependency lint-staged to v15.2.4 (#12592) (0b004b4b)
+  *  update redis docker tag to v7.2.5 (#12588) (fc29ea85)
+  *  update dependency sass-embedded to v1.77.2 (#12583) (42754e39)
+*  up harmony (5cd68c0b)
+*  up composer (b0d9664b)
+*  up themes (3e5a8d1c)
+*  up deps (5220503c)
+*  up persona (8af4a184)
+*  up persona (1abececa)
+*  up themes (35e92d6d)
+*  up persona (c9cadbad)
+*  up persona (db84d04a)
+*  up widget essentials (675ea0f9)
+*  up widgets (a4aea98c)
+*  up widgets (a6a99553)
+*  up widgets (9e673a41)
+*  up widgets (f759a07d)
+*  up widgets (bf6be3ef)
+*  up widgets (32d4ac84)
+*  up harmony (780db9e2)
+*  update changelog for v3.8.4 (693bac5b)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.users (d348d1df)
+  *  fallback strings for new resources: nodebb.admin-extend-widgets (16ee1ad7)
+  *  fallback strings for new resources: nodebb.themes-harmony (90e0013c)
+  *  fallback strings for new resources: nodebb.modules (3531617d)
+  *  fallback strings for new resources: nodebb.admin-settings-reputation (28c0abf9)
+  *  fallback strings for new resources: nodebb.notifications (6fbc6040)
+  *  fallback strings for new resources: nodebb.post-queue (b46a82db)
+  *  fallback strings for new resources: nodebb.admin-development-info (cfedfc2d)
+  *  fallback strings for new resources: nodebb.admin-settings-reputation (1bb47280)
+
+##### New Features
+
+*  give category selector input min-width for mobile (2a15856b)
+*  add action:topics.scheduled.notify (705796f6)
+*  add followed users lang string (d6643160)
+*  add a new widget container (1c2afcc1)
+*  show a friendly message on invalid or expired code, closes #12738 (01a2f0e7)
+*  allow chat rooms in widgets (f80b7b87)
+*  migrate topic move socket call to api v3 (2d14a798)
+*  add allow and frameborder to allow attrs (c3f02b74)
+*  add missing event type (334c8c9d)
+*  send topic title into user-posted-topic-with-tag notification type, unbold tags in copy (1611b17b)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency sass to v1.79.1 (#12804) (ff77a7ab)
+  *  update dependency pg to v8.13.0 (#12801) (1ad1e0ba)
+  *  update dependency pg-cursor to v2.12.0 (#12802) (c8627f05)
+  *  update dependency connect-pg-simple to v10 (#12798) (64b21674)
+  *  update dependency postcss to v8.4.47 (#12797) (2473e57d)
+  *  update dependency nodebb-plugin-ntfy to v1.7.7 (#12796) (d67ebafe)
+  *  update dependency mongodb to v6.9.0 (#12792) (edc468d4)
+  *  update dependency nodebb-plugin-2factor to v7.5.5 (#12794) (63589d50)
+  *  update dependency tough-cookie to v5 (#12782) (396dd38b)
+  *  update dependency express to v4.21.0 (#12784) (1d9812e0)
+  *  update fontsource monorepo to v5.1.0 (#12791) (03f13433)
+  *  update fontsource monorepo (#12779) (6dc58177)
+  *  update dependency body-parser to v1.20.3 (#12783) (8943a54d)
+  *  update dependency diff to v7 (#12778) (e97e1373)
+  *  update dependency mongodb to v6.8.1 (#12777) (0784683d)
+  *  update dependency diff to v6 (#12774) (0dda1f34)
+  *  update dependency nodemailer to v6.9.15 (#12768) (70f01acb)
+  *  update dependency sortablejs to v1.15.3 (#12770) (84b483c6)
+  *  update dependency postcss to v8.4.45 (#12769) (81757595)
+  *  update dependency sass to v1.78.0 (#12773) (e8cc695d)
+  *  update dependency ace-builds to v1.36.2 (#12765) (25deb062)
+  *  update dependency ace-builds to v1.36.1 (#12764) (ee715f36)
+  *  update dependency rtlcss to v4.3.0 (#12759) (da61bd49)
+  *  update dependency webpack to v5.94.0 (#12752) (1f88b551)
+  *  update dependency ace-builds to v1.36.0 (#12750) (fbd09b2a)
+  *  update dependency nodebb-widget-essentials to v7.0.21 (#12749) (23eb3538)
+  *  update dependency chart.js to v4.4.4 (#12748) (dc24e5ba)
+  *  update dependency async to v3.2.6 (#12747) (e578dfca)
+  *  update dependency ace-builds to v1.35.5 (#12746) (3d0e55d5)
+  *  update dependency esbuild to v0.23.1 (#12745) (6297322c)
+  *  update dependency @fontsource/poppins to v5.0.15 (#12744) (51b9c5b4)
+  *  update dependency winston to v3.14.2 (#12741) (6300d849)
+  *  update dependency nodebb-plugin-ntfy to v1.7.6 (#12724) (42aa8786)
+  *  update dependency winston to v3.14.1 (#12727) (0e547405)
+  *  update dependency postcss to v8.4.41 (#12718) (f54519f1)
+  *  update dependency jquery-ui to v1.14.0 (#12719) (4e97a091)
+  *  update dependency autoprefixer to v10.4.20 (#12716) (89c87f51)
+  *  update dependency rimraf to v5.0.10 (#12715) (7b1dc6a7)
+  *  update dependency @fontsource/inter to v5.0.20 (#12714) (703951d3)
+  *  update dependency postcss to v8.4.40 (#12710) (48d52840)
+  *  update dependency rtlcss to v4.2.0 (#12709) (5aa4c219)
+  *  update dependency ace-builds to v1.35.4 (#12706) (405264d9)
+  *  update dependency @fortawesome/fontawesome-free to v6.6.0 (#12696) (7723e4af)
+  *  update dependency ace-builds to v1.35.3 (#12700) (ee8fd06e)
+  *  update dependency semver to v7.6.3 (#12697) (2bcf7f79)
+  *  update dependency compare-versions to v6.1.1 (#12693) (c52364a5)
+  *  update dependency webpack to v5.93.0 (#12692) (710bf2f8)
+  *  update dependency sass to v1.77.8 (#12687) (50030473)
+  *  update dependency winston to v3.13.1 (#12690) (5678430e)
+  *  update dependency lru-cache to v10.4.3 (#12681) (38e9bbba)
+  *  update dependency rimraf to v5.0.9 (#12684) (335bc685)
+  *  update dependency lru-cache to v10.3.1 (#12678) (fcfe1f57)
+  *  update dependency nodebb-theme-persona to v13.3.25 (#12679) (871367c1)
+  *  update dependency rimraf to v5.0.8 (#12680) (48bd5519)
+  *  update dependency webpack-merge to v6 (#12670) (d39c05ab)
+  *  update dependency @fontsource/inter to v5.0.19 (#12677) (540a05d2)
+  *  update dependency esbuild to v0.23.0 (#12668) (088217f3)
+  *  update dependency ace-builds to v1.35.2 (#12669) (18f9b1d6)
+  *  update dependency postcss to v8.4.39 (#12666) (ba65f193)
+  *  update dependency workerpool to v9.1.3 (#12665) (cba80283)
+  *  update dependency mongodb to v6.8.0 (#12663) (48f8e464)
+  *  update dependency lru-cache to v10.3.0 (#12664) (12e0aecb)
+  *  update dependency ace-builds to v1.35.1 (#12659) (3c46c5f4)
+  *  update dependency nodemailer to v6.9.14 (#12643) (94691372)
+  *  update dependency webpack to v5.92.1 (#12644) (115f236f)
+  *  update dependency sass to v1.77.6 (#12640) (b80a8dec)
+  *  update dependency webpack to v5.92.0 (#12631) (21e061a0)
+  *  update dependency esbuild to v0.21.5 (#12626) (e29bcbce)
+  *  update dependency ace-builds to v1.35.0 (#12630) (0053c788)
+  *  update dependency nodebb-plugin-markdown to v12.2.8 (#12624) (c3ff16e5)
+  *  update dependency pg-cursor to v2.11.0 (#12617) (24d0999f)
+  *  update dependency pg to v8.12.0 (#12616) (bee05fe2)
+  *  update dependency workerpool to v9.1.2 (#12612) (bff0f0e8)
+  *  update dependency sass to v1.77.4 (#12608) (eba8179e)
+  *  update dependency mongodb to v6.7.0 (#12603) (606342c5)
+  *  update dependency sass to v1.77.3 (#12605) (f783ce30)
+  *  update dependency esbuild to v0.21.4 (#12600) (c1a6293f)
+  *  update dependency ace-builds to v1.34.2 (#12599) (5595a35e)
+  *  update dependency nodebb-plugin-2factor to v7.5.2 (#12577) (72a0fe93)
+  *  update dependency sitemap to v8 (#12595) (9ebd96e8)
+  *  update dependency nodebb-plugin-markdown to v12.2.7 (#12590) (333ebd9b)
+  *  update dependency ace-builds to v1.34.1 (#12591) (7a6b70f0)
+  *  update dependency chart.js to v4.4.3 (#12585) (95023355)
+  *  update dependency sass to v1.77.2 (#12584) (f6509266)
+  *  update dependency mongodb to v6.6.2 (#12579) (984717a8)
+  *  update dependency esbuild to v0.21.3 (#12580) (d66118bb)
+  *  update dependency nodebb-theme-harmony to v1.2.56 (#12581) (2dd6b148)
+*  closes #12795, don't crash if there is an error in auto approve from queue (6ccf40bf)
+*  closes #12780, 404 in api/v3 if topic doesn't exist (220af706)
+*  vague description for harmony settings.enableBreadcrumbs, help text (17029952)
+*  closes #12758, show different error message for block (c0b30ea4)
+*  reset form/invalid code style (20053af6)
+*  #12754, throw if currentPwd == newPwd (f361df01)
+*  #12736, merged notifications use username instead of displayname (ad68809b)
+*  #12728, don't display unread badge if nav link doesn't exist (6f7eecd1)
+*  bump composer (a7934f36)
+*  closes #12721, export all users (6e1c6436)
+*  bump 2factor and ntfy (79c4eadd)
+*  crash if error objecft passed to handleErrors contains no message (e630f006)
+*  don't allow joining topic_<tid> & category_<cid> (503a97e5)
+*  sanitize-html configuration passed in src/posts/parse.js (db30834e)
+*  handle unhandled exception at handleErrors (598c10c6)
+
+##### Other Changes
+
+*  up themes fix btn-ghost-sm (106291fa)
+
+##### Performance Improvements
+
+*  don't load unread page again if everything already loaded (4aad6019)
+
+##### Refactors
+
+*  change the path of follow notif to go to the user (cf405b18)
+*  move textcomplete to core (20fd75bf)
+*  don't use composer directly, use the post hook (da7044e4)
+*  fix whitespace (609a9878)
+*  fix btn-ghost usage to match bootstrap (c58e09f9)
+*  remove unused (feefd733)
+*  remove log (c5b2f988)
+*  #12713, update chat teasers even if chat notifications are disabled (ac644ac2)
+
+##### Tests
+
+*  fix spec (5fa8ddbc)
+*  since admin pwd changes in test, login with new pwd (be32cf44)
+*  add logs for test failures (33587358)
+*  create topic for socket.io tests (ed2f3b75)
+
+#### v3.8.4 (2024-08-01)
+
+##### Chores
+
+*  up widgets (d1663ac2)
+*  up widgets (cb4bf9dd)
+*  up persona (324610de)
+*  update changelog for v3.8.3 (2a239a79)
+
+##### New Features
+
+*  update chat teasers when a new chat starts, closes #12713 (0204f2aa)
+*  add downvoteVisibility setting, closes #12698 (269fc068)
+
+##### Bug Fixes
+
+*  prevent category filter to go to selected cid (10c5cd4c)
+*  add sizes to maskable so it doesnt crash chrome application tab (ccc86825)
+*  post preview not working on parent post (a28dd70f)
+
+##### Refactors
+
+*  hooks page design (cea18d0c)
+*  closes #12699, allow boolean false for log-colorize (42ac1f9d)
+
+##### Tests
+
+*  test fix maybe (a73f269f)
+
+#### v3.8.3 (2024-06-27)
+
+##### Chores
+
+*  up themes (b15a5894)
+*  up harmony (3eb69c58)
+*  up harmony (b98333f3)
+*  up dbsearch (8a42db6f)
+*  use nodebb fork of spider-detector (3a1b39c9)
+*  up 2factor (142de2ca)
+*  update changelog for v3.8.2 (3854a434)
+
+##### New Features
+
+*  closes #12656, only send required meta/link tags on /api calls (64875b3f)
+*  show links in post queue (500e3342)
+*  show connetion count on /info (60b4bc66)
+*  make upload scores descending for ordering (3ec44d64)
+*  add isACP to config, closes #12623 (c51b772f)
+*  allow passing min,max to sortedSetsCardSum (70b4a0e2)
+*  add voters/upvoters v3 routes (1aaa6cbb)
+
+##### Bug Fixes
+
+*  wront topic events showing up in topic (54b01395)
+*  dont show self in suggested topics (381bbb04)
+*  #12645, use titleRaw like reply button (3332480c)
+*  update follower/following counts after removing uid from zsets (6f6cfb1a)
+*  suggested topic tid (351ee71d)
+*  #12633, don't check post index (6e3b012b)
+*  recent chat pagination, closes #12637 (f7c9b7ae)
+*  info.tpl table (6f79d305)
+*  closes #12632, dont load data twice (66adfa29)
+*  don't error if file required too early (4430de8c)
+*  require of spider-detector (be86d8ef)
+*  return early for guests/spiders (8d56e097)
+*  dont show error alert when user user mouse overs votes (6bbe3d1c)
+*  dont load chat rooms for quests/spiders (ca4a7751)
+*  set uid in case its spider(-1), closes #12621 (9d74539a)
+*  dont add spiders to online_guests room (bcd4997d)
+*  dont autoconnect for spiders, closes #12620 (b6671d16)
+*  #12614 fix html markup for widget containers (56b5850a)
+
+##### Other Changes
+
+*  remove unused winston (69ce3bf0)
+*  remove unused (adb0566f)
+*  fix semicolons (795a0daa)
+*  fix whitespace (b4db2f7f)
+
+##### Performance Improvements
+
+*  cleanup sessions every 30 seconds (26feb2bb)
+*  change revokeSession to work with an array of sids (172bc249)
+*  dont make db call if posts is already loaded client side (461e95d8)
+*  if sigs disabled dont filter uids (73241bd5)
+*  cache isAdmin, isGlobalMod checks (fedfce7b)
+*  get rid of async call in user load for expiring bans (023d52a3)
+*  call getIconbackgrounds once (1dadd16f)
+*  get rid of more calls, fix other profile pages #12632 (5c6a853e)
+
+##### Refactors
+
+*  sessionUUID (#12658) (d6c946cf)
+*  move delete call (65a91ea5)
+*  use array.some (85b329af)
+*  add placeholders on demand (8f486b1b)
+*  move getTopicData call to avoid db calls when its not in cache (252d0df7)
+*  remove exits check (74dd2844)
+*  move als requires, move autoLocale to api/page routes (3356022a)
+*  move requires down (8eccdb48)
+*  posts cache to get rid of require in functions (236ac323)
+*  closes #12629, allow passing arrays to meta.userOrGroupExists (bad15643)
+*  suggest topics, use strings for tids (8ded36f2)
+*  #12623, add filter:config.get.admin (2d86552b)
+*  add sanity checks to sio (e98f1848)
+
+##### Tests
+
+*  dont track session for api/v3 (#12660) (61e5293a)
+*  move set (9108c900)
+*  spec (41f1cd69)
+*  spec (b148d0fc)
+*  fix path replace (9ecee782)
+*  update openapi spec (9af3a2da)
+*  fix tests (c2f63090)
+*  return empty array on db.exists([]); (1b283ccc)
+*  fix test only set for spiders (7c2a3a6e)
+*  fix post test (42230300)
+
+#### v3.8.2 (2024-05-29)
+
+##### Chores
+
+*  up composer (83facb7d)
+*  up harmony (17ea61a0)
+*  update changelog for v3.8.1 (5ef3e0f3)
+
+##### New Features
+
+*  show ignored/watched topics in topic list, closes #10974 (29dbe92d)
+*  convert "All Votes Are Public" toggle to vote visibility (e0515080)
+
+##### Bug Fixes
+
+*  wrong var for ignored (7969e62d)
+*  reduce docker image size again and speed up build (56ef2bdd)
+*  update thumb count when removing thumbs (6214336c)
+
+##### Refactors
+
+*  render (2c0f8c91)
+
+#### v3.8.1 (2024-05-15)
+
+##### Chores
+
+*  update changelog for v3.8.0 (2ef2750d)
+
+##### Bug Fixes
+
+*  wrong mention version (1d1f499b)
+
+##### Tests
+
+*  use node 20 (a40f54aa)
+*  remove node 18 (6bd22e53)
+
+#### v3.8.0 (2024-05-15)
+
+##### Chores
+
+* **deps:**
+  *  update redis docker tag to v7.2.4 (#12272) (7a8116a4)
+  *  update actions/cache action to v4 (#12563) (88ff9f9d)
+  *  update postgres docker tag to v16.3 (#12560) (339f6267)
+  *  update dependency sass-embedded to v1.77.1 (#12565) (07160062)
+  *  update postgres docker tag to v16.3 (#12555) (b8a52863)
+  *  update dependency sass-embedded to v1.77.0 (#12548) (0fa11561)
+  *  update coverallsapp/github-action action to v2.3.0 (#12554) (b4023ff9)
+  *  update dependency sass-embedded to v1.76.0 (#12542) (7ee42724)
+  *  update commitlint monorepo to v19.3.0 (#12526) (dad57e04)
+  *  update commitlint monorepo to v19.2.2 (#12515) (97519ca4)
+  *  update dependency smtp-server to v3.13.4 (#12516) (4c468b5c)
+  *  update dependency sass-embedded to v1.75.0 (#12499) (a2229e71)
+  *  update dependency sass-embedded to v1.74.1 (#12468) (97a649e3)
+  *  update dependency mocha to v10.4.0 (#12445) (449c0fcd)
+  *  update dependency @commitlint/cli to v19.2.1 (#12420) (dc19c840)
+  *  update dependency @commitlint/cli to v19.2.0 (#12412) (41212e8f)
+  *  update dependency sass-embedded to v1.72.0 (#12406) (6d62e592)
+  *  update commitlint monorepo to v19.1.0 (#12403) (3d095a6b)
+*  up themes (1e3a321d)
+*  update changelog for v3.7.5 (febeede5)
+*  up harmony (80a1a0e0)
+*  up harmony (1a000eae)
+* **i18n:**
+  *  fallback strings for new resources: nodebb.flags, nodebb.user (19f8a77c)
+  *  fallback strings for new resources: nodebb.user (7ad477af)
+  *  fallback strings for new resources: nodebb.admin-settings-navigation (18eec147)
+  *  fallback strings for new resources: nodebb.admin-advanced-events (213db951)
+  *  fallback strings for new resources: nodebb.admin-manage-users (43f52737)
+
+##### New Features
+
+*  track uid for email/username changes, closes #12454 (325d00ea)
+*  closes #12477, allow editing moderation notes (af205cc4)
+*  parse moderation notes as markdown (7d24b04b)
+*  closes #12490, show profile flags on account info page (b429045f)
+*  closes #12491, add unban & unmute history (985663fa)
+*  new client-side hook to allow plugins to modify relogin url (c778f6eb)
+*  closes #12453, filter events by user/group (4030f18a)
+*  move all user profile pics to folder, closes #12449 (#12450) (8f9ac5c1)
+*  allow customizing uploads.upload socket methods (dc67f54e)
+*  allow custom fields in user csv export, closes #12401 (83ca23ca)
+
+##### Bug Fixes
+
+* **deps:**
+  *  update dependency ace-builds to v1.33.2 (#12572) (19602dcd)
+  *  update dependency esbuild to v0.21.2 (#12569) (dc4f32af)
+  *  update dependency rimraf to v5.0.7 (#12568) (035ced85)
+  *  update dependency sass to v1.77.1 (#12566) (7a64410a)
+  *  update dependency rimraf to v5.0.6 (#12562) (185d61fc)
+  *  update dependency validator to v13.12.0 (#12556) (7a009445)
+  *  update dependency sass to v1.77.0 (#12550) (d3840280)
+  *  update dependency mongodb to v6.6.1 (#12547) (751a143e)
+  *  update dependency esbuild to v0.21.1 (#12549) (ed07cfcc)
+  *  update dependency semver to v7.6.2 (#12552) (5264deca)
+  *  update dependency mongodb to v6.6.0 (#12544) (4813772c)
+  *  update dependency nodebb-plugin-composer-default to v10.2.35 (#12546) (8fcfb181)
+  *  update dependency sass to v1.76.0 (#12541) (8f60603b)
+  *  update dependency tough-cookie to v4.1.4 (#12540) (ad708c9f)
+  *  update dependency lru-cache to v10.2.2 (#12532) (c036786c)
+  *  update dependency jquery-ui to v1.13.3 (#12534) (3f62b892)
+  *  update dependency nodebb-widget-essentials to v7.0.16 (#12535) (d5bfe32e)
+  *  update dependency nodebb-plugin-composer-default to v10.2.34 (#12530) (bc51968e)
+  *  update dependency ace-builds to v1.33.1 (#12527) (18a843bc)
+  *  update fontsource monorepo (#12523) (bde9136b)
+  *  update dependency ipaddr.js to v2.2.0 (#12522) (d6d0ebd5)
+  *  update dependency cropperjs to v1.6.2 (#12524) (5e7ec5b6)
+  *  update dependency ioredis to v5.4.1 (#12520) (66a35490)
+  *  update dependency ioredis to v5.4.0 (#12519) (da0888e6)
+  *  update dependency nodebb-plugin-spam-be-gone to v2.2.2 (#12518) (5b4471bf)
+  *  update dependency nodebb-plugin-emoji to v5.1.15 (#12517) (20f8ba78)
+  *  update dependency nodebb-theme-harmony to v1.2.49 (#12497) (c4cb9d36)
+  *  update dependency nodebb-plugin-mentions to v4.5.2 (#12470) (37bdf753)
+  *  update dependency ace-builds to v1.33.0 (#12501) (83a932e6)
+  *  update dependency sass to v1.75.0 (#12500) (f5c3d4e1)
+  *  update dependency nodebb-theme-harmony to v1.2.47 (#12487) (2bcd5239)
+  *  update dependency cron to v3.1.7 (#12484) (6237d5fe)
+  *  update dependency workerpool to v9.1.1 (#12475) (b6193629)
+  *  update dependency nodebb-theme-persona to v13.3.13 (#12479) (01b3a06a)
+  *  update dependency nodebb-theme-harmony to v1.2.46 (#12478) (499514a8)
+  *  update dependency nodebb-theme-persona to v13.3.12 (#12467) (0f209fa4)
+  *  update dependency nodebb-theme-harmony to v1.2.45 (#12466) (1fef883b)
+  *  update dependency sass to v1.74.1 (#12469) (8f771b6f)
+  *  update dependency pg-cursor to v2.10.5 (#12462) (dde7a498)
+  *  update dependency pg to v8.11.5 (#12461) (623ccc53)
+  *  update dependency @fortawesome/fontawesome-free to v6.5.2 (#12460) (1953277b)
+  *  update dependency nodebb-plugin-mentions to v4.4.3 (#12463) (d24c4148)
+  *  update dependency pg to v8.11.4 (#12455) (a7d9811e)
+  *  update dependency @fontsource/poppins to v5.0.13 (#12457) (5c214930)
+  *  update dependency pg-cursor to v2.10.4 (#12456) (af10aaaa)
+  *  update dependency ace-builds to v1.32.9 (#12451) (deacf366)
+  *  update dependency express to v4.19.2 (#12441) (263ca1ca)
+  *  update dependency winston to v3.13.0 (#12440) (08be8f3c)
+  *  update dependency webpack to v5.91.0 (#12426) (ca82d020)
+  *  update dependency ace-builds to v1.32.8 (#12439) (23f46345)
+  *  update dependency sanitize-html to v2.13.0 (#12427) (2550f26f)
+  *  update dependency postcss to v8.4.38 (#12429) (ace6f12f)
+  *  update dependency express to v4.19.1 (#12425) (a27b999f)
+  *  update dependency autoprefixer to v10.4.19 (#12428) (fa57b81f)
+  *  update dependency nodebb-theme-lavender to v7.1.8 (15c7691c)
+  *  update dependency nodebb-plugin-mentions to v4.4.2 (#12410) (a8b631dd)
+  *  update dependency postcss to v8.4.37 (#12417) (9c91f093)
+  *  update dependency nodemailer to v6.9.13 (#12424) (c7a506a8)
+  *  update dependency nodebb-plugin-ntfy to v1.7.4 (#12414) (4e119783)
+  *  update dependency esbuild to v0.20.2 (#12411) (93fb1e0f)
+  *  update socket.io packages to v4.7.5 (#12409) (6a730312)
+  *  update dependency @socket.io/redis-adapter to v8.3.0 (#12405) (05219412)
+  *  update dependency sass to v1.72.0 (#12407) (89684786)
+  *  update dependency mongodb to v6.5.0 (#12402) (b163264e)
+  *  update dependency archiver to v7.0.1 (#12400) (817a5468)
+  *  update dependency nodemailer to v6.9.12 (#12398) (27d5aaa5)
+  *  update dependency nodebb-theme-harmony to v1.2.38 (#12397) (b9a1fc3f)
+  *  update fontsource monorepo (#12390) (8d6ef3d5)
+  *  update dependency nodebb-plugin-mentions to v4.4.1 (#12393) (4d18c38b)
+  *  update dependency winston to v3.12.0 (#12391) (98ff47ec)
+*  chat message search, closes #12571 (49a510e9)
+*  chat message search, closes #12571 (d926d9dd)
+*  some issues with "small" docker improvements (#12564) (bc807c46)
+*  use reference object for post summary v3 api call (2a58d099)
+*  unintentional object pollution by buildForSelectCategories (88a5dfb7)
+*  getCategoryById to return shallow clone of object (dc35bf8b)
+*  #12533, go to post after changing owner (983a35e6)
+*  topic selection in merge (f2892385)
+*  closes #12474, fix search dropdown on mobile for merge (ce03680f)
+*  #12481, remove priv groups from groupslug:groupname mapping (#12482) (7033d11e)
+*  bump 2factor (4d2c95ca)
+*  date on upgrade script (73f98568)
+*  use CategoryObject in admins-mods schema def (4da1e9c4)
+*  missing uid for modify event, closes #12394 (7c37f32d)
+* **docker:**  support all previously used env variables correctly (#12567) (995b2de5)
+
+##### Refactors
+
+*  add missing form-label class (36016ee1)
+*  use groupslug:groupname for search and acp page (ee5c021c)
+
+##### Tests
+
+*  fix schema (5eb8c90b)
+*  fix redis tests (57422420)
+*  fix moderation note test (fed5165f)
+*  add back timestamp (c73f759c)
+
+#### v3.7.5 (2024-05-03)
+
+##### Chores
+
+*  update changelog for v3.7.4 (8a1b281b)
+
+##### Bug Fixes
+
+*  #12543, use PATCH (420c8999)
+
+#### v3.7.4 (2024-04-17)
+
+##### Chores
+
+*  up harmony (18990795)
+*  up harmony (c2465a16)
+*  up themes (ba86740a)
+*  up themes (5d8a5571)
+*  update changelog for v3.7.3 (8d450eea)
+
+##### New Features
+
+*  #12495, add unblock button to users on /blocks (afe597a2)
+
+##### Bug Fixes
+
+*  zipObject (110ce66a)
+*  index should be cid (8410cec7)
+*  uniqCids (de0176ef)
+*  if votes are not public, dont show upvoter names in tooltip (5af69dbc)
+*  add canView check to /api/v3/users/:uid (5bee324c)
+*  is user doesnt have view:users privilege (14f5774f)
+*  copy dropdown closing on copy ip/text/link (48281f96)
+*  align teaser avatar (5fcd1a8a)
+*  if you have chat:privileged the chat icons should show up (ca07e517)
+*  #12485, resolve flags on a topics posts on topic delete (d7256796)
+*  #12471, remove readable strings (0b1f2546)
+
+##### Refactors
+
+*  add new hooks for notifications/websockets (d2e042d1)
+*  move parseInt to filter (52e71522)
+*  better label for show to groups (cfd29db0)
+
+##### Tests
+
+*  update spec (6816e39b)
+*  fix tests and use action (acab46e6)
+
+#### v3.7.3 (2024-04-03)
+
+##### Chores
+
+*  up ntfy (0058ca68)
+*  update changelog for v3.7.2 (277e1787)
+
+##### Bug Fixes
+
+*  change digest to use posts sorting first (3aae9234)
+*  #12452, fix admin/mod image change (c206ccdd)
+
+#### v3.7.2 (2024-03-27)
+
+##### Chores
+
+*  up harmony (0171e73a)
+*  up harmony (c6915398)
+*  update changelog for v3.7.1 (07640389)
+
+##### New Features
+
+*  add hook to modify sorting options/fields (168419cf)
+*  add playsinline video attribute (#12419) (5924a6eb)
+
+##### Bug Fixes
+
+*  #12446, fix groups.ownership.rescind (ed41e416)
+*  #12415, fix notification escaping for queued posts (4787d013)
+
+##### Refactors
+
+*  remove log (3b2d8551)
+
+##### Tests
+
+*  add test for #12446 (bf4e257c)
+
+#### v3.7.1 (2024-03-14)
+
+##### Chores
+
+*  up harmony (1b24b337)
+*  up harmony (b6c3a9d2)
+*  up harmony (f107a7ff)
+*  update changelog for v3.7.0 (f1f81b17)
+
+##### New Features
+
+*  allow setting max-old-space-size in config (d1ce594c)
+
+##### Bug Fixes
+
+*  #12408, fix mem leak due to mongodb 6.4.0 (285293c4)
+*  tids:create  on topic post (3b48695b)
+
+#### v3.7.0 (2024-03-06)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.admin-settings-post, nodebb.topic (0bd0a740)
+  *  fallback strings for new resources: nodebb.themes-harmony (8fb0ed82)
+  *  fallback strings for new resources: nodebb.aria (a55fb29e)
+  *  fallback strings for new resources: nodebb.aria (e6a358ed)
+  *  fallback strings for new resources: nodebb.user (c88811a9)
+  *  fallback strings for new resources: nodebb.topic (7e862a78)
+  *  fallback strings for new resources: nodebb.topic, nodebb.unread (53ea10a7)
+  *  fallback strings for new resources: nodebb.global (73e7d467)
+  *  fallback strings for new resources: nodebb.topic (72f1e515)
+  *  fallback strings for new resources: nodebb.global (642cd8e2)
+  *  fallback strings for new resources: nodebb.global, nodebb.user (a998136c)
+  *  fallback strings for new resources: nodebb.tags (4d35cb4e)
+  *  fallback strings for new resources: nodebb.global, nodebb.themes-harmony (0bc9ac74)
+  *  fallback strings for new resources: nodebb.global, nodebb.topic (a2819e9e)
+  *  fallback strings for new resources: nodebb.error (9d5702f8)
+  *  fallback strings for new resources: nodebb.admin-settings-reputation, nodebb.error (1230d22d)
+  *  fallback strings for new resources: nodebb.admin-dashboard (f3974c0b)
+  *  fallback strings for new resources: nodebb.search (43bf1f9b)
+*  up harmony (25ef62dc)
+*  up peace (3aaa0727)
+*  up peace (65f3c734)
+*  update changelog for v3.6.7 (caf8722f)
+*  up harmony (22cd80b9)
+*  up themes (96fc20a3)
+*  up themes (421c7fc5)
+*  closes #12355 (fadee8d7)
+*  up themes (9ee864ce)
+*  up composer (8324adc5)
+* up composer (0ff7adb4)
+*  up themes (43a02c89)
+*  up themes (69342342)
+*  up harmony (9bbaef84)
+*  up harmony (35e98a9f)
+*  up harmony (22398d47)
+*  up themes (5cbb8bb1)
+*  up harmony (3f3f0d66)
+*  up harmony (4f42172d)
+*  up harmony (c0db10af)
+*  up harmony (0743cb3c)
+*  up harmony (09414efa)
+*  up harmony (bbdefad3)
+*  up themes (79ebbee5)
+*  up composer (c31e321b)
+* **deps:**
+  *  update commitlint monorepo to v19 (#12369) (516c8d04)
+  *  update dependency smtp-server to v3.13.3 (#12378) (0ab1982c)
+  *  update dependency eslint to v8.57.0 (#12362) (6c33c01d)
+  *  update dependency sass-embedded to v1.71.1 (#12350) (99ad9d38)
+  *  update dependency sass-embedded to v1.71.0 (#12344) (920f787f)
+  *  update postgres docker tag to v16.2 (#12338) (254bad89)
+  *  update commitlint monorepo to v18.6.1 (#12339) (92ef8548)
+  *  update dependency mocha to v10.3.0 (#12334) (9cd299db)
+  *  update dependency smtp-server to v3.13.2 (#12324) (048e664c)
+  *  update dependency lint-staged to v15.2.2 (#12327) (a7008fb3)
+  *  update dependency lint-staged to v15.2.1 (#12319) (264e71d2)
+  *  update commitlint monorepo to v18.6.0 (#12305) (7e7bbfa4)
+  *  update dependency jsdom to v24 (#12294) (45f02ff0)
+  *  update commitlint monorepo to v18.5.0 (#12296) (5a776f9f)
+  *  update dependency sass-embedded to v1.70.0 (#12286) (0063dd45)
+  *  update dependency jsdom to v23.2.0 (#12269) (7cc69df0)
+  *  update dependency jsdom to v23.1.0 (#12265) (12aeb6f7)
+  *  update commitlint monorepo to v18.4.4 (#12261) (b25dfd47)
+  *  update dependency sass-embedded to v1.69.7 (#12257) (ce78cb0e)
+  *  update dependency sass-embedded to v1.69.6 (#12249) (1777ec4b)
+
+##### New Features
+
+*  add new sorting option to categories (2a9b0a3c)
+*  add chat widget areas, closes #12375 (53b3c5d6)
+*  add hook into user.posts.isReady (7207814b)
+*  refactor group title editing (112493fa)
+*  cli command for maintenance mode closes #12293 (80960296)
+*  fallbacks for aria.json (19bc442b)
+*  add new lang keys for a11y (3ce89d1e)
+*  add missing aria/role attributes to dropdown elements (7917fd82)
+*  add lang keys for hidden labels (e298fb6b)
+*  show unread categories based on unread topics (#12317) (45cfb369)
+*  limit post/user flags per day closes #12274 (2b1fdc56)
+*  search in bookmarks on search page (5213e22a)
+*  #12247 (c5730b36)
+
+##### Bug Fixes
+
+*  #12389, update privilege group check (87a79059)
+*  dupe id (f4b63790)
+*  #12357, properly update lists and counters (f34ebcc9)
+*  use lang key for user avatar label (863f5d0a)
+*  spec (4bcbf759)
+*  move winston logging for plugin hook firing to debug level (e240d0f9)
+*  closes #12326 (9302d9b4)
+*  some layout fixes for group details page (301eee17)
+*  bookmark in topic data is nullable now (d500ebb1)
+*  bug where body wasn't properly sent on ap-style content-types (4b87c30f)
+*  dont send topic notification to poster (c2239e48)
+* **deps:**
+  *  update dependency nodebb-theme-harmony to v1.2.36 (#12392) (db2f7c03)
+  *  update dependency nodebb-theme-peace to v2.2.4 (#12381) (073a79eb)
+  *  update dependency mongodb to v6.4.0 (#12382) (716482b2)
+  *  update dependency nodebb-plugin-mentions to v4.4.0 (#12385) (6f04859e)
+  *  update dependency ace-builds to v1.32.7 (#12386) (9eb54394)
+  *  update dependency autoprefixer to v10.4.18 (#12387) (339e2cfa)
+  *  update dependency nodebb-theme-harmony to v1.2.35 (#12388) (7b1b4510)
+  *  update dependency nodebb-theme-harmony to v1.2.34 (#12383) (430c6b6c)
+  *  update dependency nodemailer to v6.9.11 (#12380) (aa6859df)
+  *  update dependency express to v4.18.3 (#12379) (2c3540b2)
+  *  update dependency nodebb-plugin-markdown to v12.2.6 (#12371) (fb98dc05)
+  *  update dependency archiver to v7 (#12374) (9de0ab31)
+  *  update dependency chart.js to v4.4.2 (#12376) (131d2fe7)
+  *  update dependency bootswatch to v5.3.3 (#12373) (1ed4d763)
+  *  update dependency fetch-cookie to v3.0.1 (#12363) (835820a0)
+  *  update dependency sanitize-html to v2.12.1 (#12360) (00bcf935)
+  *  update dependency spdx-license-list to v6.9.0 (#12354) (b58dde1c)
+  *  update dependency sass to v1.71.1 (#12351) (3094996b)
+  *  update dependency sanitize-html to v2.12.0 (#12353) (ee90866a)
+  *  update dependency nodemailer to v6.9.10 (#12356) (80ea6eb9)
+  *  update dependency bootstrap to v5.3.3 (#12348) (4007882b)
+  *  update dependency sass to v1.71.0 (#12345) (faf5a9c8)
+  *  update dependency esbuild to v0.20.1 (#12346) (a0021b1d)
+  *  update dependency webpack to v5.90.3 (#12347) (748bbab0)
+  *  update dependency nodebb-plugin-spam-be-gone to v2.2.1 (#12343) (acad7317)
+  *  update dependency webpack to v5.90.2 (#12341) (cb6fe9c7)
+  *  update dependency nodebb-theme-harmony to v1.2.25 (#12340) (99474a7e)
+  *  update dependency commander to v12 (#12325) (b61486eb)
+  *  update dependency diff to v5.2.0 (#12337) (d0f6f0cc)
+  *  update dependency postcss to v8.4.35 (#12333) (3bc506f6)
+  *  update dependency ace-builds to v1.32.6 (#12332) (523f7ace)
+  *  update dependency postcss to v8.4.34 (#12330) (9d036be3)
+  *  update dependency semver to v7.6.0 (#12328) (3af04956)
+  *  update dependency fetch-cookie to v2.2.0 (#12323) (b56d6a88)
+  *  update dependency nodebb-theme-harmony to v1.2.12 (#12318) (65fead81)
+  *  update dependency webpack to v5.90.1 (#12322) (98b455ce)
+  *  update dependency nodemailer to v6.9.9 (#12321) (3f74cca3)
+  *  update dependency ace-builds to v1.32.5 (#12316) (ef06be6d)
+  *  update dependency nodebb-theme-harmony to v1.2.10 (#12314) (d648972c)
+  *  update dependency ace-builds to v1.32.4 (#12313) (9fb7c163)
+  *  update dependency express-session to v1.18.0 (#12311) (6444eeb9)
+  *  update dependency esbuild to v0.20.0 (#12309) (aa1344fc)
+  *  update dependency nodebb-theme-harmony to v1.2.8 (#12310) (fd20e3a5)
+  *  update dependency nodebb-theme-harmony to v1.2.7 (#12307) (eabbf195)
+  *  update dependency lru-cache to v10.2.0 (#12306) (400a1aa3)
+  *  update dependency webpack to v5.90.0 (#12303) (44a798bc)
+  *  update dependency esbuild to v0.19.12 (#12302) (72bb81f0)
+  *  update dependency connect-redis to v7.1.1 (#12298) (575f072a)
+  *  update dependency nodebb-theme-harmony to v1.2.6 (#12300) (e1adf5b3)
+  *  update dependency nodebb-widget-essentials to v7.0.15 (#12295) (876fa4a7)
+  *  update dependency nodebb-theme-persona to v13.3.3 (#12290) (f8893cd8)
+  *  update dependency nodebb-theme-harmony to v1.2.4 (#12292) (e33e9dea)
+  *  update dependency autoprefixer to v10.4.17 (#12285) (9e11b927)
+  *  update dependency workerpool to v9.1.0 (#12288) (7a24961d)
+  *  update dependency sass to v1.70.0 (#12287) (a1cdec08)
+  *  update dependency sortablejs to v1.15.2 (#12283) (cc93caff)
+  *  update dependency nodebb-theme-persona to v13.3.2 (#12284) (91ce17c7)
+  *  update dependency nodebb-theme-harmony to v1.2.3 (#12280) (34a8069b)
+  *  update dependency nodebb-theme-persona to v13.3.1 (#12281) (fe0845b9)
+  *  update dependency nodebb-theme-harmony to v1.2.2 (#12279) (fc78b00c)
+  *  update socket.io packages to v4.7.4 (#12278) (16598f7f)
+  *  update dependency postcss to v8.4.33 (#12264) (3a32fc8f)
+  *  update dependency nodebb-theme-harmony to v1.1.108 (#12263) (4924d170)
+  *  update socket.io packages to v4.7.3 (#12259) (eb7a3091)
+  *  update dependency sass to v1.69.7 (#12258) (d5dc4655)
+  *  update dependency nodemailer to v6.9.8 (#12254) (1953a635)
+  *  update dependency esbuild to v0.19.11 (#12253) (c8007bf6)
+  *  update dependency ace-builds to v1.32.3 (#12252) (c40b2322)
+  *  update dependency sass to v1.69.6 (#12250) (f8a0cb9e)
+  *  update dependency terser-webpack-plugin to v5.3.10 (#12248) (9101caff)
+  *  update dependency workerpool to v9.0.4 (#12244) (8165f454)
+  *  update dependency workerpool to v9.0.3 (#12238) (3e08ef81)
+  *  update dependency esbuild to v0.19.10 (#12237) (6ef8e767)
+
+##### Other Changes
+
+*  fix (f5586968)
+
+##### Refactors
+
+*  move tomap inside (5e89dfad)
+*  shorter tag translation (a9e8c184)
+*  search stats (82f6721d)
+
+##### Tests
+
+*  fix test (c8a5e24a)
+*  update test (5afc735b)
+
+#### v3.6.7 (2024-02-28)
+
+##### Chores
+
+*  update changelog for v3.6.6 (debaa2b9)
+
+##### Bug Fixes
+
+*  #12372, fix manual digest buttons (107f5613)
+*  closes #12365, staticHooks with callbacks (00e29403)
+*  #12359, fix api call (c61b3bbd)
+*  closes #12358, only load pending/invited for owners (3960d370)
+*  retry setAdd on e11000 error (4a405ce0)
+
+##### Tests
+
+*  better test for #12352 (4e51bf81)
+
+#### v3.6.6 (2024-02-14)
+
+##### Chores
+
+*  update changelog for v3.6.5 (04039f76)
+
+##### Bug Fixes
+
+*  closes #12329, fix default value of categoryWatchState (88e9fa37)
+
+##### Tests
+
+*  fix spec (5fec8b23)
+
+#### v3.6.5 (2024-01-31)
+
+##### Chores
+
+*  update changelog for v3.6.4 (6e6c3974)
+
+##### Bug Fixes
+
+*  #12320, .text() gets \n\t characters (67c8bd99)
+
+#### v3.6.4 (2024-01-24)
+
+##### Chores
+
+*  update changelog for v3.6.3 (92ffc57c)
+
+##### New Features
+
+*  add success hook to quick reply (cb21f28b)
+
+##### Bug Fixes
+
+*  if there is no bookmarkThreshold dont init unread indicator (cf40d681)
+*  remove leftover code from 2.x, closes #12301 (d5f445f1)
+*  copy single line code blocks, closes #12297 (06269cdf)
+*  validate plugin id in toggleActive (76f3efff)
+
+##### Tests
+
+*  add plugin id tests (e8befbcc)
+
+#### v3.6.3 (2024-01-12)
+
+##### Chores
+
+*  update changelog for v3.6.2 (82a936c3)
+
+##### Bug Fixes
+
+*  #12275, pin sharp to 0.32.6 (f3927ce7)
+*  topic event translations closes #12273 (5f91cc83)
+
+#### v3.6.2 (2024-01-10)
+
+##### Chores
+
+*  up composer (ef8f8db7)
+*  up harmony (2bed405c)
+*  up harmony (b6dbe1a6)
+*  up lavender (16f0affa)
+*  up themes (980bfee8)
+*  update changelog for v3.6.1 (1e4abdbf)
+
+##### New Features
+
+*  #12247 (0af19afd)
+
+##### Bug Fixes
+
+*  recent loading (d3d6d77d)
+*  closes #12246, direction is passed in as string as query param with new api  call (8867f243)
+*  stricter selector for sort (a74b5141)
+
+##### Performance Improvements
+
+*  dont load all followed tids on unread/recent?filter=watched (563e03b6)
+
+#### v3.6.1 (2023-12-22)
+
+##### Chores
+
+*  update changelog for v3.6.0 (eb92cee6)
+
+##### Bug Fixes
+
+*  #12243, don' set process.env.config if it doesnt exist (788404c1)
+*  lang key for move notification closes #12241 (48a2b5f7)
+*  dont send topic notification to poster (e72b26f5)
+
+#### v3.6.0 (2023-12-20)
+
+##### Chores
+
+* **i18n:**
+  *  fallback strings for new resources: nodebb.error (d3cfa1b7)
+  *  fallback strings for new resources: nodebb.post-queue (64fe1278)
+  *  fallback strings for new resources: nodebb.post-queue (f98205c1)
+  *  fallback strings for new resources: nodebb.social (081352b6)
+  *  fallback strings for new resources: nodebb.modules (4fe84ae8)
+  *  fallback strings for new resources: nodebb.admin-settings-chat, nodebb.admin-settings-post, nodebb.admin-settings-user (94777927)
+  *  fallback strings for new resources: nodebb.admin-settings-user, nodebb.category, nodebb.notifications (29b3a403)
+  *  fallback strings for new resources: nodebb.error (7d8f700f)
+  *  fallback strings for new resources: nodebb.modules (83931138)
+*  make error:email-taken slightly more descriptive (dd0743d3)
+*  up harmony (250cc771)
+*  up harmony (9324a75c)
+*  update changelog for v3.5.3 (e49ddaf8)
+*  up harmony (dbbf3a2c)
+*  up harmony (e4656bd4)
+*  up themes (0ec9d4c3)
+*  added missing deprecation warning for .getTopics (9079ad0b)
+*  update note at top of file (2de534fa)
+*  up dbsearch (b6981693)
+*  up themes (9a1f8e9b)
+*  up themes (ed10dda2)
+*  up composer (22d7e92f)
+*  up themes (fcdd3737)
+*  v4 note for deprecations (f4c36b84)
+*  minor re-order of routes/controllers in admin api v3 router/controller (181a9399)
+*  add in note at top of files ready for deletion in v4 (54a08087)
+*  up harmony (1b8dcbc2)
+* **deps:**
+  *  update dependency eslint-plugin-import to v2.29.1 (#12229) (055b7597)
+  *  update dependency eslint to v8.56.0 (#12231) (a7dd0f92)
+  *  update dependency eslint to v8.55.0 (#12203) (32a403b2)
+  *  update dependency lint-staged to v15.2.0 (#12210) (9763e97f)
+  *  update dependency jsdom to v23.0.1 (#12196) (a50b141f)
+  *  update dependency jsdom to v23 (#12186) (8c0472a0)
+  *  update commitlint monorepo to v18.4.3 (#12177) (fd5d7b65)
+  *  update dependency eslint to v8.54.0 (#12172) (b6275453)
+  *  update commitlint monorepo to v18.4.2 (#12169) (d6a92d4c)
+  *  update postgres docker tag to v16.1 (#12167) (616ff573)
+  *  update mongo docker tag to v7 (#12166) (5f8a4f3a)
+  *  update redis docker tag to v7.2.3 (#12165) (c41f9a75)
+  *  update dependency lint-staged to v15.1.0 (#12161) (1796ed2b)
+  *  update dependency @commitlint/cli to v18.4.1 (#12162) (be3d3393)
+  *  update commitlint monorepo to v18.4.0 (#12159) (128c24f2)
+  *  update dependency eslint to v8.53.0 (#12151) (d1a7ba35)
+  *  update redis docker tag to v7.2.3 (#12152) (2eff6912)
+  *  update commitlint monorepo to v18 (#12105) (97016f47)
+  *  update dependency sass-embedded to v1.69.5 (#12127) (9e8a2116)
+* **socket.io:**  deprecate categories.(isModerator|ignore|watch|getSelectCategories|getMoveCategories|getCategoriesByPrivilege) (f1dbfaa2)
+
+##### Documentation Changes
+
+*  fix improper verbiage in category watch schema (f8cc8548)
+*  openapi schema for api.search.categories (4ffe0417)
+* **socket.io:**
+  *  openapi schema for remaining added routes (5399e86a)
+  *  added schema for new routes (f279bca0)
+
+##### New Features
+
+*  add 500 page for missing tpls, closes #12230 (06221a0d)
+*  remove gif exif stripping exception (f8219aa6)
+*  update groups.leave to allow global mods to kick users out of groups (2c6024e0)
+*  better layout for manage chat room modal (f4faa0b7)
+*  update Messaging.toggleOwner to optionally take a third `state` argument (932bd292)
+*  new language strings for post-queue page (5d03321e)
+*  add some new social share buttons (ace171a6)
+*  docker improvements (#12031) (7f3a9968)
+*  closes #12158, add sortable rewards (5ea7dec9)
+*  add copy text (4b2491be)
+*  closes #12154, add exempt groups (fdff165e)
+*  update  moved keys (119c3362)
+*  move new user restrrictions (3d505c5c)
+*  add tracking categories and make watching send notifications (#12147) (84fed97b)
+*  add new lang string for minutes (d8d26c9f)
+*  add direct message link (#12138) (4c4f3ac9)
+*  closes #5584, setup winston to output to file (87a859aa)
+*  batch.processSortedSet min/max (#12129) (6c7e6144)
+
+##### Bug Fixes
+
+*  fix display post history (dc975838)
+*  update isJSON test in request lib (506d7be5)
+*  503 rendering on ajaxify (f7e0fd0b)
+*  #12227, fix crash in redirect (2dc1def5)
+*  deprecated emailer hook (565ca3cc)
+*  extract all pages when stripping metadata (0b3eb6c0)
+*  incorrect call to load additional group members (78835ebb)
+*  closes #12185, fix cli user password reset (b9050139)
+*  don't require login for listing categories (50a90f8e)
+*  #12183, remove ensureLoggedIn middleware (0a4f3c8a)
+*  remove unused requires (b5940a5d)
+*  remove lodash require (f9c471a0)
+*  #12171, bump harmony (89a1134c)
+*  update design of post-queue (41bdc9e8)
+*  update post-queue template for #12171 (63ba4986)
+*  language key (4c7c46f3)
+*  another missing state (f4bbc5bd)
+*  add missing tracking (3b91e8e2)
+*  bump harmony (a5e3754b)
+*  #12133 dropdown menus on mobile stay open during ajaxify (4601a6f7)
+*  update ajaxifyTimer logic to only drop the request if the URL is the same as the one it's already processing (b4297cd8)
+*  #12141, use apiv3 for category search module (cefd4061)
+*  made parentCid optional in api.search.categories (581516c8)
+*  don't count internal links towards link count when restricting new users from posting links (022fa0e7)
+*  closes #12126, fix language keys (075cd598)
+*  param (e5a60dc8)
+*  handle public chat rooms too (6a696c43)
+*  suppress chat message notifications for users who are known to be in the chat room (uid is present in the corresponding socket.io room) (18c27d1a)
+* **deps:**
+  *  update dependency workerpool to v9 (#12234) (2cccbcf6)
+  *  update dependency sharp to v0.33.1 (#12233) (45143000)
+  *  update dependency csrf-sync to v4.0.3 (#12232) (9e2a6f86)
+  *  update dependency ace-builds to v1.32.2 (#12228) (b6ca117a)
+  *  update dependency ace-builds to v1.32.1 (#12226) (6036d144)
+  *  update dependency esbuild to v0.19.9 (#12224) (d96d4d09)
+  *  update dependency @fontsource/inter to v5.0.16 (#12219) (e32eb8b3)
+  *  update dependency chart.js to v4.4.1 (#12217) (b6b569c0)
+  *  update dependency nodebb-theme-persona to v13.2.49 (#12218) (6dab99fd)
+  *  update dependency postcss to v8.4.32 (#12204) (da879704)
+  *  update dependency @fortawesome/fontawesome-free to v6.5.1 (#12198) (b41c7f2a)
+  *  update dependency nodebb-theme-harmony to v1.1.101 (#12199) (72d6a4b1)
+  *  update dependency sortablejs to v1.15.1 (#12200) (cd625705)
+  *  update dependency ace-builds to v1.32.0 (#12197) (75f063ba)
+  *  update dependency @fortawesome/fontawesome-free to v6.5.0 (#12193) (a94f4a48)
+  *  update dependency sharp to v0.33.0 (#12194) (1f287c74)
+  *  update dependency fs-extra to v11.2.0 (#12191) (4eaf2320)
+  *  update dependency passport to v0.7.0 (#12190) (bbf7c5e1)
+  *  update dependency esbuild to v0.19.8 (#12187) (bc59856e)
+  *  update dependency lru-cache to v10.1.0 (#12181) (22932bdb)
+  *  update dependency esbuild to v0.19.7 (#12176) (00cb5839)
+  *  update dependency lru-cache to v10.0.3 (#12175) (c404ef73)
+  *  update dependency ace-builds to v1.31.2 (#12168) (b4a41af9)
+  *  update dependency mongodb to v6.3.0 (#12170) (85936a59)
+  *  update dependency lru-cache to v10.0.2 (#12160) (9d18d3c7)
+  *  update dependency helmet to v7.1.0 (#12155) (50aa1a7c)
+  *  update dependency async to v3.2.5 (#12150) (0e9eafa1)
+  *  update dependency nodebb-theme-persona to v13.2.44 (#12149) (b489af06)
+  *  update dependency nodebb-theme-harmony to v1.1.95 (#12148) (77b0baea)
+  *  update dependency connect-pg-simple to v9.0.1 (#12144) (4e23d0d1)
+  *  update dependency nodebb-theme-persona to v13.2.43 (#12140) (91e45fa2)
+  *  update dependency nodebb-theme-harmony to v1.1.92 (#12131) (a3452c8f)
+  *  update dependency nodebb-theme-peace to v2.1.24 (#12139) (29a59b90)
+  *  update dependency spdx-license-list to v6.8.0 (2337d641)
+  *  update dependency nodebb-plugin-composer-default to v10.2.25 (#12136) (cdb40719)
+  *  update dependency cron to v3.1.6 (#12132) (2fb3af3c)
+  *  update dependency ace-builds to v1.31.1 (#12135) (6b28f1dc)
+  *  update dependency workerpool to v8 (#12121) (9bed7646)
+  *  update dependency sass to v1.69.5 (#12128) (b351c00a)
+* **socket.io:**  update getPosts controller to return object containing posts instead of straight array (54000aab)
+
+##### Other Changes
+
+* **socket.io:**  deprecate socketGroups.getChatGroups in favour of api.admin.listGroups (dc4cc74f)
+
+##### Refactors
+
+*  line breaks good (4e560ade)
+*  replace deprecated call with api call (f91b823e)
+*  move async call to parallel (dabc282d)
+* **socket.io:**
+  *  deprecate SocketModules.chats.typing in favour of api.chats.toggleTyping (c1e6be77)
+  *  deprecate SocketModules.chats.loadPinnedMessages in favour of api.chats.getPinnedMessages" (401e8636)
+  *  deprecate SocketModules.chats.searchMessages in favour of api.search.roomMessages (f9dc3502)
+  *  deprecate SocketModules.chats.setNotificationSetting in favour of api.chats.watch (75c8cda1)
+  *  deprecated SocketModules.chats.toggleOwner in favour of api.chats.toggleOwner (b13c6ee4)
+  *  deprecated SocketModules.chats.searchMembers in favour of api.search.roomUsers (6e952263)
+  *  deprecate SocketModules.sortPublicRooms in favour of api.chats.sortPublicRooms (62b7dfd4)
+  *  deprecate SocketModules.chat.getUnreadCount in favour of api.chats.getUnread (5eaffb42)
+  *  deprecate SocketModules.chats.getIP in favour of api.chats.getIpAddress (214989a8)
+  *  deprecate SocketModules.chats.hasPrivateChat in favour of api.users.getPrivateRoomId (0d3c94e6)
+  *  deprecate SocketModules.chats.canMessage and .markAllRead with no alternative. deprecate .getRecentChats in favour of api.chats.list (a4133500)
+  *  deprecate SocketModules.chats.isDnD in favour of api.users.getStatus (eebea4df)
+  *  deprecate SocketModules.chats.getRaw in favour of api.chats.getRawMessage (c4b4e79b)
+  *  deprecate socketGroups.loadMoreMembers in favour of api.groups.listMembers (807d778c)
+  *  deprecate socketGroups.searchMembers in favour of api.groups.listMembers (d2f3333a)
+  *  deprecate socketGroups.loadMore in favour of api.groups.list (b61e8147)
+  *  deprecate categories.categorySearch in favour of api.search.categories (00de9d5b)
+  *  deprecate categories.loadMore in favour of api.categories.getTopics (1ce4ca54)
+  *  deprecate categories.loadMoreSubCategories in favour of api.categories.getChildren (010727f5)
+  *  deprecate categories.setWatchState in favour of api.categories.setWatchState (d7c6b3d6)
+  *  deprecate categories.getTopicCount in favour of api.categories.getTopicCount (c442b6e6)
+  *  deprecate categories.get in favour of api.categories.list (96046373)
+  *  deprecate categories.getRecentReplies in favour of api.categories.getPosts (52b78e83)
+
+##### Tests
+
+*  migrate socket modules tests to v3 api (445b70de)
+*  migrate socket.io groups tests to use api v3 (2c1c4dfe)
+
+#### v3.5.3 (2023-12-13)
+
+##### Chores
+
+*  up composer (245e5df3)
+*  up composer default (c1f82b78)
+*  update changelog for v3.5.2 (e2e85053)
+
+##### Bug Fixes
+
+*  change translator escape (c434262e)
+
+##### Other Changes
+
+*  add types for database abstration layer (#10762) (17cd19c7)
+
+#### v3.5.2 (2023-11-29)
+
+##### Chores
+
+*  up composer (49013f81)
+*  update changelog for v3.5.1 (48f7ae99)
+
+##### Bug Fixes
+
+*  closes #12185, fix cli user password reset (6790000d)
+*  thumb width (a9ef58a5)
+
+#### v3.5.1 (2023-11-14)
+
+##### Chores
+
+*  up mentions (b1b3dcb6)
+*  update changelog for v3.5.0 (5d7c10f1)
 
 ##### New Features
 
@@ -117,7 +3779,6 @@
 *  up persona (cc5e9d9c)
 *  up harmony (769f879e)
 *  up themes (46530337)
-*  incrementing version number - v3.4.3 (5c984250)
 *  update changelog for v3.4.3 (08949be9)
 *  up themes (e0b29ba9)
 *  up emoji (00dd0cb3)
@@ -127,38 +3788,12 @@
 *  up emoji (7568be3c)
 *  up themes (b7d8fd1e)
 *  up themes (d0682905)
-*  incrementing version number - v3.4.2 (3f0dac38)
 *  up deps (f1021542)
 *  up composer (45b9803a)
 *  up composer (7e5d9b71)
 *  up harmony (13ea14f1)
 *  up engines (0f9f875b)
-*  incrementing version number - v3.4.1 (01e69574)
 *  up dbsearch (b4775b18)
-*  incrementing version number - v3.4.0 (fd9247c5)
-*  incrementing version number - v3.3.9 (5805e770)
-*  incrementing version number - v3.3.8 (a5603565)
-*  incrementing version number - v3.3.7 (b26f1744)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 * **deps:**
   *  update actions/setup-node action to v4 (#12114) (762ad161)
   *  update dependency eslint-plugin-import to v2.29.0 (#12112) (2ae031ed)
@@ -371,33 +4006,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.4.2 (3f0dac38)
 *  update changelog for v3.4.2 (f9323de6)
-*  incrementing version number - v3.4.1 (01e69574)
-*  incrementing version number - v3.4.0 (fd9247c5)
-*  incrementing version number - v3.3.9 (5805e770)
-*  incrementing version number - v3.3.8 (a5603565)
-*  incrementing version number - v3.3.7 (b26f1744)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -424,32 +4033,7 @@
 *  up harmony (512c44d5)
 *  up harmony (319d3b1f)
 *  up themes (d7a7c355)
-*  incrementing version number - v3.4.1 (01e69574)
 *  update changelog for v3.4.1 (f24a334c)
-*  incrementing version number - v3.4.0 (fd9247c5)
-*  incrementing version number - v3.3.9 (5805e770)
-*  incrementing version number - v3.3.8 (a5603565)
-*  incrementing version number - v3.3.7 (b26f1744)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -473,31 +4057,7 @@
 ##### Chores
 
 *  up dbsearch (8357bb2e)
-*  incrementing version number - v3.4.0 (fd9247c5)
 *  update changelog for v3.4.0 (5c023025)
-*  incrementing version number - v3.3.9 (5805e770)
-*  incrementing version number - v3.3.8 (a5603565)
-*  incrementing version number - v3.3.7 (b26f1744)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -516,44 +4076,21 @@
 *  up themes (10d11924)
 *  up harmony (0334b389)
 *  up harmony (32c870f4)
-*  incrementing version number - v3.3.9 (5805e770)
 *  update changelog for v3.3.9 (50d44777)
 *  up composer (ffd6ea5a)
 *  up composer (c2534287)
 *  up composer (540b9f18)
 *  up composer (87015e9b)
 *  up themes (dd3647ed)
-*  incrementing version number - v3.3.8 (a5603565)
-*  incrementing version number - v3.3.7 (b26f1744)
 *  markdown dep (03f11a24)
 *  up markdown (f399db9d)
-*  incrementing version number - v3.3.6 (7fb38792)
 *  up deps (a7843a40)
 *  up composer (05a7c761)
 *  up themes (c4b865e1)
 *  up themes (7d9ff9bf)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
 *  up themes (5c14438d)
 *  up themes (cb3252be)
 *  up harmony (c7df93b4)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 * **deps:**
   *  update coverallsapp/github-action action to v2.2.2 (#11977) (15c6fd6b)
   *  update dependency jquery to v3.7.1 (#11963) (94f07c14)
@@ -650,29 +4187,7 @@
 ##### Chores
 
 *  up mentions (4ec3a480)
-*  incrementing version number - v3.3.8 (a5603565)
 *  update changelog for v3.3.8 (65e16e9f)
-*  incrementing version number - v3.3.7 (b26f1744)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -686,28 +4201,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.3.7 (b26f1744)
 *  update changelog for v3.3.7 (1193fa04)
-*  incrementing version number - v3.3.6 (7fb38792)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -718,27 +4212,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.3.6 (7fb38792)
 *  update changelog for v3.3.6 (a43354c0)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -749,49 +4223,12 @@
 ##### Chores
 
 *  up deps (db55f18a)
-*  incrementing version number - v3.3.4 (a67f84ea)
-*  incrementing version number - v3.3.3 (f94d239b)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 #### v3.3.4 (2023-08-20)
 
 ##### Chores
 
-*  incrementing version number - v3.3.3 (f94d239b)
 *  update changelog for v3.3.3 (38149a57)
-*  incrementing version number - v3.3.2 (ec9dac97)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -801,24 +4238,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.3.2 (ec9dac97)
 *  update changelog for v3.3.2 (2ecf15c4)
-*  incrementing version number - v3.3.1 (151cc68f)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -834,23 +4254,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.3.1 (151cc68f)
 *  update changelog for v3.3.1 (6f961f9c)
-*  incrementing version number - v3.3.0 (fc1ad70f)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -861,22 +4265,7 @@
 ##### Chores
 
 *  up themes (62231baa)
-*  incrementing version number - v3.3.0 (fc1ad70f)
 *  update changelog for v3.3.0 (46f7405d)
-*  incrementing version number - v3.2.3 (b06d3e63)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### New Features
 
@@ -940,7 +4329,6 @@
 *  up harmony (ee0128d7)
 *  up harmony (ba03e223)
 *  up themes (6fc80f9f)
-*  incrementing version number - v3.2.3 (b06d3e63)
 *  update changelog for v3.2.3 (afb38c71)
 *  up mentions (4b92df75)
 *  up composer (48a04eb7)
@@ -958,20 +4346,7 @@
 *  up themes (62429252)
 *  remove log (954db1ee)
 *  up themes (9fda8dce)
-*  incrementing version number - v3.2.2 (758ecfcd)
-*  incrementing version number - v3.2.1 (20145074)
 *  up markdown (f23cda10)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-dashboard (80ea4eb0)
   *  fallback strings for new resources: nodebb.admin-settings-chat, nodebb.error (e27d1743)
@@ -1147,20 +4522,7 @@
 ##### Chores
 
 *  downgrade harmony to correct version (7c94506b)
-*  incrementing version number - v3.2.2 (758ecfcd)
 *  update changelog for v3.2.2 (91a432ad)
-*  incrementing version number - v3.2.1 (20145074)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1178,19 +4540,7 @@
 *  up themes (f1170b18)
 *  up spam-be-gone (eed34d04)
 *  remove log (509faa5e)
-*  incrementing version number - v3.2.1 (20145074)
 *  update changelog for v3.2.1 (c7f8cee9)
-*  incrementing version number - v3.2.0 (9ecac38e)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1204,18 +4554,7 @@
 *  up harmony (9fc5ae08)
 *  up composer (82d37702)
 *  up spider-detector (97d8f858)
-*  incrementing version number - v3.2.0 (9ecac38e)
 *  update changelog for v3.2.0 (080f9e75)
-*  incrementing version number - v3.1.7 (0b4e81ab)
-*  incrementing version number - v3.1.6 (b3a3b130)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1253,7 +4592,6 @@
 *  up harmony (777c7d09)
 *  up deps (7f465006)
 *  up harmony (f9e37829)
-*  incrementing version number - v3.1.7 (0b4e81ab)
 *  update changelog for v3.1.7 (8744e412)
 *  up persona (7a0e5c6d)
 *  up harmony (be474fb4)
@@ -1264,14 +4602,12 @@
 *  up themes (b2f70a2e)
 *  up composer (21919524)
 *  up harmony (64441602)
-*  incrementing version number - v3.1.6 (b3a3b130)
 *  up themes (61420fdc)
 *  up themes (f9990cab)
 *  bump themes for da02361b13d064763223533368f9b71d998ecf37 (c97977f8)
 *  up harmony (0f84f597)
 *  up emoji (4b0d3940)
 *  up emoji (291aa58e)
-*  incrementing version number - v3.1.5 (ec19343a)
 *  up harmony (56ac610b)
 *  up themes (0bfe361c)
 *  up themes (67ab222d)
@@ -1292,17 +4628,10 @@
 *  up themes (14c93cd5)
 *  up harmony (6188d8be)
 *  up harmony (9e416d7f)
-*  incrementing version number - v3.1.4 (2452783c)
 *  up persona (78c2e29c)
 *  up markdown (7f5ec0ef)
 *  up themes (cdfc1bfe)
 *  up harmony (fd80b612)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-appearance-skins (7ca85c60)
   *  fallback strings for new resources: nodebb.admin-advanced-cache, nodebb.admin-advanced-errors, nodebb.admin-development-logger (fa8e656d)
@@ -1531,16 +4860,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.1.6 (b3a3b130)
 *  update changelog for v3.1.6 (f10a2d2e)
-*  incrementing version number - v3.1.5 (ec19343a)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1552,15 +4872,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.1.5 (ec19343a)
 *  update changelog for v3.1.5 (b0d16861)
-*  incrementing version number - v3.1.4 (2452783c)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1573,14 +4885,7 @@
 
 *  fix persona (74174414)
 *  up themes (97ff1f11)
-*  incrementing version number - v3.1.4 (2452783c)
 *  update changelog for v3.1.4 (633dc2de)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### New Features
 
@@ -1608,13 +4913,7 @@
 ##### Chores
 
 *  up markdown (51bf5e95)
-*  incrementing version number - v3.1.3 (3b4e9d3f)
 *  update changelog for v3.1.3 (9924fde6)
-*  incrementing version number - v3.1.2 (40fa3489)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1636,12 +4935,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.1.2 (40fa3489)
 *  update changelog for v3.1.2 (5b398782)
-*  incrementing version number - v3.1.1 (40250733)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Continuous Integration
 
@@ -1662,11 +4956,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.1.1 (40250733)
 *  update changelog for v3.1.1 (ccd6f48c)
-*  incrementing version number - v3.1.0 (0cb386bd)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Bug Fixes
 
@@ -1676,10 +4966,7 @@
 
 ##### Chores
 
-*  incrementing version number - v3.1.0 (0cb386bd)
 *  update changelog for v3.1.0 (2c515dc3)
-*  incrementing version number - v3.0.1 (26f6ea49)
-*  incrementing version number - v3.0.0 (224e08cd)
 
 ##### Documentation Changes
 
@@ -1709,7 +4996,6 @@
 *  up harmony (eab2679f)
 *  up harmony (7f19913b)
 *  up themes (832fe95a)
-*  incrementing version number - v3.0.1 (26f6ea49)
 *  update changelog for v3.0.1 (fd30af10)
 *  whopps (ec0da196)
 *  up harmony (2caf4afc)
@@ -1721,7 +5007,6 @@
 *  up widgets (2588853b)
 *  up harmony (01669fa5)
 *  up harmony (c58d07f4)
-*  incrementing version number - v3.0.0 (224e08cd)
 * **i18n:**
   *  fallback strings for new resources: nodebb.themes-harmony, nodebb.themes-persona (48a4fd50)
   *  fallback strings for new resources: nodebb.admin-settings-email (489163aa)
@@ -1863,7 +5148,6 @@
 
 ##### Chores
 
-*  incrementing version number - v3.0.0 (224e08cd)
 *  update changelog for v3.0.0 (56ad381f)
 
 ##### Bug Fixes
@@ -2257,39 +5541,7 @@
 ##### Chores
 
 *  removing superfluous changelog items (5343d2a0)
-*  incrementing version number - v2.8.11 (2ec81eff)
 *  update changelog for v2.8.11 (f2ca93f6)
-*  incrementing version number - v2.8.10 (5b7c3671)
-*  incrementing version number - v2.8.9 (57f14e41)
-*  incrementing version number - v2.8.8 (b331b942)
-*  incrementing version number - v2.8.7 (3f8248d6)
-*  incrementing version number - v2.8.6 (af6ce447)
-*  incrementing version number - v2.8.5 (bff5ce2d)
-*  incrementing version number - v2.8.4 (a46b2bbc)
-*  incrementing version number - v2.8.3 (c20b20a7)
-*  incrementing version number - v2.8.2 (050e43f8)
-*  incrementing version number - v2.8.1 (727f879e)
-*  incrementing version number - v2.8.0 (8e77673d)
-*  incrementing version number - v2.7.0 (96cc0617)
-*  incrementing version number - v2.6.1 (7e52a7a5)
-*  incrementing version number - v2.6.0 (e7fcf482)
-*  incrementing version number - v2.5.8 (dec0e7de)
-*  incrementing version number - v2.5.7 (5836bf4a)
-*  incrementing version number - v2.5.6 (c7bd7dbf)
-*  incrementing version number - v2.5.5 (3509ed94)
-*  incrementing version number - v2.5.4 (e83260ca)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### New Features
 
@@ -2309,7 +5561,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.10 (5b7c3671)
 *  update changelog for v2.8.10 (188ec62f)
 
 ##### Continuous Integration
@@ -2334,7 +5585,6 @@
 ##### Chores
 
 *  up composer-default (e9a8e195)
-*  incrementing version number - v2.8.9 (57f14e41)
 *  update changelog for v2.8.9 (18b2150e)
 
 ##### Bug Fixes
@@ -2353,7 +5603,6 @@
 ##### Chores
 
 *  up cron (73a50d17)
-*  incrementing version number - v2.8.8 (b331b942)
 *  update changelog for v2.8.8 (c03d5db7)
 
 ##### Bug Fixes
@@ -2375,7 +5624,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.7 (3f8248d6)
 *  update changelog for v2.8.7 (2ca38e7b)
 
 ##### Bug Fixes
@@ -2390,7 +5638,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.6 (af6ce447)
 *  update changelog for v2.8.6 (f3306d03)
 
 ##### Documentation Changes
@@ -2418,7 +5665,6 @@
 ##### Chores
 
 * **i18n:**  fallback strings for new resources: nodebb.error (8335f90a)
-*  incrementing version number - v2.8.5 (bff5ce2d)
 *  update changelog for v2.8.5 (24e58c28)
 
 ##### New Features
@@ -2443,7 +5689,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.4 (a46b2bbc)
 *  update changelog for v2.8.4 (c13f0e21)
 
 ##### Bug Fixes
@@ -2454,7 +5699,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.3 (c20b20a7)
 *  update changelog for v2.8.3 (eb2841ee)
 
 #### v2.8.3 (2023-01-25)
@@ -2462,7 +5706,6 @@
 ##### Chores
 
 *  remove extraneous lines from changelog (48c9f447)
-*  incrementing version number - v2.8.2 (050e43f8)
 *  update changelog for v2.8.2 (66aa3169)
 
 ##### Bug Fixes
@@ -2490,7 +5733,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.8.1 (727f879e)
 *  update changelog for v2.8.1 (d17d4ec0)
 
 ##### Bug Fixes
@@ -2503,7 +5745,6 @@
 
 *  fallbacks for new language string (8a69e740)
 *  remove extraneous lines from changelog (bbaf26ce)
-*  incrementing version number - v2.8.0 (8e77673d)
 *  update changelog for v2.8.0 (a5c2edb9)
 
 ##### Bug Fixes
@@ -2521,7 +5762,6 @@
   *  update dependency mocha to v10.2.0 (#11094) (c4cc1e61)
 *  up jquery (3e8f5378)
 *  remove extraneous lines from changelog (e213dbc3)
-*  incrementing version number - v2.7.0 (96cc0617)
 *  update changelog for v2.7.0 (4701c96d)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-settings-email (717b3612)
@@ -2602,25 +5842,7 @@
 
 ##### Chores
 
-*  incrementing version number - v2.6.0 (e7fcf482)
 *  update changelog for v2.6.0 (eedd84ae)
-*  incrementing version number - v2.5.8 (dec0e7de)
-*  incrementing version number - v2.5.7 (5836bf4a)
-*  incrementing version number - v2.5.6 (c7bd7dbf)
-*  incrementing version number - v2.5.5 (3509ed94)
-*  incrementing version number - v2.5.4 (e83260ca)
-*  incrementing version number - v2.5.3 (7e922936)
-*  incrementing version number - v2.5.2 (babcd17e)
-*  incrementing version number - v2.5.1 (ce3aa950)
-*  incrementing version number - v2.5.0 (01d276cb)
-*  incrementing version number - v2.4.5 (dd3e1a28)
-*  incrementing version number - v2.4.4 (d5525c87)
-*  incrementing version number - v2.4.3 (9c647c6c)
-*  incrementing version number - v2.4.2 (3aa7b855)
-*  incrementing version number - v2.4.1 (60cbd148)
-*  incrementing version number - v2.4.0 (4834cde3)
-*  incrementing version number - v2.3.1 (d2425942)
-*  incrementing version number - v2.3.0 (046ea120)
 
 ##### Documentation Changes
 
@@ -2661,7 +5883,6 @@
   *  update postgres docker tag to v14 (#10829) (5aa55d29)
   *  update dependency eslint to v8.23.1 (#10885) (0c6fb6e3)
 *  remove derpy extra changelog bits (445f09f0)
-*  incrementing version number - v2.5.8 (dec0e7de)
 *  update changelog for v2.5.8 (c9cd8975)
 
 ##### New Features
@@ -2786,7 +6007,6 @@
 *  really fix indents this time (c2024f34)
 *  fix indents (d50512e7)
 *  add bootstrap5 to test runner for now (be5d6d29)
-*  incrementing version number - v2.5.7 (5836bf4a)
 *  update changelog for v2.5.7 (17e948ab)
 
 ##### New Features
@@ -2821,7 +6041,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.5.6 (c7bd7dbf)
 *  update changelog for v2.5.6 (e92238d0)
 
 ##### Performance Improvements
@@ -2832,7 +6051,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.5.5 (3509ed94)
 *  update changelog for v2.5.5 (e7d0040d)
 
 ##### Bug Fixes
@@ -2845,7 +6063,6 @@
 ##### Chores
 
 *  up plugins (b91ef6dd)
-*  incrementing version number - v2.5.4 (e83260ca)
 *  update changelog for v2.5.4 (aabf073c)
 
 #### v2.5.4 (2022-10-11)
@@ -2853,7 +6070,6 @@
 ##### Chores
 
 *  🤔 (7240e8ce)
-*  incrementing version number - v2.5.3 (7e922936)
 *  update changelog for v2.5.3 (fdf240f6)
 
 ##### Continuous Integration
@@ -2875,7 +6091,6 @@
 
 *  remove duplicate version increment lines in changelog (5dbcfef9)
 *  bring back treding plugins (8aa1596d)
-*  incrementing version number - v2.5.2 (babcd17e)
 *  update changelog for v2.5.2 (84b6a7c7)
 
 ##### New Features
@@ -2905,7 +6120,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.5.1 (ce3aa950)
 *  update changelog for v2.5.1 (2b2fd4f3)
 
 ##### Bug Fixes
@@ -2924,7 +6138,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.5.0 (01d276cb)
 *  update changelog for v2.5.0 (1076285d)
 
 ##### Bug Fixes
@@ -2946,7 +6159,6 @@
   *  fallback strings for new resources: nodebb.admin-advanced-cache (90fc50e1)
 *  move @textcomplete and its modules to composer-default (3cbb7a3d)
 *  remove client-side js file for tpl that no longer exists (bc2ea860)
-*  incrementing version number - v2.4.5 (dd3e1a28)
 *  update changelog for v2.4.5 (d505cc47)
 
 * **deps:**
@@ -3009,7 +6221,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.4.4 (d5525c87)
 *  update changelog for v2.4.4 (77e492b8)
 
 ##### Bug Fixes
@@ -3021,7 +6232,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.4.3 (9c647c6c)
 *  update changelog for v2.4.3 (06da15a5)
 
 ##### Bug Fixes
@@ -3032,7 +6242,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.4.2 (3aa7b855)
 *  update changelog for v2.4.2 (ba7a3466)
 
 ##### Bug Fixes
@@ -3043,7 +6252,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.4.1 (60cbd148)
 *  update changelog for v2.4.1 (4b6baabb)
 
 ##### Documentation Changes
@@ -3067,7 +6275,6 @@
   *  update docker/build-push-action action to v3 (bfd6318c)
   *  update docker/login-action action to v2 (3d68accf)
   *  update docker/setup-buildx-action action to v2 (371ac032)
-*  incrementing version number - v2.4.0 (4834cde3)
 *  update changelog for v2.4.0 (c4714ff7)
 
 ##### Bug Fixes
@@ -3084,7 +6291,6 @@
 *  update to new transifex project url (659cfe85)
 *  re-order interstitial tests so email and gdpr tests are in sub-blocks (342cca35)
 *  opt-out of dependabot, due to conflicts with renovate (70d60289)
-*  incrementing version number - v2.3.1 (d2425942)
 *  update changelog for v2.3.1 (2f487175)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-settings-email (cdaa8f21)
@@ -3145,7 +6351,6 @@
   *  bump sanitize-html from 2.7.0 to 2.7.1 in /install (7b606d2e)
   *  bump webpack from 5.73.0 to 5.74.0 in /install (a9900625)
 * **i18n:**  fallback strings for new resources: nodebb.admin-settings-advanced, nodebb.admin-menu, nodebb.error (17120e03)
-*  incrementing version number - v2.3.0 (046ea120)
 *  update changelog for v2.3.0 (a6f7fff0)
 
 ##### New Features
@@ -3207,12 +6412,7 @@
   *  bump jquery-ui from 1.13.1 to 1.13.2 in /install (abb19e98)
   *  bump nodebb-theme-persona in /install (9e52b8c6)
   *  bump ioredis from 5.1.0 to 5.2.0 in /install (8c20fdad)
-*  incrementing version number - v2.2.4 (d1d63e6b)
 *  update changelog for v2.2.4 (52f7ed64)
-*  incrementing version number - v2.2.3 (f80476b9)
-*  incrementing version number - v2.2.2 (343ffa66)
-*  incrementing version number - v2.2.1 (efc77b2a)
-*  incrementing version number - v2.2.0 (eecb836d)
 
 ##### Bug Fixes
 
@@ -3233,11 +6433,7 @@
 * **deps-dev:**
   *  bump @commitlint/cli from 17.0.2 to 17.0.3 in /install (9e44cdad)
   *  bump eslint from 8.18.0 to 8.19.0 in /install (7139ad5f)
-*  incrementing version number - v2.2.3 (f80476b9)
 *  update changelog for v2.2.3 (8719a93f)
-*  incrementing version number - v2.2.2 (343ffa66)
-*  incrementing version number - v2.2.1 (efc77b2a)
-*  incrementing version number - v2.2.0 (eecb836d)
 
 ##### Bug Fixes
 
@@ -3250,10 +6446,7 @@
 
 ##### Chores
 
-*  incrementing version number - v2.2.2 (343ffa66)
 *  update changelog for v2.2.2 (f59ddc34)
-*  incrementing version number - v2.2.1 (efc77b2a)
-*  incrementing version number - v2.2.0 (eecb836d)
 
 ##### Bug Fixes
 
@@ -3271,9 +6464,7 @@
 * **deps-dev:**
   *  bump eslint from 8.17.0 to 8.18.0 in /install (bfd626b0)
   *  bump jsdom from 19.0.0 to 20.0.0 in /install (d037c2c9)
-*  incrementing version number - v2.2.1 (efc77b2a)
 *  update changelog for v2.2.1 (667780cf)
-*  incrementing version number - v2.2.0 (eecb836d)
 
 ##### Bug Fixes
 
@@ -3292,7 +6483,6 @@
   *  fallback strings for new resources: nodebb.admin-settings-uploads (da481163)
   *  fallback strings for new resources: nodebb.admin-settings-advanced (34d75e96)
 *  add in warning in language directories about not editing files directly (06074e8c)
-*  incrementing version number - v2.2.0 (eecb836d)
 *  update changelog for v2.2.0 (bb3766df)
 
 ##### Documentation Changes
@@ -3368,7 +6558,6 @@
 * **deps-dev:**
   *  bump @commitlint/config-angular in /install (e5e788d2)
   *  bump eslint from 8.16.0 to 8.17.0 in /install (52c86dba)
-*  incrementing version number - v2.1.0 (a3114d33)
 *  update changelog for v2.1.0 (7121949d)
 
 ##### Documentation Changes
@@ -3388,15 +6577,12 @@
 ##### Chores
 
 *  update changelog for v2.1.0 (7121949d)
-*  incrementing version number - v2.1.0 (987045c3)
 *  bump persona (91f32487)
 *  update changelog for v2.0.1 (abd8e216)
-*  incrementing version number - v2.0.1 (768427d4)
 *  remove optional `middleware` parameter from setupPageRoute and setupAdminPageRoute calls (54ff768f)
 *  add note re: sort module (5aca106b)
 *  up emoji (265a0139)
 *  update changelog for v2.0.0 (60fc3f5d)
-*  incrementing version number - v2.0.0 (f23c3ff5)
 * **deps:**
   *  bump nodebb-plugin-2factor from 4.0.1 to 5.0.0 in /install (6e95e5c5)
   *  update dependency lint-staged to v12.5.0 (01f607a5)
@@ -3504,7 +6690,6 @@
 
 ##### Chores
 
-*  incrementing version number - v2.0.0 (f23c3ff5)
 *  update changelog for v1.19.7 (a764df52)
 * **deps:**
   *  update dependency mocha to v10 (a7986773)
@@ -3550,7 +6735,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.19.7 (0c4850e2)
 *  update changelog for v1.19.6 (acca7811)
 * **deps:**
   *  update commitlint monorepo to v16.2.4 (0d9179f7)
@@ -3597,7 +6781,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.19.6 (283a0072)
 *  update changelog for v1.19.5 (05032ca2)
 * **deps:**
   *  bump semver from 7.3.6 to 7.3.7 in /install (#10493) (65cec8d0)
@@ -3680,7 +6863,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.19.5 (48d6eb4f)
 *  update changelog for v1.19.4 (0e6e49b2)
 * **deps:**
   *  bump less from 3.13.1 to 4.1.2 in /install (#9856) (d33485f6)
@@ -3733,10 +6915,8 @@
 
 ##### Chores
 
-*  incrementing version number - v1.19.4 (67282057)
 *  delay `filter:email.send` removal to v2.0.0 (83fd4311)
 *  up persona (c23b2089)
-*  incrementing version number - v1.19.3 (09cb11c8)
 *  update changelog for v1.19.3 (0b48ec54)
 * **deps:**
   *  bump postcss from 8.4.7 to 8.4.8 in /install (#10372) (d7a4ae1f)
@@ -3834,7 +7014,6 @@
   *  update commitlint monorepo to v16.2.1 (2290cee5)
   *  update dependency eslint to v8.9.0 (763cd193)
 *  remove punycode dep (e9cb1452)
-*  incrementing version number - v1.19.2 (e49b31f0)
 *  update changelog for v1.19.2 (f012984d)
 
 ##### New Features
@@ -3910,7 +7089,6 @@
 *  up persona (f29bed27)
 *  up packages (b4a4e60e)
 *  up persona (3e30b6cd)
-*  incrementing version number - v1.19.1 (7f450268)
 *  update changelog for v1.19.1 (55df683a)
 * **deps:**
   *  bump ioredis from 4.28.4 to 4.28.5 in /install (#10254) (b496ad44)
@@ -4055,7 +7233,6 @@
 *  add test.sh to gitignore (d7796f0b)
 *  delete test script (250274c7)
 *  remove unused lang key #10180 (2fe91e36)
-*  incrementing version number - v1.19.0 (18b0a29f)
 *  update changelog for v1.19.0 (c8f1bc53)
 * **i18n:**
   *  fallback strings for new resources: nodebb.admin-settings-user (78cd6de7)
@@ -4150,7 +7327,6 @@
 *  right dropdown (7aa85882)
 *  right dropdown (a998cc1c)
 *  update readme mongodb version (af5393ec)
-*  incrementing version number - v1.18.6 (3a78a151)
 *  update changelog for v1.18.6 (3c8109e2)
 * **deps:**
   *  update commitlint monorepo (56d134c3)
@@ -4458,7 +7634,6 @@
 *  up mentions (98b98a11)
 *  up mentions (3e4d477e)
 *  fix type.yaml example and summary (591424ce)
-*  incrementing version number - v1.18.5 (1e418f5b)
 *  update changelog for v1.18.5 (82eda23a)
 *  remove .opacity() mixin as it is supported cross-browser (28efcb59)
 * **deps:**
@@ -4566,7 +7741,6 @@
 *  remove .opacity() mixin as it is supported cross-browser (28efcb59)
 *  up themes (463b2076)
 *  up persona (1438f409)
-*  incrementing version number - v1.18.4 (945c2b0b)
 *  update changelog for v1.18.4 (7cbcb521)
 * **deps:**
   *  update dependency lint-staged to v11.2.6 (8d4bb8bb)
@@ -4719,7 +7893,6 @@
 ##### Chores
 
 *  up persona (f4e62fb1)
-*  incrementing version number - v1.18.3 (57358743)
 *  update changelog for v1.18.3 (f066ddb8)
 * **deps:**
   *  update dependency lint-staged to v11.2.0 (840b49b9)
@@ -4795,7 +7968,6 @@
 ##### Chores
 
 * **deps:**  update docker/build-push-action action to v2.7.0 (ee027719)
-*  incrementing version number - v1.18.2 (0a56158b)
 *  update changelog for v1.18.2 (27e9282a)
 
 ##### New Features
@@ -4870,7 +8042,6 @@
 ##### Chores
 
 * **deps:**  update commitlint monorepo to v13 (87ba768f)
-*  incrementing version number - v1.18.1 (f8f80e4f)
 *  update changelog for v1.18.1 (0713475d)
 
 ##### New Features
@@ -4913,7 +8084,6 @@
 ##### Chores
 
 *  found some hooks that don't play well docgen (ae793b4a)
-*  incrementing version number - v1.18.0 (1e436ae7)
 *  update changelog for v1.18.0 (2fd9c095)
 * **deps:**  update dependency mocha to v9.1.1 (64bac178)
 
@@ -4983,7 +8153,6 @@
   *  update dependency eslint to v7.31.0 (f5a53b7f)
   *  update dependency lint-staged to v11.0.1 (02101315)
 *  up markdown/composer-default, fixes: #9708 (b74eefac)
-*  incrementing version number - v1.17.2 (46be2046)
 *  update changelog for v1.17.2 (5c9c0605)
 
 ##### Documentation Changes
@@ -5136,7 +8305,6 @@
 *  lint (2b42e7ed)
 *  fix indentation (d07229aa)
 *  up rewards (ca9ca876)
-*  incrementing version number - v1.17.1 (0aad1312)
 *  update changelog for v1.17.1 (1e6ed0ad)
 
 ##### Documentation Changes
@@ -5248,7 +8416,6 @@
   *  update dependency mocha to v8.4.0 (461e187b)
   *  update dependency eslint to v7.25.0 (32c20806)
   *  update dependency grunt to v1.4.0 (a30deef3)
-*  incrementing version number - v1.17.0 (75f7972b)
 *  update changelog for v1.17.0 (4c441a1b)
 
 ##### Documentation Changes
@@ -5391,23 +8558,16 @@
   *  update dependency husky to v5 (d89ccf26)
   *  update dependency lint-staged to v10.5.4 (030ecffa)
   *  update dependency eslint to v7.19.0 (3696a199)
-*  incrementing version number - v1.17.0-beta.5 (42c4f963)
 *  fix indent (6406e527)
 *  benchpress 2.4.1 (3403635c)
 *  remove log (a1ee1a2a)
-*  incrementing version number - v1.17.0-beta.4 (91992240)
 *  bump composer-default (289bfc0b)
 *  up themes (d14ba1f4)
 *  remove node 10 (8d3ec234)
 *  bump composer-default to 6.5.20 (33fbfdfe)
-*  incrementing version number - v1.17.0-beta.3 (6e8b1bb9)
 *  add multiparty dep (ef3ec96a)
-*  incrementing version number - v1.17.0-beta.2 (0c1945dc)
-*  incrementing version number - v1.17.0-beta.1 (31872aac)
 *  bump composer (30954789)
 *  bump deps (#9335) (b9fd2c87)
-*  incrementing version number - v1.17.0-beta.0 (b61257ef)
-*  incrementing version number - v1.16.3-beta.0 (477157cc)
 *  extra console.log (1ae8dda8)
 *  up composer (1c9acef6)
 *  eslint max-len (cc9d6fd0)
@@ -5426,7 +8586,6 @@
 *  fallbacks (74be1a59)
 *  deprecation notices for plugins using plugin old hook methods (3052256d)
 *  add deprecation notice in comments for ajaxify.loadExtraScripts (8b09292e)
-*  incrementing version number - v1.16.2 (ea7f8381)
 *  update changelog for v1.16.2 (d3883d4b)
 
 ##### Documentation Changes
@@ -5970,8 +9129,6 @@
   *  update dependency husky to v4.3.8 (a6f5de86)
   *  update dependency eslint to v7.18.0 (afbef95f)
   *  update dependency husky to v4.3.7 (d3e041e2)
-*  incrementing version number - v1.16.2-beta.0 (43ff8e41)
-*  incrementing version number - v1.16.1 (e3cd7a23)
 *  update changelog for v1.16.1 (b6d71710)
 
 ##### New Features
@@ -6049,10 +9206,8 @@
 ##### Chores
 
 *  increase test timeout (0d7dfeeb)
-*  incrementing version number - v1.16.1-beta.0 (5fcf3ea6)
 *  add deprecation notice to topic thumb tpl value (05d8b3c3)
 *  minor reordering of lines (8e5a413e)
-*  incrementing version number - v1.16.0 (6d01fd50)
 *  update changelog for v1.16.0 (1437c62f)
 * **deps:**
   *  update dependency eslint to v7.17.0 (18ae7cf7)
@@ -6175,7 +9330,6 @@
   *  update dependency lint-staged to v10.5.3 (3e6f7359)
 *  appease codeclimate (9f62df15)
 *  add comment for clarification (6037f5ee)
-*  incrementing version number - v1.15.5 (57cd1343)
 *  update changelog for v1.15.5 (b0299326)
 * **i18n:**  fallbacks for new topic thumb keys (15f1a089)
 
@@ -6300,7 +9454,6 @@
 ##### Chores
 
 *  up persona (c111bde1)
-*  incrementing version number - v1.15.4 (a1b658d9)
 *  update changelog for v1.15.4 (252dddfc)
 
 ##### New Features
@@ -6325,7 +9478,6 @@
 *  fallbacks for nodebb.error (82ca3760)
 *  fallbacks for nodebb.topic (5b269bc5)
 *  remove test code (07fe959c)
-*  incrementing version number - v1.15.3 (d1ae08fa)
 *  update changelog for v1.15.3 (cf157c9b)
 
 ##### New Features
@@ -6453,10 +9605,8 @@
 *  up persona (5c9ff18e)
 *  add missing plugin hook deprecation warning (98a05e4d)
 *  pin autoprefixer to latest (46eb7701)
-*  incrementing version number - v1.15.3-beta.0 (28fa03bd)
 *  up persona (81984285)
 *  up slick (5f2fe883)
-*  incrementing version number - v1.15.2 (5867a5b9)
 *  update changelog for v1.15.2 (37965d45)
 * **spec:**  replace ugly hack with another hack for optional properties (45a4f136)
 * **deps:**
@@ -6535,9 +9685,7 @@
 
 ##### Chores
 
-*  incrementing version number - v1.15.2-beta.1 (20c05e80)
 *  remove debug log (0a0b4661)
-*  incrementing version number - v1.15.2-beta.0 (996174a1)
 * **deps:**  update dependency smtp-server to v3.8.0 (5f5f0edb)
 
 ##### Documentation Changes
@@ -6612,7 +9760,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.15.1-beta.0 (e033da8a)
 *  fallback l10n for admin-settings-api (8368c25b)
 * **deps:**
   *  update dependency eslint to v7.13.0 (bcbc0854)
@@ -6688,40 +9835,27 @@
 ##### Chores
 
 *  update changelog for v1.15.0-rc.5 (69f4d5ac)
-*  incrementing version number - v1.15.0-rc.5 (4bd2788b)
 *  add info log into tests (b6d86878)
 *  update renovate config to automatically merge non-major version bumps #yolo (1c8b8ce1)
 *  update changelog for v1.15.0-rc.4 (16882941)
-*  incrementing version number - v1.15.0-rc.4 (57b49320)
 *  update changelog for v1.15.0-rc.3 (2738041b)
-*  incrementing version number - v1.15.0-rc.3 (6de7760a)
 *  bump persona (e0b67817)
 *  update changelog for v1.15.0-rc.2 (c3a7ab54)
-*  incrementing version number - v1.15.0-rc.2 (7c084134)
 *  update changelog for v1.15.0-rc.1 (4f49b3da)
-*  incrementing version number - v1.15.0-rc.1 (943424b5)
 *  update changelog for v1.15.0-rc.0 (aab5f018)
-*  incrementing version number - v1.15.0-rc.0 (8d48455b)
 *  update changelog for v1.15.0-beta.30 (39648722)
-*  incrementing version number - v1.15.0-beta.30 (2dd3c962)
 *  some optimizations for codeclimate (4a63c20a)
 *  update changelog for v1.15.0-beta.29 (63696c40)
-*  incrementing version number - v1.15.0-beta.29 (fca176d2)
 *  refactor src/emailer.js (75459517)
 *  update changelog for v1.15.0-beta.28 (fd975a66)
-*  incrementing version number - v1.15.0-beta.28 (57f83162)
 *  update changelog for v1.15.0-beta.27 (70673824)
-*  incrementing version number - v1.15.0-beta.27 (78fad240)
 *  lint notifications.js (4fc84e9f)
 *  update changelog for v1.15.0-beta.26 (5e01d288)
-*  incrementing version number - v1.15.0-beta.26 (62c44095)
 *  up persona (ff8a833a)
 *  up persona (4a0f54ae)
 *  update changelog for v1.15.0-beta.25 (240a04b4)
-*  incrementing version number - v1.15.0-beta.25 (1124d4ee)
 *  up persona (032e6001)
 *  update changelog for v1.15.0-beta.24 (72ab5ba1)
-*  incrementing version number - v1.15.0-beta.24 (23ba071d)
 *  up persona (5407bf48)
 *  up persona (4c2eab4b)
 *  up persona (91133b0f)
@@ -6729,72 +9863,30 @@
 *  up persona (9dc4db1f)
 *  up persona (ba70a1bf)
 *  update changelog for v1.15.0-beta.23 (e6ea208c)
-*  incrementing version number - v1.15.0-beta.23 (61a04eb9)
 *  update changelog for v1.15.0-beta.22 (59ee74c2)
-*  incrementing version number - v1.15.0-beta.22 (9c9329ee)
 *  update changelog for v1.15.0-beta.21 (8089542e)
-*  incrementing version number - v1.15.0-beta.21 (966cdc13)
 *  update changelog for v1.15.0-beta.20 (1650f303)
-*  incrementing version number - v1.15.0-beta.20 (c8e57ec1)
 *  update changelog for v1.15.0-beta.19 (9cde5105)
-*  incrementing version number - v1.15.0-beta.19 (2eb7c284)
 *  update changelog for v1.15.0-beta.18 (b2ca9686)
-*  incrementing version number - v1.15.0-beta.18 (e096791e)
 *  update changelog for v1.15.0-beta.17 (d6178158)
-*  incrementing version number - v1.15.0-beta.17 (f1c28092)
 *  update changelog for v1.15.0-beta.16 (e08297ff)
-*  incrementing version number - v1.15.0-beta.16 (6043c9cb)
 *  update changelog for v1.15.0-beta.15 (f878b92c)
-*  incrementing version number - v1.15.0-beta.15 (10b94f9b)
 *  update changelog for v1.15.0-beta.14 (5e60d092)
-*  incrementing version number - v1.15.0-beta.14 (6ca4b86f)
 *  update commitlint config (61a8c6f0)
 *  update changelog for v1.15.0-beta.13 (ca8d492b)
-*  incrementing version number - v1.15.0-beta.13 (bdd71c51)
 *  update changelog for v1.15.0-beta.12 (0a242605)
-*  incrementing version number - v1.15.0-beta.12 (b852c9b7)
 *  update changelog for v1.15.0-beta.11 (f07ba866)
-*  incrementing version number - v1.15.0-beta.11 (c1ce7391)
 *  update changelog for v1.15.0-beta.10 (9c34eced)
-*  incrementing version number - v1.15.0-beta.10 (f252d4d7)
 *  update changelog for v1.15.0-beta.9 (affc7927)
-*  incrementing version number - v1.15.0-beta.9 (8dc513da)
 *  update changelog for v1.15.0-beta.8 (3b960c3b)
-*  incrementing version number - v1.15.0-beta.8 (34bb869c)
 *  update changelog for v1.15.0-beta.7 (e449ff9a)
-*  incrementing version number - v1.15.0-beta.7 (fd917b8e)
 *  update changelog for v1.15.0-beta.6 (a7f03b64)
-*  incrementing version number - v1.15.0-beta.6 (a9019cbe)
 *  update changelog for v1.15.0-beta.5 (0e90064e)
-*  incrementing version number - v1.15.0-beta.5 (81e4c4df)
 *  update changelog for v1.15.0-beta.4 (6c4aed8c)
-*  incrementing version number - v1.15.0-beta.4 (f2726a6d)
 *  update changelog for v1.15.0-beta.3 (11e2ccab)
-*  incrementing version number - v1.15.0-beta.3 (39178c2d)
 *  update changelog for v1.15.0-beta.2 (d8a9f1c3)
-*  incrementing version number - v1.15.0-beta.2 (59b50d0a)
 *  update changelog for v1.15.0-beta.1 (aeca19d5)
-*  incrementing version number - v1.15.0-beta.1 (4fa57fbb)
-*  incrementing version number - v1.15.0-beta.0 (bff80983)
-*  incrementing version number - v1.14.3-beta.16 (d9a05035)
-*  incrementing version number - v1.14.3-beta.15 (e2a253f2)
-*  incrementing version number - v1.14.3-beta.14 (9500871e)
-*  incrementing version number - v1.14.3-beta.13 (b5a2e4b6)
-*  incrementing version number - v1.14.3-beta.12 (f4c986a7)
-*  incrementing version number - v1.14.3-beta.11 (8618c32a)
-*  incrementing version number - v1.14.3-beta.10 (fa341714)
-*  incrementing version number - v1.14.3-beta.9 (9945c409)
-*  incrementing version number - v1.14.3-beta.8 (b5dcce9c)
-*  incrementing version number - v1.14.3-beta.7 (2531c44c)
-*  incrementing version number - v1.14.3-beta.6 (97088f68)
-*  incrementing version number - v1.14.3-beta.5 (a33a8a5a)
-*  incrementing version number - v1.14.3-beta.4 (55b3e376)
-*  incrementing version number - v1.14.3-beta.3 (5a5abf3c)
-*  incrementing version number - v1.14.3-beta.2 (bbab183f)
-*  incrementing version number - v1.14.3-beta.1 (2c06f6ac)
-*  incrementing version number - v1.14.3-beta.0 (3f87d5f9)
 *  update changelog for v1.14.2 (cd94c24a)
-*  incrementing version number - v1.14.2 (1e4d683f)
 *  update changelog for v1.14.2 (488e69fd)
 * **deps:**
   *  update dependency mocha to v8.2.1 (35e725d1)
@@ -7577,14 +10669,10 @@
 
 ##### Chores
 
-*  incrementing version number - v1.14.2 (1e4d683f)
 *  update changelog for v1.14.2 (488e69fd)
 *  up theme (63fb2ad7)
-*  incrementing version number - v1.14.2-beta.1 (9d1465d0)
 *  up theme (15aabfd3)
 *  up theme (599c5015)
-*  incrementing version number - v1.14.2-beta.0 (fca4ee31)
-*  incrementing version number - v1.14.1 (31203b16)
 *  update changelog for v1.14.1 (d4c16086)
 * **deps:**  update commitlint monorepo to v9.1.1 (0ca7e28a)
 
@@ -7625,13 +10713,7 @@
 
 ##### Chores
 
-*  incrementing version number - v1.14.1 (31203b16)
 *  update changelog for v1.14.1 (d4c16086)
-*  incrementing version number - v1.14.1-beta.3 (e8ecef6b)
-*  incrementing version number - v1.14.1-beta.2 (b8d9b6b1)
-*  incrementing version number - v1.14.1-beta.1 (be85123a)
-*  incrementing version number - v1.14.1-beta.0 (c279875a)
-*  incrementing version number - v1.14.0 (bb73d6a4)
 *  update changelog for v1.14.0 (cffae0f1)
 
 ##### New Features
@@ -7692,13 +10774,10 @@
 
 ##### Chores
 
-*  incrementing version number - v1.14.0 (bb73d6a4)
 *  update changelog for v1.14.0 (cffae0f1)
 *  bump persona (19f9af94)
 *  latest translations and fallbacks (22879633)
-*  incrementing version number - v1.13.3 (ee583e80)
 *  bump persona (d2bd746c)
-*  incrementing version number - v1.13.2 (beafd613)
 * **deps:**
   *  update dependency smtp-server to v3.7.0 (e80100b5)
   *  update dependency eslint to v7.3.1 (#8417) (33492744)
@@ -8187,9 +11266,7 @@
 
 ##### Chores
 
-*  incrementing version number - v1.13.3 (ee583e80)
 *  bump persona (d2bd746c)
-*  incrementing version number - v1.13.2 (beafd613)
 * **deps:**
   *  update dependency coveralls to v3.1.0 (5ed4a108)
   *  pin dependency @apidevtools/swagger-parser to 9.0.1 (51eccef5)
@@ -8420,11 +11497,9 @@
 
 ##### Chores
 
-*  incrementing version number - v1.13.2 (71f4607d)
 *  bump themes (027f3f22)
 *  bump vanilla (236a1730)
 *  bump persona (82ace391)
-*  incrementing version number - v1.13.1 (cc6758a0)
 * **deps:**
   *  update dependency eslint to v6.8.0 (#8062) (15783213)
   *  update dependency nyc to v15 (#8094) (976e26a9)
@@ -8516,8 +11591,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.13.1 (d1e0672f)
-*  incrementing version number - v1.13.0 (c38b2d23)
 * **deps:**
   *  update dependency husky to v3.1.0 (#8046) (c3418c26)
   *  update dependency coveralls to v3.0.9 (#8067) (0aeee144)
@@ -8587,8 +11660,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.13.0 (c38b2d23)
-*  incrementing version number - v1.12.2 (810e2c0b)
 * **deps:**
   *  update dependency jsdom to v15.2.1 (9d946d1c)
   *  update dependency eslint to v6.6.0 (d0e428e9)
@@ -9200,12 +12271,10 @@
 
 ##### Chores
 
-*  incrementing version number - v1.12.2 (22db818e)
 *  bump themes #7576 (d349754d)
 *  bump themes (59bdc970)
 *  bump themes (abcca134)
 *  bump themes (551b18cd)
-*  incrementing version number - v1.12.1 (dd973abe)
 * **deps:**
   *  update dependency lint-staged to v8.1.7 (dc6b49ca)
   *  update commitlint monorepo (9998e86b)
@@ -9284,11 +12353,9 @@
 
 ##### Chores
 
-*  incrementing version number - v1.12.1 (dd973abe)
 *  comment cleanup (6bed51ef)
 *  bump persona (1f4db132)
 *  bump themes, fix: https://github.com/NodeBB/NodeBB/issues/7446 (0d19bb3d)
-*  incrementing version number - v1.12.0 (d87f8c52)
 * **deps:**
   *  update dependency lint-staged to v8.1.5 (ae17481d)
   *  update node:8.15.1 docker digest to 918f0be (5f787d73)
@@ -9389,8 +12456,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.12.0 (d87f8c52)
-*  incrementing version number - v1.11.2 (757bff27)
 * **deps:**
   *  update node:8.15.1 docker digest to 287b8a5 (0b8d1833)
   *  update node.js to v8.15.1 (ae89db28)
@@ -9539,8 +12604,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.11.2 (757bff27)
-*  incrementing version number - v1.11.1 (2104877c)
 * **deps:**
   *  update node:8.15.0 docker digest to cb66110 (1719cd77)
   *  update dependency eslint-plugin-import to v2.15.0 (f7191eb9)
@@ -9850,7 +12913,6 @@
 
 ##### Chores
 
-*  incrementing version number - v1.11.1 (2104877c)
 * **deps:**
   *  update dependency husky to v1.2.1 (63f4b569)
   *  update node:8.14.0 docker digest to dd2381f (7449ae3e)

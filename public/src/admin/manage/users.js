@@ -27,15 +27,63 @@ define('admin/manage/users', [
 					timeout: 0,
 				});
 			});
-			socket.emit('admin.user.exportUsersCSV', {}, function (err) {
-				if (err) {
-					return alerts.error(err);
-				}
-				alerts.alert({
-					alert_id: 'export-users-start',
-					message: '[[admin/manage/users:export-users-started]]',
-					timeout: (ajaxify.data.userCount / 5000) * 500,
-				});
+
+			const defaultFields = [
+				{ label: '[[admin/manage/users:export-field-email]]', field: 'email', selected: true },
+				{ label: '[[admin/manage/users:export-field-username]]', field: 'username', selected: true },
+				{ label: '[[admin/manage/users:export-field-uid]]', field: 'uid', selected: true },
+				{ label: '[[admin/manage/users:export-field-ip]]', field: 'ip', selected: true },
+				{ label: '[[admin/manage/users:export-field-joindate]]', field: 'joindate', selected: false },
+				{ label: '[[admin/manage/users:export-field-lastonline]]', field: 'lastonline', selected: false },
+				{ label: '[[admin/manage/users:export-field-lastposttime]]', field: 'lastposttime', selected: false },
+				{ label: '[[admin/manage/users:export-field-reputation]]', field: 'reputation', selected: false },
+				{ label: '[[admin/manage/users:export-field-postcount]]', field: 'postcount', selected: false },
+				{ label: '[[admin/manage/users:export-field-topiccount]]', field: 'topiccount', selected: false },
+				{ label: '[[admin/manage/users:export-field-profileviews]]', field: 'profileviews', selected: false },
+				{ label: '[[admin/manage/users:export-field-followercount]]', field: 'followerCount', selected: false },
+				{ label: '[[admin/manage/users:export-field-followingcount]]', field: 'followingCount', selected: false },
+				{ label: '[[admin/manage/users:export-field-fullname]]', field: 'fullname', selected: false },
+				{ label: '[[admin/manage/users:export-field-birthday]]', field: 'birthday', selected: false },
+				{ label: '[[admin/manage/users:export-field-signature]]', field: 'signature', selected: false },
+				{ label: '[[admin/manage/users:export-field-aboutme]]', field: 'aboutme', selected: false },
+			].concat(ajaxify.data.customUserFields.map(field => ({
+				label: field.name,
+				field: field.key,
+				selected: false,
+			})));
+
+			const options = defaultFields.map((field, i) => (`
+				<div class="form-check mb-2">
+					<input data-field="${field.field}" class="form-check-input" type="checkbox" id="option-${i}" ${field.selected ? 'checked' : ''}>
+					<label class="form-check-label" for="option-${i}">
+						${field.label}
+					</label>
+				</div>`
+			)).join('');
+
+			const modal = bootbox.dialog({
+				message: options,
+				title: '[[admin/manage/users:export-users-fields-title]]',
+				buttons: {
+					submit: {
+						label: '[[admin/manage/users:export]]',
+						callback: function () {
+							const fields = modal.find('[data-field]').filter(
+								(index, el) => $(el).is(':checked')
+							).map((index, el) => $(el).attr('data-field')).get();
+							socket.emit('admin.user.exportUsersCSV', { fields }, function (err) {
+								if (err) {
+									return alerts.error(err);
+								}
+								alerts.alert({
+									alert_id: 'export-users-start',
+									message: '[[admin/manage/users:export-users-started]]',
+									timeout: Math.max(5000, (ajaxify.data.userCount / 5000) * 500),
+								});
+							});
+						},
+					},
+				},
 			});
 
 			return false;
@@ -214,11 +262,11 @@ define('admin/manage/users', [
 			}
 
 			Benchpress.render('modals/temporary-ban', {}).then(function (html) {
-				bootbox.dialog({
-					className: 'ban-modal',
+				const modal = bootbox.dialog({
 					title: '[[user:ban-account]]',
 					message: html,
 					show: true,
+					onEscape: true,
 					buttons: {
 						close: {
 							label: '[[global:close]]',
@@ -227,7 +275,7 @@ define('admin/manage/users', [
 						submit: {
 							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
 							callback: function () {
-								const formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
+								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
@@ -257,10 +305,37 @@ define('admin/manage/users', [
 				return false; // specifically to keep the menu open
 			}
 
-			Promise.all(uids.map(function (uid) {
-				return api.del('/users/' + uid + '/ban');
-			})).then(() => {
-				onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+			Benchpress.render('modals/unban', {}).then(function (html) {
+				const modal = bootbox.dialog({
+					title: '[[user:unban-account]]',
+					message: html,
+					show: true,
+					onEscape: true,
+					buttons: {
+						close: {
+							label: '[[global:close]]',
+							className: 'btn-link',
+						},
+						submit: {
+							label: '[[user:unban-account]]',
+							callback: function () {
+								const formData = modal.find('form').serializeArray().reduce(function (data, cur) {
+									data[cur.name] = cur.value;
+									return data;
+								}, {});
+
+
+								Promise.all(uids.map(function (uid) {
+									return api.del('/users/' + uid + '/ban', {
+										reason: formData.reason || '',
+									});
+								})).then(() => {
+									onSuccess('[[admin/manage/users:alerts.unban-success]]', '.ban', false);
+								}).catch(alerts.error);
+							},
+						},
+					},
+				});
 			});
 		});
 
@@ -438,7 +513,7 @@ define('admin/manage/users', [
 				if (confirm) {
 					Promise.all(
 						uids.map(
-							uid => api.del(`/users/${uid}${path}`, {}).then(() => {
+							uid => api.del(`/users/${encodeURIComponent(uid)}${path}`, {}).then(() => {
 								if (path !== '/content') {
 									removeRow(uid);
 								}
@@ -545,7 +620,7 @@ define('admin/manage/users', [
 		params.query = query.query;
 		params.page = query.page;
 		params.sortBy = params.sortBy || 'lastonline';
-		const qs = decodeURIComponent($.param(params));
+		const qs = $.param(params);
 		$.get(config.relative_path + '/api/admin/manage/users?' + qs, function (data) {
 			renderSearchResults(data);
 			const url = config.relative_path + '/admin/manage/users?' + qs;
@@ -598,7 +673,7 @@ define('admin/manage/users', [
 			delete params.searchBy;
 		}
 
-		return decodeURIComponent($.param(params));
+		return $.param(params);
 	}
 
 	function handleSort() {

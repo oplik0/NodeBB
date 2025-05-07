@@ -70,7 +70,7 @@ User.validateEmail = async function (socket, uids) {
 		if (email) {
 			await user.setUserField(uid, 'email', email);
 		}
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, socket.uid);
 	}
 };
 
@@ -162,7 +162,7 @@ User.setReputation = async function (socket, data) {
 	]);
 };
 
-User.exportUsersCSV = async function (socket) {
+User.exportUsersCSV = async function (socket, data) {
 	await events.log({
 		type: 'exportUsersCSV',
 		uid: socket.uid,
@@ -170,7 +170,7 @@ User.exportUsersCSV = async function (socket) {
 	});
 	setTimeout(async () => {
 		try {
-			await user.exportUsersCSV();
+			await user.exportUsersCSV(data.fields);
 			if (socket.emit) {
 				socket.emit('event:export-users-csv');
 			}
@@ -187,3 +187,26 @@ User.exportUsersCSV = async function (socket) {
 		}
 	}, 0);
 };
+
+User.saveCustomFields = async function (socket, fields) {
+	const userFields = await user.getUserFieldWhitelist();
+	for (const field of fields) {
+		if (userFields.includes(field.key) || userFields.includes(field.key.toLowerCase())) {
+			throw new Error(`[[error:invalid-custom-user-field, ${field.key}]]`);
+		}
+	}
+	const keys = await db.getSortedSetRange('user-custom-fields', 0, -1);
+	await db.delete('user-custom-fields');
+	await db.deleteAll(keys.map(k => `user-custom-field:${k}`));
+
+	await db.sortedSetAdd(
+		`user-custom-fields`,
+		fields.map((f, i) => i),
+		fields.map(f => f.key)
+	);
+	await db.setObjectBulk(
+		fields.map(field => [`user-custom-field:${field.key}`, field])
+	);
+	await user.reloadCustomFieldWhitelist();
+};
+

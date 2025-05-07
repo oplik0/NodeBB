@@ -13,7 +13,9 @@ const topics = require('../topics');
 const groups = require('../groups');
 const messaging = require('../messaging');
 const plugins = require('../plugins');
+const activitypub = require('../activitypub');
 const batch = require('../batch');
+const utils = require('../utils');
 
 module.exports = function (User) {
 	const deletesInProgress = {};
@@ -24,7 +26,7 @@ module.exports = function (User) {
 	};
 
 	User.deleteContent = async function (callerUid, uid) {
-		if (parseInt(uid, 10) <= 0) {
+		if (utils.isNumber(uid) && parseInt(uid, 10) <= 0) {
 			throw new Error('[[error:invalid-uid]]');
 		}
 		if (deletesInProgress[uid]) {
@@ -61,7 +63,7 @@ module.exports = function (User) {
 		let deleteIds = [];
 		await batch.processSortedSet('post:queue', async (ids) => {
 			const data = await db.getObjects(ids.map(id => `post:queue:${id}`));
-			const userQueuedIds = data.filter(d => parseInt(d.uid, 10) === parseInt(uid, 10)).map(d => d.id);
+			const userQueuedIds = data.filter(d => String(d.uid) === String(uid)).map(d => d.id);
 			deleteIds = deleteIds.concat(userQueuedIds);
 		}, { batch: 500 });
 		await async.eachSeries(deleteIds, posts.removeFromQueue);
@@ -90,7 +92,7 @@ module.exports = function (User) {
 		deletesInProgress[uid] = 'user.deleteAccount';
 
 		await removeFromSortedSets(uid);
-		const userData = await db.getObject(`user:${uid}`);
+		const userData = await db.getObject(utils.isNumber(uid) ? `user:${uid}` : `userRemote:${uid}`);
 
 		if (!userData || !userData.username) {
 			delete deletesInProgress[uid];
@@ -119,7 +121,8 @@ module.exports = function (User) {
 			`uid:${uid}:chat:rooms:read`,
 			`uid:${uid}:upvote`, `uid:${uid}:downvote`,
 			`uid:${uid}:flag:pids`,
-			`uid:${uid}:sessions`, `uid:${uid}:sessionUUID:sessionId`,
+			`uid:${uid}:sessions`,
+			`uid:${uid}:shares`,
 			`invitation:uid:${uid}`,
 		];
 
@@ -140,7 +143,7 @@ module.exports = function (User) {
 
 		await Promise.all([
 			db.sortedSetRemoveBulk(bulkRemove),
-			db.decrObjectField('global', 'userCount'),
+			utils.isNumber(uid) ? db.decrObjectField('global', 'userCount') : null,
 			db.deleteAll(keys),
 			db.setRemove('invitation:uids', uid),
 			deleteUserIps(uid),
@@ -153,11 +156,13 @@ module.exports = function (User) {
 			flags.resolveFlag('user', uid, uid),
 			User.reset.cleanByUid(uid),
 			User.email.expireValidation(uid),
+			activitypub.actors.remove(uid),
 		]);
 		await db.deleteAll([
-			`followers:${uid}`, `following:${uid}`, `user:${uid}`,
+			`followers:${uid}`, `following:${uid}`,
 			`uid:${uid}:followed_tags`, `uid:${uid}:followed_tids`,
 			`uid:${uid}:ignored_tids`,
+			`${utils.isNumber(uid) ? 'user' : 'userRemote'}:${uid}`,
 		]);
 		delete deletesInProgress[uid];
 		return userData;
@@ -209,25 +214,31 @@ module.exports = function (User) {
 		]);
 
 		async function updateCount(uids, name, fieldName) {
-			await async.each(uids, async (uid) => {
-				let count = await db.sortedSetCard(name + uid);
-				count = parseInt(count, 10) || 0;
-				await db.setObjectField(`user:${uid}`, fieldName, count);
+			await batch.processArray(uids, async (uids) => {
+				const counts = await db.sortedSetsCard(uids.map(uid => name + uid));
+				const bulkSet = counts.map(
+					(count, index) => ([`user:${uids[index]}`, { [fieldName]: count || 0 }])
+				);
+				await db.setObjectBulk(bulkSet);
+			}, {
+				batch: 500,
 			});
 		}
 
 		const followingSets = followers.map(uid => `following:${uid}`);
 		const followerSets = following.map(uid => `followers:${uid}`);
 
+		await db.sortedSetsRemove(followerSets.concat(followingSets), uid);
 		await Promise.all([
-			db.sortedSetsRemove(followerSets.concat(followingSets), uid),
 			updateCount(following, 'followers:', 'followerCount'),
 			updateCount(followers, 'following:', 'followingCount'),
 		]);
 	}
 
 	async function deleteImages(uid) {
-		const folder = path.join(nconf.get('upload_path'), 'profile');
-		await rimraf(`${uid}-profile{avatar,cover}*`, { glob: { cwd: folder } });
+		if (utils.isNumber(uid)) {
+			const folder = path.join(nconf.get('upload_path'), 'profile', `uid-${uid}`);
+			await rimraf(folder);
+		}
 	}
 };

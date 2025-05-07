@@ -3,12 +3,14 @@
 const _ = require('lodash');
 
 const db = require('./database');
+const batch = require('./batch');
 const posts = require('./posts');
 const topics = require('./topics');
 const categories = require('./categories');
 const user = require('./user');
 const plugins = require('./plugins');
 const privileges = require('./privileges');
+const activitypub = require('./activitypub');
 const utils = require('./utils');
 
 const search = module.exports;
@@ -18,20 +20,33 @@ search.search = async function (data) {
 	data.sortBy = data.sortBy || 'relevance';
 
 	let result;
-	if (data.searchIn === 'posts' || data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
-		result = await searchInContent(data);
-	} else if (data.searchIn === 'users') {
-		result = await user.search(data);
-	} else if (data.searchIn === 'categories') {
-		result = await categories.search(data);
-	} else if (data.searchIn === 'tags') {
-		result = await topics.searchAndLoadTags(data);
-	} else if (data.searchIn) {
-		result = await plugins.hooks.fire('filter:search.searchIn', {
-			data,
-		});
-	} else {
-		throw new Error('[[error:unknown-search-filter]]');
+	switch (data.searchIn) {
+		case 'users': {
+			result = await user.search(data);
+			break;
+		}
+
+		case 'categories': {
+			result = await categories.search(data);
+			break;
+		}
+
+		case 'tags': {
+			result = await topics.searchAndLoadTags(data);
+			break;
+		}
+
+		default: {
+			if (['posts', 'titles', 'titlesposts', 'bookmarks'].includes(data.searchIn)) {
+				result = await searchInContent(data);
+			} else if (data.searchIn) {
+				result = await plugins.hooks.fire('filter:search.searchIn', {
+					data,
+				});
+			} else {
+				throw new Error('[[error:unknown-search-filter]]');
+			}
+		}
 	}
 
 	result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
@@ -68,11 +83,34 @@ async function searchInContent(data) {
 		const tid = inTopic[1];
 		const cleanedTerm = data.query.replace(inTopic[0], '');
 		pids = await topics.search(tid, cleanedTerm);
+	} else if (data.searchIn === 'bookmarks') {
+		pids = await searchInBookmarks(data, searchCids, searchUids);
 	} else {
-		[pids, tids] = await Promise.all([
-			doSearch('post', ['posts', 'titlesposts']),
-			doSearch('topic', ['titles', 'titlesposts']),
-		]);
+		let result;
+		if (data.uid && activitypub.helpers.isUri(data.query)) {
+			const local = await activitypub.helpers.resolveLocalId(data.query);
+			if (local.type === 'post') {
+				result = [[local.id], []];
+			} else {
+				try {
+					result = await fetchRemoteObject(data);
+					if (result.hasOwnProperty('users')) {
+						return result;
+					}
+				} catch (e) {
+					// ...
+				}
+			}
+		}
+
+		if (result) {
+			[pids, tids] = result;
+		} else {
+			[pids, tids] = await Promise.all([
+				doSearch('post', ['posts', 'titlesposts']),
+				doSearch('topic', ['titles', 'titlesposts']),
+			]);
+		}
 	}
 
 	const mainPids = await topics.getMainPids(tids);
@@ -115,8 +153,78 @@ async function searchInContent(data) {
 	return Object.assign(returnData, metadata);
 }
 
+async function fetchRemoteObject(data) {
+	const { uid, query: uri } = data;
+
+	try {
+		let id = uri;
+		let exists = await posts.exists(id);
+		let tid = exists ? await posts.getPostField(id, 'tid') : undefined;
+		if (!exists) {
+			let type;
+			({ id, type } = await activitypub.get('uid', 0, id));
+			if (activitypub._constants.acceptedPostTypes.includes(type)) {
+				exists = await posts.exists(id);
+				if (!exists) {
+					({ tid } = await activitypub.notes.assert(uid, id));
+				} else {
+					tid = await posts.getPostField(id, 'tid');
+				}
+			} else if (activitypub._constants.acceptableActorTypes.has(type)) {
+				data.searchIn = 'users';
+				return await user.search(data);
+			} else if (activitypub._constants.acceptable.contextTypes.has(type)) {
+				({ tid } = await activitypub.notes.assert(uid, id));
+				id = await topics.getTopicField(tid, 'mainPid');
+			}
+		}
+
+		return tid ? [[id], []] : null;
+	} catch (e) {
+		return null;
+	}
+}
+
+async function searchInBookmarks(data, searchCids, searchUids) {
+	const { uid, query, matchWords } = data;
+	const allPids = [];
+	await batch.processSortedSet(`uid:${uid}:bookmarks`, async (pids) => {
+		if (Array.isArray(searchCids) && searchCids.length) {
+			pids = await posts.filterPidsByCid(pids, searchCids);
+		}
+		if (Array.isArray(searchUids) && searchUids.length) {
+			pids = await posts.filterPidsByUid(pids, searchUids);
+		}
+		if (query) {
+			const tokens = String(query).split(' ');
+			const postData = await db.getObjectsFields(pids.map(pid => `post:${pid}`), ['content', 'tid']);
+			const tids = _.uniq(postData.map(p => p.tid));
+			const topicData = await db.getObjectsFields(tids.map(tid => `topic:${tid}`), ['title']);
+			const tidToTopic = _.zipObject(tids, topicData);
+			pids = pids.filter((pid, i) => {
+				const content = String(postData[i].content);
+				const title = String(tidToTopic[postData[i].tid].title);
+				const method = (matchWords === 'any' ? 'some' : 'every');
+				return tokens[method](
+					token => content.includes(token) || title.includes(token)
+				);
+			});
+		}
+		allPids.push(...pids);
+	}, {
+		batch: 500,
+	});
+
+	return allPids;
+}
+
 async function filterAndSort(pids, data) {
-	if (data.sortBy === 'relevance' && !data.replies && !data.timeRange && !data.hasTags && !plugins.hooks.hasListeners('filter:search.filterAndSort')) {
+	if (data.sortBy === 'relevance' &&
+		!data.replies &&
+		!data.timeRange &&
+		!data.hasTags &&
+		data.searchIn !== 'bookmarks' &&
+		!plugins.hooks.hasListeners('filter:search.filterAndSort')) {
 		return pids;
 	}
 	let postsData = await getMatchedPosts(pids, data);

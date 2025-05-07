@@ -7,6 +7,9 @@ const events = require('../events');
 const user = require('../user');
 const groups = require('../groups');
 const privileges = require('../privileges');
+const utils = require('../utils');
+
+const activitypubApi = require('./activitypub');
 
 const categoriesAPI = module.exports;
 
@@ -49,7 +52,7 @@ categoriesAPI.create = async function (caller, data) {
 	await hasAdminPrivilege(caller.uid);
 
 	const response = await categories.create(data);
-	const categoryObjs = await categories.getCategories([response.cid], caller.uid);
+	const categoryObjs = await categories.getCategories([response.cid]);
 	return categoryObjs[0];
 };
 
@@ -63,6 +66,7 @@ categoriesAPI.update = async function (caller, data) {
 	const payload = {};
 	payload[cid] = values;
 	await categories.update(payload);
+	activitypubApi.update.category(caller, { cid }); // background
 };
 
 categoriesAPI.delete = async function (caller, { cid }) {
@@ -124,11 +128,11 @@ categoriesAPI.getTopics = async (caller, data) => {
 	}
 
 	const infScrollTopicsPerPage = 20;
-	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'newest_to_oldest';
+	const sort = data.sort || data.categoryTopicSort || meta.config.categoryTopicSort || 'recently_replied';
 
 	let start = Math.max(0, parseInt(data.after || 0, 10));
 
-	if (data.direction === -1) {
+	if (parseInt(data.direction, 10) === -1) {
 		start -= infScrollTopicsPerPage;
 	}
 
@@ -154,7 +158,9 @@ categoriesAPI.getTopics = async (caller, data) => {
 
 categoriesAPI.setWatchState = async (caller, { cid, state, uid }) => {
 	let targetUid = caller.uid;
-	const cids = Array.isArray(cid) ? cid.map(cid => parseInt(cid, 10)) : [parseInt(cid, 10)];
+	let cids = Array.isArray(cid) ? cid : [cid];
+	cids = cids.map(cid => (utils.isNumber(cid) ? parseInt(cid, 10) : cid));
+
 	if (uid) {
 		targetUid = uid;
 	}

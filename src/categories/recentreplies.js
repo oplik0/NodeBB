@@ -10,6 +10,7 @@ const topics = require('../topics');
 const privileges = require('../privileges');
 const plugins = require('../plugins');
 const batch = require('../batch');
+const utils = require('../utils');
 
 module.exports = function (Categories) {
 	Categories.getRecentReplies = async function (cid, uid, start, stop) {
@@ -27,7 +28,7 @@ module.exports = function (Categories) {
 	Categories.updateRecentTid = async function (cid, tid) {
 		const [count, numRecentReplies] = await Promise.all([
 			db.sortedSetCard(`cid:${cid}:recent_tids`),
-			db.getObjectField(`category:${cid}`, 'numRecentReplies'),
+			db.getObjectField(`${utils.isNumber(cid) ? 'category' : 'categoryRemote'}:${cid}`, 'numRecentReplies'),
 		]);
 
 		if (count >= numRecentReplies) {
@@ -116,9 +117,10 @@ module.exports = function (Categories) {
 			if (teaser) {
 				teaser.cid = topicData[index].cid;
 				teaser.parentCids = cidToRoot[teaser.cid];
-				teaser.tid = undefined;
-				teaser.uid = undefined;
+				teaser.tid = topicData[index].tid;
+				teaser.uid = topicData[index].uid;
 				teaser.topic = {
+					tid: topicData[index].tid,
 					slug: topicData[index].slug,
 					title: topicData[index].title,
 				};
@@ -130,7 +132,10 @@ module.exports = function (Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach((category) => {
 			if (category) {
-				category.posts = topics.filter(t => t.cid && (t.cid === category.cid || t.parentCids.includes(category.cid)))
+				category.posts = topics.filter(
+					t => t.cid &&
+					(t.cid === category.cid || (t.parentCids && t.parentCids.includes(category.cid)))
+				)
 					.sort((a, b) => b.timestamp - a.timestamp)
 					.slice(0, parseInt(category.numRecentReplies, 10));
 			}

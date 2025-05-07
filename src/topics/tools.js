@@ -171,6 +171,7 @@ module.exports = function (Topics) {
 			promises.push(db.sortedSetAdd(`cid:${topicData.cid}:tids:pinned`, Date.now(), tid));
 			promises.push(db.sortedSetsRemove([
 				`cid:${topicData.cid}:tids`,
+				`cid:${topicData.cid}:tids:create`,
 				`cid:${topicData.cid}:tids:posts`,
 				`cid:${topicData.cid}:tids:votes`,
 				`cid:${topicData.cid}:tids:views`,
@@ -180,6 +181,7 @@ module.exports = function (Topics) {
 			promises.push(Topics.deleteTopicField(tid, 'pinExpiry'));
 			promises.push(db.sortedSetAddBulk([
 				[`cid:${topicData.cid}:tids`, topicData.lastposttime, tid],
+				[`cid:${topicData.cid}:tids:create`, topicData.timestamp, tid],
 				[`cid:${topicData.cid}:tids:posts`, topicData.postcount, tid],
 				[`cid:${topicData.cid}:tids:votes`, parseInt(topicData.votes, 10) || 0, tid],
 				[`cid:${topicData.cid}:tids:views`, topicData.viewcount, tid],
@@ -231,7 +233,7 @@ module.exports = function (Topics) {
 	};
 
 	topicTools.move = async function (tid, data) {
-		const cid = parseInt(data.cid, 10);
+		const cid = utils.isNumber(data.cid) ? parseInt(data.cid, 10) : data.cid;
 		const topicData = await Topics.getTopicData(tid);
 		if (!topicData) {
 			throw new Error('[[error:no-topic]]');
@@ -242,6 +244,7 @@ module.exports = function (Topics) {
 		const tags = await Topics.getTopicTags(tid);
 		await db.sortedSetsRemove([
 			`cid:${topicData.cid}:tids`,
+			`cid:${topicData.cid}:tids:create`,
 			`cid:${topicData.cid}:tids:pinned`,
 			`cid:${topicData.cid}:tids:posts`,
 			`cid:${topicData.cid}:tids:votes`,
@@ -264,6 +267,7 @@ module.exports = function (Topics) {
 			bulk.push([`cid:${cid}:tids:pinned`, Date.now(), tid]);
 		} else {
 			bulk.push([`cid:${cid}:tids`, topicData.lastposttime, tid]);
+			bulk.push([`cid:${cid}:tids:create`, topicData.timestamp, tid]);
 			bulk.push([`cid:${cid}:tids:posts`, topicData.postcount, tid]);
 			bulk.push([`cid:${cid}:tids:votes`, votes, tid]);
 			bulk.push([`cid:${cid}:tids:views`, topicData.viewcount, tid]);
@@ -279,13 +283,34 @@ module.exports = function (Topics) {
 				oldCid: oldCid,
 			}),
 			Topics.updateCategoryTagsCount([oldCid, cid], tags),
-			Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }),
+			oldCid !== -1 ?
+				Topics.events.log(tid, { type: 'move', uid: data.uid, fromCid: oldCid }) :
+				topicTools.share(tid, data.uid),
 		]);
+
+		// Update entry in recent topics zset — must come after hash update
+		if (oldCid === -1 || cid === -1) {
+			Topics.updateRecent(tid, topicData.lastposttime); // no await req'd
+		}
+
 		const hookData = _.clone(data);
 		hookData.fromCid = oldCid;
 		hookData.toCid = cid;
 		hookData.tid = tid;
 
 		plugins.hooks.fire('action:topic.move', hookData);
+	};
+
+	topicTools.share = async function (tid, uid, timestamp = Date.now()) {
+		const set = `uid:${uid}:shares`;
+		const shared = await db.isSortedSetMember(set, tid);
+		if (shared) {
+			return;
+		}
+
+		await Promise.all([
+			Topics.events.log(tid, { type: 'share', uid: uid }),
+			db.sortedSetAdd(set, timestamp, tid),
+		]);
 	};
 };

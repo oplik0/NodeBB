@@ -5,9 +5,9 @@ define('topicThumbs', [
 ], function (api, bootbox, alerts, uploader, Benchpress, translator) {
 	const Thumbs = {};
 
-	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, {});
+	Thumbs.get = id => api.get(`/topics/${id}/thumbs`, { thumbsOnly: 1 });
 
-	Thumbs.getByPid = pid => api.get(`/posts/${pid}`, {}).then(post => Thumbs.get(post.tid));
+	Thumbs.getByPid = pid => api.get(`/posts/${encodeURIComponent(pid)}`, {}).then(post => Thumbs.get(post.tid));
 
 	Thumbs.delete = (id, path) => api.del(`/topics/${id}/thumbs`, {
 		path: path,
@@ -87,7 +87,7 @@ define('topicThumbs', [
 
 	Thumbs.modal.handleDelete = (payload) => {
 		const modalEl = payload.modal.get(0);
-
+		const { id: uuid } = payload;
 		modalEl.addEventListener('click', (ev) => {
 			if (ev.target.closest('button[data-action="remove"]')) {
 				bootbox.confirm('[[modules:thumbs.modal.confirm-remove]]', (ok) => {
@@ -101,6 +101,9 @@ define('topicThumbs', [
 						path: path,
 					}).then(() => {
 						Thumbs.modal.open(payload);
+						require(['composer'], (composer) => {
+							composer.updateThumbCount(uuid, $(`[component="composer"][data-uuid="${uuid}"]`));
+						});
 					}).catch(alerts.error);
 				});
 			}

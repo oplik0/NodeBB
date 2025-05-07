@@ -36,7 +36,7 @@ define('forum/topic/postTools', [
 		if (!container) {
 			return;
 		}
-		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function () {
+		$('[component="topic"]').on('show.bs.dropdown', '[component="post/tools"]', function () {
 			const $this = $(this);
 			const dropdownMenu = $this.find('.dropdown-menu');
 			const { top } = this.getBoundingClientRect();
@@ -45,6 +45,10 @@ define('forum/topic/postTools', [
 			if (dropdownMenu.attr('data-loaded')) {
 				return;
 			}
+			dropdownMenu.html(helpers.generatePlaceholderWave([
+				3, 5, 9, 7, 10, 'divider', 10,
+			]));
+
 			const postEl = $this.parents('[data-pid]');
 			const pid = postEl.attr('data-pid');
 			const index = parseInt(postEl.attr('data-index'), 10);
@@ -137,12 +141,28 @@ define('forum/topic/postTools', [
 			votes.showVotes(getData($(this), 'data-pid'));
 		});
 
+		postContainer.on('click', '[component="post/announce-count"]', function () {
+			votes.showAnnouncers(getData($(this), 'data-pid'));
+		});
+
 		postContainer.on('click', '[component="post/flag"]', function () {
 			const pid = getData($(this), 'data-pid');
 			require(['flags'], function (flags) {
 				flags.showFlagModal({
 					type: 'post',
 					id: pid,
+				});
+			});
+		});
+
+		postContainer.on('click', '[component="post/already-flagged"]', function () {
+			const flagId = $(this).data('flag-id');
+			require(['flags'], function (flags) {
+				bootbox.confirm('[[flags:modal-confirm-rescind]]', function (confirm) {
+					if (!confirm) {
+						return;
+					}
+					flags.rescind(flagId);
 				});
 			});
 		});
@@ -249,6 +269,13 @@ define('forum/topic/postTools', [
 			});
 		});
 
+		postContainer.on('click', '[component="post/manage-editors"]', function () {
+			const btn = $(this);
+			require(['forum/topic/manage-editors'], function (manageEditors) {
+				manageEditors.init(btn.parents('[data-pid]'));
+			});
+		});
+
 		postContainer.on('click', '[component="post/ban-ip"]', function () {
 			const ip = $(this).attr('data-ip');
 			socket.emit('blacklist.addRule', ip, function (err) {
@@ -318,7 +345,7 @@ define('forum/topic/postTools', [
 				return quote(selectedNode.text);
 			}
 
-			const { content } = await api.get(`/posts/${toPid}/raw`);
+			const { content } = await api.get(`/posts/${encodeURIComponent(toPid)}/raw`);
 			quote(content);
 		});
 	}
@@ -348,7 +375,7 @@ define('forum/topic/postTools', [
 	function bookmarkPost(button, pid) {
 		const method = button.attr('data-bookmarked') === 'false' ? 'put' : 'del';
 
-		api[method](`/posts/${pid}/bookmark`, undefined, function (err) {
+		api[method](`/posts/${encodeURIComponent(pid)}/bookmark`, undefined, function (err) {
 			if (err) {
 				return alerts.error(err);
 			}
@@ -417,7 +444,7 @@ define('forum/topic/postTools', [
 
 			const route = action === 'purge' ? '' : '/state';
 			const method = action === 'restore' ? 'put' : 'del';
-			api[method](`/posts/${pid}${route}`).catch(alerts.error);
+			api[method](`/posts/${encodeURIComponent(pid)}${route}`).catch(alerts.error);
 		});
 	}
 

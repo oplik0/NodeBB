@@ -3,6 +3,7 @@
 module.exports = function (module) {
 	const _ = require('lodash');
 	const helpers = require('./helpers');
+	const { secureRandom } = require('../../utils');
 
 	module.setAdd = async function (key, value) {
 		if (!Array.isArray(value)) {
@@ -13,17 +14,25 @@ module.exports = function (module) {
 		}
 		value = value.map(v => helpers.valueToString(v));
 
-		await module.client.collection('objects').updateOne({
-			_key: key,
-		}, {
-			$addToSet: {
-				members: {
-					$each: value,
+		try {
+			await module.client.collection('objects').updateOne({
+				_key: key,
+			}, {
+				$addToSet: {
+					members: {
+						$each: value,
+					},
 				},
-			},
-		}, {
-			upsert: true,
-		});
+			}, {
+				upsert: true,
+			});
+		} catch (err) {
+			if (err && err.message.includes('E11000 duplicate key error')) {
+				console.log(new Error('e11000').stack, key, value);
+				return await module.setAdd(key, value);
+			}
+			throw err;
+		}
 	};
 
 	module.setsAdd = async function (keys, value) {
@@ -192,7 +201,7 @@ module.exports = function (module) {
 			return;
 		}
 
-		const randomIndex = Math.floor(Math.random() * data.members.length);
+		const randomIndex = secureRandom(0, data.members.length - 1);
 		const value = data.members[randomIndex];
 		await module.setRemove(data._key, value);
 		return value;

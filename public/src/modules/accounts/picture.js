@@ -27,7 +27,7 @@ define('accounts/picture', [
 				icon: { text: ajaxify.data['icon:text'], bgColor: ajaxify.data['icon:bgColor'] },
 				defaultAvatar: ajaxify.data.defaultAvatar,
 				allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
-				iconBackgrounds: config.iconBackgrounds,
+				iconBackgrounds: ajaxify.data.iconBackgrounds,
 				user: {
 					uid: ajaxify.data.uid,
 					username: ajaxify.data.username,
@@ -60,8 +60,10 @@ define('accounts/picture', [
 					modal.find('.list-group-item').removeClass('active');
 					$(this).addClass('active');
 				});
-				modal.on('change', 'input[type="radio"][name="icon:bgColor"]', (e) => {
-					const value = e.target.value;
+
+				modal.on('click', '[data-bg-color]', function () {
+					const value = $(this).attr('data-bg-color');
+					$(this).addClass('selected').siblings().removeClass('selected');
 					modal.find('[component="avatar/icon"]').css('background-color', value);
 				});
 
@@ -80,21 +82,23 @@ define('accounts/picture', [
 					}
 
 					// Update avatar background colour
-					const radioEl = document.querySelector(`.modal input[type="radio"][value="${ajaxify.data['icon:bgColor']}"]`);
-					if (radioEl) {
-						radioEl.checked = true;
+					const iconbgEl = modal.find(`[data-bg-color="${ajaxify.data['icon:bgColor']}"]`);
+					if (iconbgEl.length) {
+						iconbgEl.addClass('selected');
 					} else {
-						// Check the first one
-						document.querySelector('.modal input[type="radio"]').checked = true;
+						modal.find('[data-bg-color="transparent"]').addClass('selected');
 					}
 				}
 
 				function saveSelection() {
 					const type = modal.find('.list-group-item.active').attr('data-type');
-					const iconBgColor = document.querySelector('.modal.picture-switcher input[type="radio"]:checked').value || 'transparent';
+					const iconBgColor = modal.find('[data-bg-color].selected').attr('data-bg-color') || 'transparent';
 
 					changeUserPicture(type, iconBgColor).then(() => {
-						Picture.updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'), iconBgColor);
+						Picture.updateHeader(
+							type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'),
+							iconBgColor
+						);
 						ajaxify.refresh();
 					}).catch(alerts.error);
 				}
@@ -139,16 +143,17 @@ define('accounts/picture', [
 
 	function handleImageUpload(modal) {
 		function onUploadComplete(urlOnServer) {
-			urlOnServer = (!urlOnServer.startsWith('http') ? config.relative_path : '') + urlOnServer + '?' + Date.now();
-
-			Picture.updateHeader(urlOnServer);
+			urlOnServer = (!urlOnServer.startsWith('http') ? config.relative_path : '') + urlOnServer;
+			const cacheBustedUrl = urlOnServer + '?' + Date.now();
+			Picture.updateHeader(cacheBustedUrl);
 
 			if (ajaxify.data.picture && ajaxify.data.picture.length) {
-				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+				$(`#user-current-picture, img[data-uid="${ajaxify.data.theirid}"].avatar`).attr('src', cacheBustedUrl);
 				ajaxify.data.uploadedpicture = urlOnServer;
+				ajaxify.data.picture = urlOnServer;
 			} else {
 				ajaxify.refresh(function () {
-					$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+					$(`#user-current-picture, img[data-uid="${ajaxify.data.theirid}"].avatar`).attr('src', cacheBustedUrl);
 				});
 			}
 		}

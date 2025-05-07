@@ -55,17 +55,18 @@ define('categoryFilter', ['categorySearch', 'api', 'hooks'], function (categoryS
 
 				delete currentParams.page;
 				if (Object.keys(currentParams).length) {
-					url += '?' + decodeURIComponent($.param(currentParams));
+					url += '?' + $.param(currentParams);
 				}
 				ajaxify.go(url);
 			}
 		});
 
-		el.on('click', '[component="category/list"] [data-cid]', function () {
+		el.on('click', '[component="category/list"] [data-cid]', function (ev) {
 			const listEl = el.find('[component="category/list"]');
 			const categoryEl = $(this);
 			const link = categoryEl.find('a').attr('href');
 			if (link && link !== '#' && link.length) {
+				ev.stopPropagation();
 				return;
 			}
 			const cid = categoryEl.attr('data-cid');

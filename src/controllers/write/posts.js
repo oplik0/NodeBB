@@ -46,7 +46,7 @@ Posts.get = async (req, res) => {
 
 Posts.getIndex = async (req, res) => {
 	const { pid } = req.params;
-	const { sort } = req.body;
+	const { sort } = req.body || {};
 
 	const index = await api.posts.getIndex(req, { pid, sort });
 	if (index === null) {
@@ -129,6 +129,26 @@ Posts.unvote = async (req, res) => {
 	const data = await mock(req);
 	await api.posts.unvote(req, data);
 	helpers.formatApiResponse(200, res);
+};
+
+Posts.getVoters = async (req, res) => {
+	const data = await api.posts.getVoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getUpvoters = async (req, res) => {
+	const data = await api.posts.getUpvoters(req, { pid: req.params.pid });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getAnnouncers = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 0 });
+	helpers.formatApiResponse(200, res, data);
+};
+
+Posts.getAnnouncersTooltip = async (req, res) => {
+	const data = await api.posts.getAnnouncers(req, { pid: req.params.pid, tooltip: 1 });
+	helpers.formatApiResponse(200, res, data);
 };
 
 Posts.bookmark = async (req, res) => {

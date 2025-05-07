@@ -35,6 +35,9 @@ TopicObject:
             uid:
               type: number
               description: A user identifier
+            isLocal:
+              type: boolean
+              description: Whether the user belongs to the local installation or not.
             username:
               type: string
               description: A friendly name for a given user account
@@ -156,6 +159,8 @@ TopicObject:
           type: boolean
         ignored:
           type: boolean
+        followed:
+          type: boolean
         unread:
           type: boolean
         bookmark:
@@ -212,6 +217,8 @@ TopicObjectSlim:
         viewcount:
           type: number
         postercount:
+          type: number
+        followercount:
           type: number
         scheduled:
           type: number

@@ -18,8 +18,7 @@ const plugins = require('../plugins');
 const events = require('../events');
 const translator = require('../translator');
 const sockets = require('../socket.io');
-
-// const api = require('.');
+const utils = require('../utils');
 
 const usersAPI = module.exports;
 
@@ -41,6 +40,10 @@ usersAPI.create = async function (caller, data) {
 };
 
 usersAPI.get = async (caller, { uid }) => {
+	const canView = await privileges.global.can('view:users', caller.uid);
+	if (!canView) {
+		throw new Error('[[error:no-privileges]]');
+	}
 	const userData = await user.getUserData(uid);
 	return await user.hidePrivateData(userData, caller.uid);
 };
@@ -64,8 +67,8 @@ usersAPI.update = async function (caller, data) {
 		privileges.users.canEdit(caller.uid, data.uid),
 	]);
 
-	// Changing own email/username requires password confirmation
-	if (data.hasOwnProperty('email') || data.hasOwnProperty('username')) {
+	const isChangingEmailOrUsername = data.hasOwnProperty('email') || data.hasOwnProperty('username');
+	if (isChangingEmailOrUsername) {
 		await isPrivilegedOrSelfAndPasswordMatch(caller, data);
 	}
 
@@ -147,7 +150,11 @@ usersAPI.getStatus = async (caller, { uid }) => {
 	return { status };
 };
 
-usersAPI.getPrivateRoomId = async (caller, { uid }) => {
+usersAPI.getPrivateRoomId = async (caller, { uid } = {}) => {
+	if (!uid) {
+		throw new Error('[[error:invalid-data]]');
+	}
+
 	let roomId = await messaging.hasPrivateChat(caller.uid, uid);
 	roomId = parseInt(roomId, 10);
 
@@ -168,27 +175,11 @@ usersAPI.changePassword = async function (caller, data) {
 
 usersAPI.follow = async function (caller, data) {
 	await user.follow(caller.uid, data.uid);
+	await user.onFollow(caller.uid, data.uid);
 	plugins.hooks.fire('action:user.follow', {
 		fromUid: caller.uid,
 		toUid: data.uid,
 	});
-
-	const userData = await user.getUserFields(caller.uid, ['username', 'userslug']);
-	const { displayname } = userData;
-
-	const notifObj = await notifications.create({
-		type: 'follow',
-		bodyShort: `[[notifications:user-started-following-you, ${displayname}]]`,
-		nid: `follow:${data.uid}:uid:${caller.uid}`,
-		from: caller.uid,
-		path: `/uid/${data.uid}/followers`,
-		mergeId: 'notifications:user-started-following-you',
-	});
-	if (!notifObj) {
-		return;
-	}
-	notifObj.user = userData;
-	await notifications.push(notifObj, [data.uid]);
 };
 
 usersAPI.unfollow = async function (caller, data) {
@@ -245,7 +236,8 @@ usersAPI.unban = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	await user.bans.unban(data.uid);
+	const unbanData = await user.bans.unban(data.uid, data.reason);
+	await db.setObjectField(`uid:${data.uid}:unban:${unbanData.timestamp}`, 'fromUid', caller.uid);
 
 	sockets.in(`uid_${data.uid}`).emit('event:unbanned');
 
@@ -276,6 +268,7 @@ usersAPI.mute = async function (caller, data) {
 	const now = Date.now();
 	const muteKey = `uid:${data.uid}:mute:${now}`;
 	const muteData = {
+		type: 'mute',
 		fromUid: caller.uid,
 		uid: data.uid,
 		timestamp: now,
@@ -308,7 +301,19 @@ usersAPI.unmute = async function (caller, data) {
 	}
 
 	await db.deleteObjectFields(`user:${data.uid}`, ['mutedUntil', 'mutedReason']);
-
+	const now = Date.now();
+	const unmuteKey = `uid:${data.uid}:unmute:${now}`;
+	const unmuteData = {
+		type: 'unmute',
+		fromUid: caller.uid,
+		uid: data.uid,
+		timestamp: now,
+	};
+	if (data.reason) {
+		unmuteData.reason = data.reason;
+	}
+	await db.sortedSetAdd(`uid:${data.uid}:unmutes:timestamp`, now, unmuteKey);
+	await db.setObject(unmuteKey, unmuteData);
 	await events.log({
 		type: 'user-unmute',
 		uid: caller.uid,
@@ -433,7 +438,7 @@ usersAPI.addEmail = async (caller, { email, skipConfirmation, uid }) => {
 				throw new Error('[[error:email-taken]]');
 			}
 			await user.setUserField(uid, 'email', email);
-			await user.email.confirmByUid(uid);
+			await user.email.confirmByUid(uid, caller.uid);
 		}
 	} else {
 		await usersAPI.update(caller, { uid, email });
@@ -483,7 +488,7 @@ usersAPI.confirmEmail = async (caller, { uid, email, sessionId }) => {
 		await user.email.confirmByCode(code, sessionId);
 		return true;
 	} else if (current && current === email) { // i.e. old account w/ unconf. email in user hash
-		await user.email.confirmByUid(uid);
+		await user.email.confirmByUid(uid, caller.uid);
 		return true;
 	}
 
@@ -510,7 +515,7 @@ async function isPrivilegedOrSelfAndPasswordMatch(caller, data) {
 
 async function processDeletion({ uid, method, password, caller }) {
 	const isTargetAdmin = await user.isAdministrator(uid);
-	const isSelf = parseInt(uid, 10) === parseInt(caller.uid, 10);
+	const isSelf = String(uid) === String(caller.uid);
 	const hasAdminPrivilege = await privileges.admin.can('admin:users', caller.uid);
 
 	if (isSelf && meta.config.allowAccountDelete !== 1) {
@@ -526,7 +531,6 @@ async function processDeletion({ uid, method, password, caller }) {
 		throw new Error('[[error:no-privileges]]');
 	}
 
-	// Self-deletions require a password
 	const hasPassword = await user.hasPassword(uid);
 	if (isSelf && hasPassword) {
 		const ok = await user.isPasswordCorrect(uid, password, caller.ip);
@@ -597,6 +601,7 @@ usersAPI.search = async function (caller, data) {
 		throw new Error('[[error:no-privileges]]');
 	}
 	return await user.search({
+		uid: caller.uid,
 		query: data.query,
 		searchBy: data.searchBy || 'username',
 		page: data.page || 1,
@@ -634,7 +639,7 @@ usersAPI.changePicture = async (caller, data) => {
 		picture = returnData && returnData.picture;
 	}
 
-	const validBackgrounds = await user.getIconBackgrounds(caller.uid);
+	const validBackgrounds = await user.getIconBackgrounds();
 	if (!validBackgrounds.includes(data.bgColor)) {
 		data.bgColor = validBackgrounds[0];
 	}
@@ -681,6 +686,9 @@ usersAPI.generateExport = async (caller, { uid, type }) => {
 	const validTypes = ['profile', 'posts', 'uploads'];
 	if (!validTypes.includes(type)) {
 		throw new Error('[[error:invalid-data]]');
+	}
+	if (!utils.isNumber(uid) || !(parseInt(uid, 10) > 0)) {
+		throw new Error('[[error:invalid-uid]]');
 	}
 	const count = await db.incrObjectField('locks', `export:${uid}${type}`);
 	if (count > 1) {

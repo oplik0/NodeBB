@@ -9,15 +9,22 @@ const user = require('../user');
 const categories = require('../categories');
 const plugins = require('../plugins');
 const translator = require('../translator');
+const utils = require('../utils');
 
 const helpers = module.exports;
 
 const uidToSystemGroup = {
 	0: 'guests',
 	'-1': 'spiders',
+	'-2': 'fediverse',
 };
 
 helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
+	// Remote categories inherit world pseudo-category privileges
+	if (!utils.isNumber(cid)) {
+		cid = -1;
+	}
+
 	const [hasUserPrivilege, hasGroupPrivilege] = await Promise.all([
 		groups.isMembers(uids, `cid:${cid}:privileges:${privilege}`),
 		groups.isMembersOfGroupList(uids, `cid:${cid}:privileges:groups:${privilege}`),
@@ -28,6 +35,13 @@ helpers.isUsersAllowedTo = async function (privilege, uids, cid) {
 };
 
 helpers.isAllowedTo = async function (privilege, uidOrGroupName, cid) {
+	// Remote categories (non-numeric) inherit world privileges
+	if (Array.isArray(cid)) {
+		cid = cid.map(cid => (utils.isNumber(cid) ? cid : -1));
+	} else {
+		cid = utils.isNumber(cid) ? cid : -1;
+	}
+
 	let allowed;
 	if (Array.isArray(privilege) && !Array.isArray(cid)) {
 		allowed = await isAllowedToPrivileges(privilege, uidOrGroupName, cid);

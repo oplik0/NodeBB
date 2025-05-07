@@ -1,5 +1,6 @@
 'use strict';
 
+const validator = require('validator');
 const _ = require('lodash');
 const nconf = require('nconf');
 const db = require('../database');
@@ -30,43 +31,47 @@ const Events = module.exports;
 Events._types = {
 	pin: {
 		icon: 'fa-thumb-tack',
-		translation: async event => translateSimple(event, 'topic:user-pinned-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-pinned-topic'),
 	},
 	unpin: {
 		icon: 'fa-thumb-tack fa-rotate-90',
-		translation: async event => translateSimple(event, 'topic:user-unpinned-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-unpinned-topic'),
 	},
 	lock: {
 		icon: 'fa-lock',
-		translation: async event => translateSimple(event, 'topic:user-locked-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-locked-topic'),
 	},
 	unlock: {
 		icon: 'fa-unlock',
-		translation: async event => translateSimple(event, 'topic:user-unlocked-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-unlocked-topic'),
 	},
 	delete: {
 		icon: 'fa-trash',
-		translation: async event => translateSimple(event, 'topic:user-deleted-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-deleted-topic'),
 	},
 	restore: {
 		icon: 'fa-trash-o',
-		translation: async event => translateSimple(event, 'topic:user-restored-topic'),
+		translation: async (event, language) => translateSimple(event, language, 'topic:user-restored-topic'),
 	},
 	move: {
 		icon: 'fa-arrow-circle-right',
-		translation: async event => translateEventArgs(event, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-moved-topic-from', renderUser(event), `${event.fromCategory.name}`, renderTimeago(event)),
+	},
+	share: {
+		icon: 'fa-share-alt',
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-shared-topic', renderUser(event), renderTimeago(event)),
 	},
 	'post-queue': {
 		icon: 'fa-history',
-		translation: async event => translateEventArgs(event, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-queued-post', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 	backlink: {
 		icon: 'fa-link',
-		translation: async event => translateEventArgs(event, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-referenced-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 	fork: {
 		icon: 'fa-code-fork',
-		translation: async event => translateEventArgs(event, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
+		translation: async (event, language) => translateEventArgs(event, language, 'topic:user-forked-topic', renderUser(event), `${relative_path}${event.href}`, renderTimeago(event)),
 	},
 };
 
@@ -76,14 +81,14 @@ Events.init = async () => {
 	Events._types = types;
 };
 
-async function translateEventArgs(event, prefix, ...args) {
+async function translateEventArgs(event, language, prefix, ...args) {
 	const key = getTranslationKey(event, prefix);
 	const compiled = translator.compile.apply(null, [key, ...args]);
-	return utils.decodeHTMLEntities(await translator.translate(compiled));
+	return utils.decodeHTMLEntities(await translator.translate(compiled, language));
 }
 
-async function translateSimple(event, prefix) {
-	return await translateEventArgs(event, prefix, renderUser(event), renderTimeago(event));
+async function translateSimple(event, language, prefix) {
+	return await translateEventArgs(event, language, prefix, renderUser(event), renderTimeago(event));
 }
 
 Events.translateSimple = translateSimple; // so plugins can perform translate
@@ -103,7 +108,13 @@ function renderUser(event) {
 	if (!event.user || event.user.system) {
 		return '[[global:system-user]]';
 	}
-	return `${helpers.buildAvatar(event.user, '16px', true)} <a href="${relative_path}/user/${event.user.userslug}">${event.user.username}</a>`;
+
+	const user = {
+		...event.user,
+		displayname: validator.escape(String(event.user.displayname)),
+	};
+
+	return `${helpers.buildAvatar(user, '16px', true)} <a href="${relative_path}/user/${user.userslug}">${user.displayname}</a>`;
 }
 
 function renderTimeago(event) {
@@ -111,10 +122,8 @@ function renderTimeago(event) {
 }
 
 Events.get = async (tid, uid, reverse = false) => {
-	const topics = require('.');
-
-	if (!await topics.exists(tid)) {
-		throw new Error('[[error:no-topic]]');
+	if (!tid) {
+		return [];
 	}
 
 	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
@@ -122,16 +131,30 @@ Events.get = async (tid, uid, reverse = false) => {
 	const timestamps = eventIds.map(obj => obj.score);
 	eventIds = eventIds.map(obj => obj.value);
 	let events = await db.getObjects(keys);
-	events = await modifyEvent({ tid, uid, eventIds, timestamps, events });
+	events.forEach((e, idx) => {
+		e.timestamp = timestamps[idx];
+	});
+	await addEventsFromPostQueue(tid, uid, events);
+	events = await modifyEvent({ uid, events });
 	if (reverse) {
 		events.reverse();
 	}
 	return events;
 };
 
+Events.find = async (tid, match) => {
+	let eventIds = await db.getSortedSetRangeWithScores(`topic:${tid}:events`, 0, -1);
+	const keys = eventIds.map(obj => `topicEvent:${obj.value}`);
+	eventIds = eventIds.map(obj => obj.value);
+	const events = await db.getObjects(keys);
+	eventIds = eventIds.filter((id, idx) => _.isMatch(events[idx], match));
+
+	return eventIds;
+};
+
 async function getUserInfo(uids) {
-	uids = uids.filter((uid, idx) => !isNaN(parseInt(uid, 10)) && uids.indexOf(uid) === idx);
-	const userData = await user.getUsersFields(uids, ['picture', 'username', 'userslug']);
+	uids = new Set(uids); // eliminate dupes
+	const userData = await user.getUsersFields(Array.from(uids), ['picture', 'username', 'userslug']);
 	const userMap = userData.reduce((memo, cur) => memo.set(cur.uid, cur), new Map());
 	userMap.set('system', {
 		system: true,
@@ -146,8 +169,7 @@ async function getCategoryInfo(cids) {
 	return _.zipObject(uniqCids, catData);
 }
 
-async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
-	// Add posts from post queue
+async function addEventsFromPostQueue(tid, uid, events) {
 	const isPrivileged = await user.isPrivileged(uid);
 	if (isPrivileged) {
 		const queuedPosts = await posts.getQueuedPosts({ tid }, { metadata: false });
@@ -157,14 +179,14 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 			timestamp: item.data.timestamp || Date.now(),
 			uid: item.data.uid,
 		})));
-		queuedPosts.forEach((item) => {
-			timestamps.push(item.data.timestamp || Date.now());
-		});
 	}
+}
 
-	const [users, fromCategories] = await Promise.all([
+async function modifyEvent({ uid, events }) {
+	const [users, fromCategories, userSettings] = await Promise.all([
 		getUserInfo(events.map(event => event.uid).filter(Boolean)),
 		getCategoryInfo(events.map(event => event.fromCid).filter(Boolean)),
+		user.getSettings(uid),
 	]);
 
 	// Remove backlink events if backlinks are disabled
@@ -184,12 +206,11 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 	events = events.filter(event => Events._types.hasOwnProperty(event.type));
 
 	// Add user & metadata
-	events.forEach((event, idx) => {
-		event.id = parseInt(eventIds[idx], 10);
-		event.timestamp = timestamps[idx];
-		event.timestampISO = new Date(timestamps[idx]).toISOString();
+	events.forEach((event) => {
+		event.timestampISO = utils.toISOString(event.timestamp);
+		event.uid = utils.isNumber(event.uid) ? parseInt(event.uid, 10) : event.uid;
 		if (event.hasOwnProperty('uid')) {
-			event.user = users.get(event.uid === 'system' ? 'system' : parseInt(event.uid, 10));
+			event.user = users.get(event.uid === 'system' ? 'system' : event.uid);
 		}
 		if (event.hasOwnProperty('fromCid')) {
 			event.fromCategory = fromCategories[event.fromCid];
@@ -200,7 +221,7 @@ async function modifyEvent({ tid, uid, eventIds, timestamps, events }) {
 
 	await Promise.all(events.map(async (event) => {
 		if (Events._types[event.type].translation) {
-			event.text = await Events._types[event.type].translation(event);
+			event.text = await Events._types[event.type].translation(event, userSettings.userLang);
 		}
 	}));
 
@@ -222,15 +243,15 @@ Events.log = async (tid, payload) => {
 	}
 
 	const eventId = await db.incrObjectField('global', 'nextTopicEventId');
+	payload.id = eventId;
 
 	await Promise.all([
 		db.setObject(`topicEvent:${eventId}`, payload),
 		db.sortedSetAdd(`topic:${tid}:events`, timestamp, eventId),
 	]);
-
+	payload.timestamp = timestamp;
 	let events = await modifyEvent({
-		eventIds: [eventId],
-		timestamps: [timestamp],
+		uid: payload.uid,
 		events: [payload],
 	});
 

@@ -144,6 +144,7 @@ before(async function () {
 	nconf.set('version', packageInfo.version);
 	nconf.set('runJobs', false);
 	nconf.set('jobsDisabled', false);
+	nconf.set('acpPluginInstallDisabled', false);
 
 
 	await db.init();
@@ -194,7 +195,7 @@ async function setupMockDefaults() {
 	meta.config.autoDetectLang = 0;
 
 	require('../../src/groups').cache.reset();
-	require('../../src/posts/cache').reset();
+	require('../../src/posts/cache').getOrCreate().reset();
 	require('../../src/cache').reset();
 	require('../../src/middleware/uploads').clearCache();
 	// privileges must be given after cache reset
@@ -246,6 +247,7 @@ async function giveDefaultGlobalPrivileges() {
 	await privileges.global.give([
 		'groups:view:users', 'groups:view:tags', 'groups:view:groups',
 	], 'guests');
+	await privileges.global.give(['groups:view:users'], 'fediverse');
 }
 
 async function enableDefaultPlugins() {

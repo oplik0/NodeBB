@@ -25,12 +25,16 @@ module.exports = function (utils, Benchpress, relative_path) {
 		userAgentIcons,
 		buildAvatar,
 		increment,
+		generateWroteReplied,
 		generateRepliedTo,
 		generateWrote,
+		encodeURIComponent: _encodeURIComponent,
 		isoTimeToLocaleString,
 		shouldHideReplyContainer,
 		humanReadableNumber,
 		formattedNumber,
+		txEscape,
+		generatePlaceholderWave,
 		register,
 		__escape: identity,
 	};
@@ -167,37 +171,40 @@ module.exports = function (utils, Benchpress, relative_path) {
 		if (groupObj.isPending && groupObj.name !== 'administrators') {
 			return `<button class="btn btn-warning disabled ${btnClass}"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>`;
 		} else if (groupObj.isInvited) {
-			return `<button class="btn btn-link" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
+			return `<button class="btn btn-warning" data-action="rejectInvite" data-group="${groupObj.displayName}">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="${groupObj.name}"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>`;
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
-			return `<button class="btn btn-success" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
+			return `<button class="btn btn-success ${btnClass}" data-action="join" data-group="${groupObj.displayName}"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>`;
 		}
 		return '';
 	}
 
-	function spawnPrivilegeStates(member, privileges, types) {
+	function spawnPrivilegeStates(cid, member, privileges, types) {
 		const states = [];
-		for (const priv in privileges) {
-			if (privileges.hasOwnProperty(priv)) {
-				states.push({
-					name: priv,
-					state: privileges[priv],
-					type: types[priv],
-				});
-			}
+		for (const [priv, state] of Object.entries(privileges)) {
+			states.push({
+				name: priv,
+				state: state,
+				type: types[priv],
+			});
 		}
 		return states.map(function (priv) {
 			const guestDisabled = ['groups:moderate', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:local:login', 'groups:group:create'];
 			const spidersEnabled = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:view:users', 'groups:view:tags', 'groups:view:groups'];
 			const globalModDisabled = ['groups:moderate'];
+			let fediverseEnabled = ['groups:view:users', 'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:topics:tag', 'groups:posts:edit', 'groups:posts:history', 'groups:posts:delete', 'groups:posts:upvote', 'groups:posts:downvote', 'groups:topics:delete'];
+			if (cid === -1) {
+				fediverseEnabled = fediverseEnabled.slice(3);
+			}
 			const disabled =
 				(member === 'guests' && (guestDisabled.includes(priv.name) || priv.name.startsWith('groups:admin:'))) ||
 				(member === 'spiders' && !spidersEnabled.includes(priv.name)) ||
+				(member === 'fediverse' && !fediverseEnabled.includes(priv.name)) ||
 				(member === 'Global Moderators' && globalModDisabled.includes(priv.name));
 
 			return `
 				<td data-privilege="${priv.name}" data-value="${priv.state}" data-type="${priv.type}">
 					<div class="form-check text-center">
-						<input class="form-check-input float-none" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled"' : '')} />
+						<input class="form-check-input float-none${(disabled ? ' d-none"' : '')}" autocomplete="off" type="checkbox"${(priv.state ? ' checked' : '')}${(disabled ? ' disabled="disabled" aria-diabled="true"' : '')} />
 					</div>
 				</td>
 			`;
@@ -211,9 +218,9 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function renderTopicImage(topicObj) {
 		if (topicObj.thumb) {
-			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
+			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.displayname + '" />';
 		}
-		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
+		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.displayname + '" />';
 	}
 
 	function renderDigestAvatar(block) {
@@ -295,33 +302,24 @@ module.exports = function (utils, Benchpress, relative_path) {
 		if (!userObj) {
 			userObj = this;
 		}
-
+		classNames = classNames || '';
 		const attributes = new Map([
-			['alt', userObj.username],
-			['title', userObj.username],
+			['title', userObj.displayname],
 			['data-uid', userObj.uid],
-			['loading', 'lazy'],
+			['class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`],
 		]);
 		const styles = [`--avatar-size: ${size};`];
 		const attr2String = attributes => Array.from(attributes).reduce((output, [prop, value]) => {
 			output += ` ${prop}="${value}"`;
 			return output;
 		}, '');
-		classNames = classNames || '';
-
-		attributes.set('class', `avatar ${classNames}${rounded ? ' avatar-rounded' : ''}`);
 
 		let output = '';
 
 		if (userObj.picture) {
-			attributes.set('component', component || 'avatar/picture');
-			output += '<img ' + attr2String(attributes) + ' src="' + userObj.picture + '" style="' + styles.join(' ') + '" onError="this.remove();" itemprop="image" />';
+			output += `<img${attr2String(attributes)} alt="${userObj.displayname}" loading="lazy" component="${component || 'avatar/picture'}" src="${userObj.picture}" style="${styles.join(' ')}" onError="this.remove()" itemprop="image" />`;
 		}
-
-		attributes.set('component', component || 'avatar/icon');
-		styles.push('background-color: ' + userObj['icon:bgColor'] + ';');
-		output += '<span ' + attr2String(attributes) + ' style="' + styles.join(' ') + '">' + userObj['icon:text'] + '</span>';
-
+		output += `<span${attr2String(attributes)} component="${component || 'avatar/icon'}" style="${styles.join(' ')} background-color: ${userObj['icon:bgColor']}">${userObj['icon:text']}</span>`;
 		return output;
 	}
 
@@ -329,18 +327,29 @@ module.exports = function (utils, Benchpress, relative_path) {
 		return String(value + parseInt(inc, 10));
 	}
 
+	function generateWroteReplied(post, timeagoCutoff) {
+		if (post.toPid) {
+			return generateRepliedTo(post, timeagoCutoff);
+		}
+		return generateWrote(post, timeagoCutoff);
+	}
+
 	function generateRepliedTo(post, timeagoCutoff) {
 		const displayname = post.parent && post.parent.displayname ?
 			post.parent.displayname : '[[global:guest]]';
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${post.toPid}, ${displayname}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:replied-to-user-${langSuffix}, ${post.toPid}, ${relative_path}/post/${encodeURIComponent(post.toPid)}, ${displayname}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
 	}
 
 	function generateWrote(post, timeagoCutoff) {
 		const isBeforeCutoff = post.timestamp < (Date.now() - (timeagoCutoff * oneDayInMs));
 		const langSuffix = isBeforeCutoff ? 'on' : 'ago';
-		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${post.pid}, ${post.timestampISO}]]`;
+		return `[[topic:wrote-${langSuffix}, ${relative_path}/post/${encodeURIComponent(post.pid)}, ${post.timestampISO}]]`;
+	}
+
+	function _encodeURIComponent(value) {
+		return encodeURIComponent(value);
 	}
 
 	function isoTimeToLocaleString(isoTime, locale = 'en-GB') {
@@ -364,6 +373,25 @@ module.exports = function (utils, Benchpress, relative_path) {
 
 	function formattedNumber(number) {
 		return utils.addCommas(number);
+	}
+
+	function txEscape(text) {
+		return String(text).replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+	}
+
+	function generatePlaceholderWave(items) {
+		const html = items.map((i) => {
+			if (i === 'divider') {
+				return '<li class="dropdown-divider"></li>';
+			}
+			return `
+			<li class="dropdown-item placeholder-wave">
+				<div class="placeholder" style="width: 20px;"></div>
+				<div class="placeholder col-${i}"></div>
+			</li>`;
+		});
+
+		return html.join('');
 	}
 
 	function register() {

@@ -95,7 +95,9 @@ jobs:
       - build
     steps:
       - name: Prepare
-        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+        run: |
+          echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
+          echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
       - name: Download digests
         uses: actions/download-artifact@v4
         with:
@@ -111,9 +113,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get current date in NST
-        run: echo "CURRENT_DATE_NST=$(date +'%Y%m%d-%H%M%S' -d '-3 hours -30 minutes')" >> $GITHUB_ENV
-
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v5
@@ -132,7 +131,7 @@ jobs:
         working-directory: ${{ runner.temp }}/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+            $(printf '${{ env.IMAGE }}@sha256:%s ' *)
       - name: Inspect image
         run: |
-          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:${{ steps.meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.IMAGE }}:${{ steps.meta.outputs.version }}

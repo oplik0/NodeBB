@@ -39,7 +39,7 @@ jobs:
           echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY@L}" >> $GITHUB_ENV
       - uses: actions/checkout@v4
       - name: Test failure
-        if: ${{ !matrix.required }}
+        if: ${{ matrix.required }}
         run: |
           echo "Intentionally failing step"
           exit 1
